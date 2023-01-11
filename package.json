@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q index.js\""
   },
   "repository": {

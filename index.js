@@ -7,8 +7,11 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const port = 5000;
 app.get('/', (req, res) => {
-    res.send('Typescript + Node.js + Express Server');
+    res.sendFile(__dirname + '/home.html');
+});
+app.get('/index', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
 });
 app.listen(port, () => {
-    console.log(`[server]: Server is running at <https://localhost>:${port}`);
+    console.log(`[server]: Server is running at http://localhost:${port}`);
 });
