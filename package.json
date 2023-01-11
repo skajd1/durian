@@ -1,0 +1,32 @@
+{
+  "name": "durian",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "node index.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q index.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skajd1/durian.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skajd1/durian/issues"
+  },
+  "homepage": "https://github.com/skajd1/durian#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.15",
+    "@types/node": "^18.11.18",
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20",
+    "typescript": "^4.9.4"
+  }
+}
