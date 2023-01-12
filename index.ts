@@ -4,11 +4,26 @@ const app: Express = express();
 const port = 5000;
 
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(__dirname + '/home.html');
+  res.sendFile(__dirname + '/html/home.html');
 });
-app.get('/index', (req : Request, res : Response) =>{
-  res.sendFile(__dirname + '/index.html');
+app.get('/login', (req : Request, res : Response) =>{
+  res.sendFile(__dirname + '/html/login.html');
 })
+app.get('/signin', (req : Request, res : Response) =>{
+  res.sendFile(__dirname + '/html/signin.html');
+})
+app.get('/detail', (req : Request, res : Response) =>{
+  res.sendFile(__dirname + '/html/detail.html');
+})
+app.get('/pay', (req : Request, res : Response) =>{
+  res.sendFile(__dirname + '/html/pay.html');
+})
+app.get('/mypage', (req : Request, res : Response) =>{
+  res.sendFile(__dirname + '/html/mypage.html');
+})
+
+
+
  
 
 
