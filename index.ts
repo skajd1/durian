@@ -1,9 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 
 const app: Express = express();
-const port = 5000;
+const port = 8080;
 
 app.get('/', (req: Request, res: Response) => {
+  res.sendFile(__dirname + '/html/home.html');
+});
+app.get('/home', (req: Request, res: Response) => {
   res.sendFile(__dirname + '/html/home.html');
 });
 app.get('/login', (req : Request, res : Response) =>{
@@ -21,20 +24,6 @@ app.get('/pay', (req : Request, res : Response) =>{
 app.get('/mypage', (req : Request, res : Response) =>{
   res.sendFile(__dirname + '/html/mypage.html');
 })
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
 
 
 app.listen(port, () => {
