@@ -5,7 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 // 임시 유저 데이터베이스
-const users = [];
+const users = [{
+        id: 'test',
+        password: 'test',
+        passwordv: 'test',
+        year: '1998',
+        month: '1',
+        day: '2',
+        point: 100000
+    }];
 const router = express_1.default.Router();
 const bodyParser = require('body-parser');
 router.use(bodyParser.json());
@@ -43,6 +51,23 @@ router.post('/register', (req, res) => {
         users.push(user);
         console.log(user);
         return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
+    }
+});
+router.post('/authentication', (req, res) => {
+    const { id, password } = req.body;
+    if (!id || !password) {
+        return res.send("<script>alert('아이디와 비밀번호를 입력하세요.');document.location.href='/user/login'</script>");
+    }
+    else if (users.find(user_in_db => user_in_db.id === id)) {
+        if (users.find(user_in_db => user_in_db.id === id).password === password) {
+            return res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
+        }
+        else {
+            return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>");
+        }
+    }
+    else {
+        return res.send("<script>alert('등록된 아이디가 존재하지 않습니다.');document.location.href='/user/login'</script>");
     }
 });
 module.exports = router;

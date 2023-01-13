@@ -106,29 +106,19 @@
     </div>
   </header>
 
-  <section class="text-gray-600 body-font">
-    <div class="container px-5 py-24 mx-auto flex flex-wrap items-center">
+  <section class="text-gray-600 body-font mt-24">
+    <div class="w-2/3 container px-5 py-24 mx-auto flex flex-wrap items-center">
       <div>
         <div class="slideshow-container">
-
           <div class="mySlides fade">
-            
-            <img src='/static_image/1.png' style="width:100%">
-            
+            <img src='/static_image/1.png' style="width:100%">  
           </div>
-
           <div class="mySlides fade">
-            
-            <img src="/static_image/2.png" style="width:100%">
-            
+            <img src="/static_image/2.png" style="width:100%">           
           </div>
-
-          <div class="mySlides fade">
-            
-            <img src="/static_image/3.png" style="width:100%">
-            
+          <div class="mySlides fade">          
+            <img src="/static_image/3.png" style="width:100%">        
           </div>
-
         </div>
         <div style="text-align:center">
           <span class="dot"></span>
@@ -137,8 +127,8 @@
         </div>
       </div>
 
-
       <div class="lg:w-2/6 md:w-1/2 bg-gray-100 rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
+        <form action="/user/authentication" method = "POST">
         <h2 class="text-gray-900 text-lg font-medium title-font mb-5">
           로그인
         </h2>
@@ -146,23 +136,24 @@
           <label for="user-id" class="leading-7 text-sm text-gray-600">
             User ID
           </label>
-          <input type="text" id="user-id" name="user-id"
+          <input type="text" id="user-id" name="id"
             class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
         </div>
         <div class="relative mb-4">
           <label for="user-password" class="leading-7 text-sm text-gray-600">
             Password
           </label>
-          <input type="password" id="user-password" name="user-password"
+          <input type="password" id="user-password" name="password"
             class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
         </div>
-        <button
-          class="text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+        <button type = "submit"
+          class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
           로그인
         </button>
         <p class="text-xs text-gray-500 mt-3 text-right">
           <a href="/user/signin">회원 가입</a>
         </p>
+      </form>
 
       </div>
   </section>
