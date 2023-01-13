@@ -17,101 +17,103 @@
             <span class="ml-3 text-xl">Durian</span>
           </a>
           <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-            <a href = "/login" class="mr-5 hover:text-gray-900">Log in</a>
-            <a href = "/signin" class="mr-5 hover:text-gray-900">Join in</a>
-            <a href = "/mypage" class="mr-5 hover:text-gray-900">My page</a>
+            <a href = "/user/login" class="mr-5 hover:text-gray-900">Log in</a>
+            <a href = "/user/signin" class="mr-5 hover:text-gray-900">Join in</a>
+            <a href = "/user/mypage" class="mr-5 hover:text-gray-900">My page</a>
           </nav>
         </div>
     </header>
     
   <div class="md:w-3/5 h-[800px] bg-gray-100 rounded-lg p-8 flex flex-col md:ml-80 w-full mt-10 md:mt-5">
-    <div class="mt-32 mx-auto relative mb-4 w-1/2">
-      <div>
-        <label for="user-id" class="leading-7 text-sm text-gray-600">
-          사용자 아이디 :
-        </label>
+    <form id ="signinForm" class = "h-full" action = "/user/register" method = 'POST' >
+      <div class="mt-32 mx-auto relative mb-4 w-1/2">
+        <div>
+          <label for="id" class="leading-7 text-sm text-gray-600">
+            사용자 아이디 :
+          </label>
+        </div>
+        <input type="text" id="id" name="id" class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
       </div>
-      <input type="text" id="user-id" name="user-id" class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-    </div>
-    <div class="mx-auto relative mb-4 w-1/2">
-      <div>
-        <label for="user-password" class="leading-7 text-sm text-gray-600">
-          비밀번호 :
-        </label>
+      <div class="mx-auto relative mb-4 w-1/2">
+        <div>
+          <label for="password" class="leading-7 text-sm text-gray-600">
+            비밀번호 :
+          </label>
+        </div>
+        <input type="password" id="password" name="password" class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
       </div>
-      <input type="password" id="user-password" name="user-password" class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-    </div>
-    <div class="mx-auto relative mb-4 w-1/2">
-      <div>
-        <label for="user-password-v" class="leading-7 text-sm text-gray-600">
-          비밀번호 확인 :
-        </label>
+      <div class="mx-auto relative mb-4 w-1/2">
+        <div>
+          <label for="passwordv" class="leading-7 text-sm text-gray-600">
+            비밀번호 확인 :
+          </label>
+        </div>
+        <input type="password" id="passwordv" name="passwordv" class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
       </div>
-      <input type="password" id="user-password-v" name="user-password-v" class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-    </div>
-    <div class="mx-auto w-1/2 relative mb-4">
-      <div>
-        <label for="user-birth-year" class="leading-7 text-sm text-gray-600">
-          생년월일 :
-        </label>
+      <div class="mx-auto w-1/2 relative mb-4">
+        <div>
+          <label for="birth" class="leading-7 text-sm text-gray-600">
+            생년월일 :
+          </label>
+        </div>
+        <input type="text" id="birth" name="year" maxlength = '4' placeholder = "년(4자)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+        class="w-1/3 bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+        <select id="birthmonth" name = "month" class="w-[28%] ml-2 h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+          <option value='' selected>월</option>
+          <option value="month1">1월</option>
+          <option value="month2">2월</option>
+          <option value="month3">3월</option>
+          <option value="month4">4월</option>
+          <option value="month5">5월</option>
+          <option value="month6">6월</option>
+          <option value="month7">7월</option>
+          <option value="month8">8월</option>
+          <option value="month9">9월</option>
+          <option value="month10">10월</option>
+          <option value="month11">11월</option>
+          <option value="month12">12월</option>
+        </select>
+        <select id="birthday" name = "day" class="w-[28%] ml-2 h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+          <option value= ''selected>일</option>
+          <option value="day1">1</option>
+          <option value="day2">2</option>
+          <option value="day3">3</option>
+          <option value="day4">4</option>
+          <option value="day5">5</option>
+          <option value="day6">6</option>
+          <option value="day7">7</option>
+          <option value="day8">8</option>
+          <option value="day9">9</option>
+          <option value="day10">10</option>
+          <option value="day11">11</option>
+          <option value="day12">12</option>
+          <option value="day13">13</option>
+          <option value="day14">14</option>
+          <option value="day15">15</option>
+          <option value="day16">16</option>
+          <option value="day17">17</option>
+          <option value="day18">18</option>
+          <option value="day19">19</option>
+          <option value="day20">20</option>
+          <option value="day21">21</option>
+          <option value="day22">22</option>
+          <option value="day23">23</option>
+          <option value="day24">24</option>
+          <option value="day25">25</option>
+          <option value="day26">26</option>
+          <option value="day27">27</option>
+          <option value="day28">28</option>
+          <option value="day29">29</option>
+          <option value="day30">30</option>
+          <option value="day31">31</option>
+        </select>
       </div>
-      <input type="text" id="user-birth-year" name="user-birth-year" maxlength = '4' placeholder = "년(4자)" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-      class="w-1/3 bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-      <select id="user-birth-month" name = "user-birth-month" class="w-[28%] ml-2 h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-        <option selected>월</option>
-        <option value="month-1">1월</option>
-        <option value="month-2">2월</option>
-        <option value="month-3">3월</option>
-        <option value="month-4">4월</option>
-        <option value="month-5">5월</option>
-        <option value="month-6">6월</option>
-        <option value="month-7">7월</option>
-        <option value="month-8">8월</option>
-        <option value="month-9">9월</option>
-        <option value="month-10">10월</option>
-        <option value="month-11">11월</option>
-        <option value="month-12">12월</option>
-      </select>
-      <select id="user-birth-day" name = "user-birth-day" class="w-[28%] ml-2 h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-        <option selected>일</option>
-        <option value="day1">1</option>
-        <option value="day2">2</option>
-        <option value="day3">3</option>
-        <option value="day4">4</option>
-        <option value="day5">5</option>
-        <option value="day6">6</option>
-        <option value="day7">7</option>
-        <option value="day8">8</option>
-        <option value="day9">9</option>
-        <option value="day10">10</option>
-        <option value="day11">11</option>
-        <option value="day12">12</option>
-        <option value="day13">13</option>
-        <option value="day14">14</option>
-        <option value="day15">15</option>
-        <option value="day16">16</option>
-        <option value="day17">17</option>
-        <option value="day18">18</option>
-        <option value="day19">19</option>
-        <option value="day20">20</option>
-        <option value="day21">21</option>
-        <option value="day22">22</option>
-        <option value="day23">23</option>
-        <option value="day24">24</option>
-        <option value="day25">25</option>
-        <option value="day26">26</option>
-        <option value="day27">27</option>
-        <option value="day28">28</option>
-        <option value="day29">29</option>
-        <option value="day30">30</option>
-        <option value="day31">31</option>
-      </select>
-    </div>
-
-    <button class="m-auto w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
-      회원 가입
-    </button>
-
+      <div class="w-1/2 mx-auto" >
+      <button type = "submit" class="mt-16 w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+        회원 가입
+      </button>
+      </div>
+    </form>
 
 
   </div>
