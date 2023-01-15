@@ -1,6 +1,5 @@
 import express, { Express, Request, Response } from 'express';
 
-
 //user 객체 타입 지정
 type User = {
     id : string,
@@ -21,10 +20,17 @@ const users : Array<User> = [{
     day : '2',
     point : 100000
 }];
-const router = express.Router()
-const bodyParser = require('body-parser')
+const router = express.Router();
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parse');
+const expressSession = require('express-session');
 
-
+router.use(cookieParser())
+router.use(expressSession({
+    secret : 'my key',
+    resave : true,
+    saveUninitialized : true
+}));
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended : false}))
 
