@@ -123,12 +123,11 @@ router.post('/authentication', (req : Request, res : Response) => {
                 return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>"); 
             }
             else {
-                // res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
       
                 
                 req.session.isLogined = true;
                 req.session.save( ()=> {
-                    res.render('home', {login : true})
+                    res.redirect('/')
                 })
             }
         }
