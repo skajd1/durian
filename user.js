@@ -4,6 +4,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const session = require('express-session');
+const options = {
+    host: 'localhost',
+    port: 3306,
+    user: 'admin',
+    password: 'admin',
+    database: 'moviedb'
+};
+const mysqlStore = require('express-mysql-session')(session);
+const sessionStore = new mysqlStore(options);
 const router = express_1.default.Router();
 const bodyParser = require('body-parser');
 const check = require('./check');
@@ -14,19 +24,36 @@ const connection = mysql.createConnection({
     password: 'admin',
     database: 'moviedb'
 });
+router.use(session({
+    secret: "keykey",
+    resave: false,
+    saveUnitialized: true,
+    store: sessionStore
+}));
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.get("/", (req, res) => {
-    res.sendFile(__dirname + '/html/login.html');
+    res.render('login', { login: false });
 });
 router.get("/login", (req, res) => {
-    res.sendFile(__dirname + '/html/login.html');
+    res.render('login', { login: false });
 });
 router.get("/signin", (req, res) => {
-    res.sendFile(__dirname + '/html/signin.html');
+    res.render('signin', { login: false });
 });
 router.get('/mypage', (req, res) => {
-    res.sendFile(__dirname + '/html/mypage.html');
+    if (req.session.isLogined) {
+        res.render('mypage', { login: true });
+    }
+    else {
+        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
+    }
+});
+router.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+        req.session;
+    });
+    res.render('home', { login: false });
 });
 // 가입버튼 눌렀을 때 유효성 검사 + DB에 유저데이터 등록
 router.post('/register', (req, res) => {
@@ -78,7 +105,11 @@ router.post('/authentication', (req, res) => {
                 return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>");
             }
             else {
-                return res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
+                // res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
+                req.session.isLogined = true;
+                req.session.save(() => {
+                    res.render('home', { login: true });
+                });
             }
         }
     });

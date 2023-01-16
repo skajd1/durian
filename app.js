@@ -8,16 +8,18 @@ const app = (0, express_1.default)();
 const port = 8080;
 const userRouter = require('./user');
 const homeRouter = require('./home');
+app.set('view engine', 'ejs');
+app.set('views', './views');
 app.use(express_1.default.json());
 app.use('/static_image', express_1.default.static('static_image'));
 app.use('/', homeRouter);
 app.use('/home', homeRouter);
 app.use('/user', userRouter);
 app.get('/detail', (req, res) => {
-    res.sendFile(__dirname + '/html/detail.html');
+    res.render('detail');
 });
 app.get('/pay', (req, res) => {
-    res.sendFile(__dirname + '/html/pay.html');
+    res.render('pay');
 });
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

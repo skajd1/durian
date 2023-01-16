@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+  <% if (login == false){ %>
+    <%- include ("header.ejs") %>
+    <% }else{ %>
+    <%- include ("header_logout.ejs") %>
+    <% } %>
+    
+    <div class="md:w-3/5 h-[800px] bg-gray-100 rounded-lg p-8 flex flex-col md:ml-80 w-full mt-10 md:mt-5">
+        <div> 좌석 선택 및 예매 페이지</div>
+        <div> 인원 선택</div>
+        <div> 극장 및 관, 상영 시간, 가격 표시</div>
+        <div> 결제 버튼</div>
+        
+    </div>
+</body>
+</html>

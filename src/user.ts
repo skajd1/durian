@@ -7,6 +7,16 @@ type User = {
     point : number,
     reserve : number
 }
+const session = require('express-session');
+const options = {
+    host : 'localhost',
+    port : 3306,
+    user : 'admin',
+    password : 'admin',
+    database : 'moviedb'
+}
+const mysqlStore = require('express-mysql-session')(session);
+const sessionStore = new mysqlStore(options);
 const router = express.Router();
 const bodyParser = require('body-parser');
 const check = require('./check');
@@ -17,21 +27,40 @@ const connection = mysql.createConnection({
     password : 'admin',
     database : 'moviedb'
 });
+router.use(session({
+    secret : "keykey",
+    resave : false,
+    saveUnitialized : true,
+    store : sessionStore
+}))
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended : false}))
 
 router.get("/", (req : Request, res : Response) =>{
-    res.sendFile(__dirname + '/html/login.html');
+    res.render('login', {login : false});
 })
 router.get("/login", (req : Request, res : Response) =>{
-    res.sendFile(__dirname + '/html/login.html');
+    res.render('login', {login : false});
 })
 router.get("/signin", (req : Request, res : Response) =>{
-    res.sendFile(__dirname + '/html/signin.html')
+    res.render('signin', {login : false})
 })
 router.get('/mypage', (req : Request, res : Response) =>{
-    res.sendFile(__dirname + '/html/mypage.html');
-  })
+    if(req.session.isLogined){
+        
+        res.render('mypage', {login : true});
+    }
+    else{
+        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>")
+    }
+    
+})
+router.get('/logout', (req : Request, res : Response) =>{
+    req.session.destroy( () => {
+       req.session;
+    })
+    res.render('home', {login : false})
+})
 
 
 // 가입버튼 눌렀을 때 유효성 검사 + DB에 유저데이터 등록
@@ -75,7 +104,6 @@ router.post('/register', (req: Request, res : Response) =>{
 
 })
 
-
 router.post('/authentication', (req : Request, res : Response) => {
     if(!req.body['id'] || !req.body['password'])
     {
@@ -95,15 +123,17 @@ router.post('/authentication', (req : Request, res : Response) => {
                 return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>"); 
             }
             else {
-                return res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
+                // res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
+      
+                
+                req.session.isLogined = true;
+                req.session.save( ()=> {
+                    res.render('home', {login : true})
+                })
             }
         }
     })
 })
-
-
-
-
 
 
 module.exports = router;

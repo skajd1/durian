@@ -5,6 +5,8 @@ const port = 8080;
 const userRouter = require('./user')
 const homeRouter = require('./home')
 
+app.set('view engine', 'ejs');
+app.set('views', './views');
 app.use(express.json())
 app.use('/static_image',express.static('static_image'));
 
@@ -15,10 +17,10 @@ app.use('/user', userRouter);
 
 
 app.get('/detail', (req : Request, res : Response) =>{
-  res.sendFile(__dirname + '/html/detail.html');
+  res.render('detail');
 })
 app.get('/pay', (req : Request, res : Response) =>{
-  res.sendFile(__dirname + '/html/pay.html');
+  res.render('pay');
 })
 
 
