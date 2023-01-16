@@ -53,7 +53,7 @@ router.get('/logout', (req, res) => {
     req.session.destroy(() => {
         req.session;
     });
-    res.render('home', { login: false });
+    res.redirect('/');
 });
 // 가입버튼 눌렀을 때 유효성 검사 + DB에 유저데이터 등록
 router.post('/register', (req, res) => {

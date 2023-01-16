@@ -59,7 +59,7 @@ router.get('/logout', (req : Request, res : Response) =>{
     req.session.destroy( () => {
        req.session;
     })
-    res.render('home', {login : false})
+    res.redirect('/');
 })
 
 
