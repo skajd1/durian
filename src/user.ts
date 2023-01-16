@@ -1,9 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-
 //user 객체 타입 지정
-type UserID = {
-    id : string
-}
 type User = {
     id : string,
     password : string,
@@ -11,6 +7,8 @@ type User = {
     point : number,
     reserve : number
 }
+const router = express.Router();
+const bodyParser = require('body-parser');
 const check = require('./check');
 const mysql = require('mysql');
 const connection = mysql.createConnection({
@@ -19,9 +17,6 @@ const connection = mysql.createConnection({
     password : 'admin',
     database : 'moviedb'
 });
-
-const router = express.Router();
-const bodyParser = require('body-parser');
 router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended : false}))
 
@@ -79,26 +74,32 @@ router.post('/register', (req: Request, res : Response) =>{
     }   
 
 })
-// router.post('/authentication', (req : Request, res : Response) => {
-//     const {id,password} = req.body;
-//     if(!id || !password)
-//     {
-//         return res.send("<script>alert('아이디와 비밀번호를 입력하세요.');document.location.href='/user/login'</script>");
-//     }
-//     else if (users.find(user_in_db=>user_in_db.id === id))
-//     {
-//         if (users.find(user_in_db=>user_in_db.id === id).password === password){
-//             return res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
-//         }
-//         else {
-//             return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>");
-//         }
-//     }
-//     else 
-//     {
-//         return res.send("<script>alert('등록된 아이디가 존재하지 않습니다.');document.location.href='/user/login'</script>");
-//     }
-// })
+
+
+router.post('/authentication', (req : Request, res : Response) => {
+    if(!req.body['id'] || !req.body['password'])
+    {
+        return res.send("<script>alert('아이디와 비밀번호를 입력하세요.');document.location.href='/user/login'</script>");
+    }
+    let sql = "select * from userdb where id = ?";
+    let params = [req.body['id']]
+    connection.query(sql, params, (err : any, rows : Array<User>, fields : any) =>{
+        if(err) throw err;
+        else{
+            if(!rows[0])
+            {
+                return res.send("<script>alert('등록된 아이디가 존재하지 않습니다.');document.location.href='/user/login'</script>");
+            }
+            else if (rows[0].password !== req.body['password'])
+            {
+                return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>"); 
+            }
+            else {
+                return res.send("<script>alert('반갑습니다.');document.location.href='/home'</script>");
+            }
+        }
+    })
+})
 
 
 
