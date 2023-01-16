@@ -4,19 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const check = require('./check');
 const mysql = require('mysql');
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'admin',
     password: 'admin',
     database: 'moviedb'
-});
-connection.connect();
-connection.query('select id from userdb', (err, rows, fields) => {
-    if (err)
-        throw err;
-    for (let row of rows)
-        console.log(row.id);
 });
 const router = express_1.default.Router();
 const bodyParser = require('body-parser');
@@ -36,34 +30,29 @@ router.get('/mypage', (req, res) => {
 });
 // 가입버튼 눌렀을 때 유효성 검사 + DB에 유저데이터 등록
 router.post('/register', (req, res) => {
-    // res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
-    const { id, password, passwordv, year, month, day } = req.body;
-    let id_list = [];
-    let sql = 'select id from userdb';
-    connection.query(sql, (err, rows, fields) => {
-        if (err)
-            throw err;
-        else {
-            for (let i = 0; i < rows.length; i++) {
-                id_list.push(rows[i].id);
-            }
+    for (let key of Object.keys(req.body)) {
+        if (!(check.checkExist(req.body[key]))) {
+            return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/user/signin'</script>");
         }
-    });
-    if (!id || !password || !passwordv || !year || !month || !day) {
-        return res.send("<script>alert('입력되지 않은 사항이 있습니다.');document.location.href='/user/signin'</script>");
     }
-    else if (password !== passwordv) {
+    if (!(check.checkId(req.body['id']))) {
+        return res.send("<script>alert('아이디가 올바르지 않은 형식입니다. ');document.location.href='/user/signin'</script>");
+    }
+    else if (req.body['password'] !== req.body['passwordv']) {
         return res.send("<script>alert('비밀번호가 일치하지 않습니다.');document.location.href='/user/signin'</script>");
     }
-    else if (id_list.find(id_in_db => id_in_db === id)) {
+    else if (!check.checkPw(req.body['password'])) {
+        return res.send("<script>alert('올바른 비밀번호 형식을 사용하세요. ');document.location.href='/user/signin'</script>");
+    }
+    else if (!check.checkDup(req.body['id'])) {
         return res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
     }
-    else if ((year).length !== 4) {
-        return res.send("<script>alert('올바른 생년월일을 입력해주세요.');document.location.href='/user/signin'</script>");
+    else if (!check.checkBirth(req.body['year'])) {
+        return res.send("<script>alert('올바른 생년월일을 입력하세요.');document.location.href='/user/signin'</script>");
     }
     else {
         let sql = 'insert into userdb (id, password, birth, point, reserve) values (?,?,?,?,?)';
-        let params = [id, password, (year + '-' + month + '-' + day), 100000, null];
+        let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000, null];
         connection.query(sql, params, (err, rows, fields) => {
             if (err)
                 console.log(err);
