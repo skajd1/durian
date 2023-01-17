@@ -16,10 +16,10 @@ app.use('/', homeRouter);
 app.use('/home', homeRouter);
 app.use('/user', userRouter);
 app.get('/detail', (req, res) => {
-    res.render('detail');
+    res.render('detail', { login: false });
 });
 app.get('/pay', (req, res) => {
-    res.render('pay');
+    res.render('pay', { login: false });
 });
 app.listen(port, () => {
     console.log(`[server]: Server is running at http://localhost:${port}`);

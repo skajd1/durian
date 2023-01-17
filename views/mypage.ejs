@@ -13,9 +13,77 @@
     <% }else{ %>
     <%- include ("header_logout.ejs") %>
     <% } %>
-  <div class="md:w-3/5 h-[800px] bg-gray-100 rounded-lg p-8 flex flex-col md:ml-80 w-full mt-10 md:mt-5">
-    마이페이지    
-      
-  </div>
+    <section class="text-gray-600 body-font">
+      <div class="w-2/3 container px-5 py-24 mx-auto flex items-center md:mx-auto">
+        <div id = 'select-box' class="ml-10 flex flex-col h-[600px] justify-center">
+
+          <input id="mydata" name="mypage" type="radio" class="peer/mydata hidden" checked>
+          <label for="mydata"
+            class="cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/mydata:border-yellow-500 peer-checked/mydata:font-bold peer-checked/mydata:bg-gray-100 peer-checked/mydata:text-yellow-500 rounded-l ">
+            내 정보
+          </label>
+    
+          <input id="edit" name="mypage" type="radio" class="peer/edit hidden">
+          <label for="edit"
+            class="cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/edit:border-yellow-500 peer-checked/edit:font-bold peer-checked/edit:bg-gray-100 peer-checked/edit:text-yellow-500 rounded-l ">
+            비밀번호 변경
+          </label>
+    
+          <input id="reservation" name="mypage" type="radio" class="peer/reservation hidden">
+          <label for="reservation"
+            class="cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/reservation:border-yellow-500 peer-checked/reservation:font-bold peer-checked/reservation:bg-gray-100 peer-checked/reservation:text-yellow-500 rounded-l">
+            예매 내역 확인
+          </label>
+    
+          <input id="point" name="mypage" type="radio" class="peer/point hidden">
+          <label for="point"
+            class="cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/point:border-yellow-500 peer-checked/point:font-bold peer-checked/point:bg-gray-100 peer-checked/point:text-yellow-500 rounded-l">
+            잔여 포인트
+          </label>
+        </div>
+
+        <div id="edit-box" class="w-2/3 h-[600px] bg-gray-200 rounded-lg p-8 flex flex-col ml-8 mt-10 md:mt-5">
+          <%- include ('./mypage/mydata.html') %>
+        </div>
+    
+      </div>
+    </section>
+
+
+  <script>
+    window.click = function(id){
+      let box = document.getElementById('edit-box');
+      if(id === "mydata")
+      {
+        document.getElementById('edit-box').innerHTML = "<%- include ('./mypage/mydata.html') %>"
+      }
+      else if(id === "edit")
+      {
+        document.getElementById('edit-box').innerHTML = "<%- include ('./mypage/edit.html') %>"
+      }
+      else if(id === "reservation")
+      {
+        document.getElementById('edit-box').innerHTML = "<%- include ('./mypage/reservation.html') %>"
+      }
+      else if(id === "point")
+      {
+        document.getElementById('edit-box').innerHTML = "임시"
+      }
+    }
+
+    document.getElementById("mydata").addEventListener("click", function(event) {
+        click(event.target.id);
+    });
+    document.getElementById("edit").addEventListener("click", function(event) {
+        click(event.target.id);
+    });
+    document.getElementById("reservation").addEventListener("click", function(event) {
+        click(event.target.id);
+    });
+    document.getElementById("point").addEventListener("click", function(event) {
+        click(event.target.id);
+    });
+  </script>
 </body>
+
 </html>

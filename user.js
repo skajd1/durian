@@ -33,27 +33,51 @@ router.use(session({
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
 router.get("/", (req, res) => {
-    res.render('login', { login: false });
+    if (req.session.isLogined) {
+        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
+    }
+    else
+        res.render('login', { login: false });
 });
 router.get("/login", (req, res) => {
-    res.render('login', { login: false });
+    if (req.session.isLogined) {
+        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
+    }
+    else
+        res.render('login', { login: false });
 });
 router.get("/signin", (req, res) => {
     res.render('signin', { login: false });
 });
 router.get('/mypage', (req, res) => {
     if (req.session.isLogined) {
-        res.render('mypage', { login: true });
+        //세션에 접속중인 유저 데이터 쿼리로 불러오기
+        let uid = req.session.user_id;
+        // let sql : string = 'select ?,?,? from userdb where id = ?';
+        let sql = 'select * from userdb where id = ?';
+        // let params : Array<string> = ['birth', 'point', 'reserve', uid];
+        let params = [uid];
+        connection.query(sql, params, (err, rows, fields) => {
+            if (err)
+                console.log(err);
+            else {
+                res.render('mypage', { login: true, uid: uid, birth: rows[0].birth, point: rows[0].point, reserve: rows[0].reserve ? rows[0].reserve : null });
+            }
+        });
     }
     else {
         res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
     }
 });
 router.get('/logout', (req, res) => {
-    req.session.destroy(() => {
-        req.session;
-    });
-    res.redirect('/');
+    if (req.session.isLogined) {
+        req.session.destroy(() => {
+            req.session;
+        });
+        res.redirect('/');
+    }
+    else
+        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
 });
 // 가입버튼 눌렀을 때 유효성 검사 + DB에 유저데이터 등록
 router.post('/register', (req, res) => {
@@ -80,7 +104,7 @@ router.post('/register', (req, res) => {
     else {
         let sql = 'insert into userdb (id, password, birth, point, reserve) values (?,?,?,?,?)';
         let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000, null];
-        connection.query(sql, params, (err, rows, fields) => {
+        connection.query(sql, params, (err) => {
             if (err)
                 console.log(err);
             else
@@ -105,9 +129,43 @@ router.post('/authentication', (req, res) => {
                 return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>");
             }
             else {
+                req.session.user_id = req.body['id'];
                 req.session.isLogined = true;
                 req.session.save(() => {
                     res.redirect('/');
+                });
+            }
+        }
+    });
+});
+router.post('/edit', (req, res) => {
+    let sql = "select password from userdb where id = ?";
+    let params = [req.session.user_id];
+    if (!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv']) {
+        return res.send("<script>alert('입력되지 않은 사항이 있습니다.');document.location.href='/user/mypage'</script>");
+    }
+    else if (req.body['npassword'] !== req.body['passwordv']) {
+        return res.send("<script>alert('확인 비밀번호가 일치하지 않습니다.');document.location.href='/user/mypage'</script>");
+    }
+    else if (!check.checkPw(req.body['npassword'])) {
+        return res.send("<script>alert('올바른 비밀번호 형식을 사용하세요. ');document.location.href='/user/mypage'</script>");
+    }
+    connection.query(sql, params, (err, rows, fields) => {
+        if (err)
+            throw err;
+        else {
+            if (rows[0].password !== req.body['ppassword']) {
+                return res.send("<script>alert('현재 비밀번호와 일치하지 않습니다.');document.location.href='/user/mypage'</script>");
+            }
+            else {
+                let sql = "update userdb set password = ? where id = ?";
+                let params = [req.body['npassword'], req.session.user_id];
+                connection.query(sql, params, (err) => {
+                    if (err)
+                        throw err;
+                    else {
+                        res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/user/mypage'</script>");
+                    }
                 });
             }
         }

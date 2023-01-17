@@ -56,7 +56,7 @@ function checkDup(id : string) : boolean
 }
 function checkBirth(year : string) : boolean
 {
-    if(year.length != 4 || Number(year) < 1900)
+    if(year.length != 4 || Number(year) < 1900 || Number(year) >= 2024)
     {
         return false;
     }

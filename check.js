@@ -45,7 +45,7 @@ function checkDup(id) {
         return true;
 }
 function checkBirth(year) {
-    if (year.length != 4 || Number(year) < 1900) {
+    if (year.length != 4 || Number(year) < 1900 || Number(year) >= 2024) {
         return false;
     }
     else
