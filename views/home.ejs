@@ -21,30 +21,55 @@
         <h2 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">사이트 설명</h2>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-base">지금 가입하면 100,000 포인트 지급..! </p>
       </div>
-
-      <div class="flex flex-wrap -m-4">
-
-        <% for(let i = 0 ; i < 6 ; i ++) { %>
-          <div class="lg:w-1/3 sm:w-1/2 p-4">
-            <div class="flex relative h-[300px]">
-              <img alt="영화" class="absolute inset-0 w-full h-full object-cover object-center" src="https://dummyimage.com/600x360">
-              <div class="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-95">
-                <h1 class="title-font text-lg font-medium text-gray-900 mb-3">영화 제목</h1>
-                <p class="leading-relaxed">Age 표시 </p>
-                <p class="leading-relaxed">영화 줄거리 앞부분 ...</p>
-                <button class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
-                 예매 하기</button>
-              </div>
-            </div>
-          </div>
-        <% } %>
-        
-      </div>
       
+      <div class = "flex w-full flex-row ">
+
+        <div class = "my-auto mx-2">
+          <button type="button" class="focus:ring-2 focus:outline-none focus:ring-yellow-400 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-big-left" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M20 15h-8v3.586a1 1 0 0 1 -1.707 .707l-6.586 -6.586a1 1 0 0 1 0 -1.414l6.586 -6.586a1 1 0 0 1 1.707 .707v3.586h8a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1z" />
+            </svg>
+          </button>
+        </div>
+        <div class="w-full flex flex-wrap -m-4">
+          
+          <% for(let i = 0 ; i < 3 ; i ++) { %>
+            <div class="lg:w-1/3 sm:w-1/2 p-4">
+              <% if(movielist[i]) { %>
+              <div class="flex relative h-[500px]">
+                <img alt="영화" class="absolute inset-0 w-full h-full object-contain object-center" src="<%= movielist[i].poster_src %>">
+                <div class="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-90">
+                  <h1 class="title-font text-lg font-medium text-gray-900 mb-3"><%= movielist[i].title %></h1>
+                  <p class="leading-relaxed"><%= movielist[i].age %>세 이용가</p>
+                  <p class="leading-relaxed">줄거리 : <%= movielist[i].content %></p>
+                  <p class="leading-relaxed">상영시간 : <%= movielist[i].runningTime %> 시간 </p>
+                  <button href = "#" class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+                  예매 하기</button>
+                </div>
+              </div>
+              <% } %>
+            </div>
+          <% } %>
+          
+        </div>
+        <div class ="my-auto mx-2">
+          <button type="button" class="focus:ring-2 focus:outline-none focus:ring-yellow-400 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+              <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+        
     </div>
 
     <% if(admin) { %>
+      
     <div class = "text-center">
+      관리자 페이지 : 
       <a href= "/admin/moviedb" class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
         영화 DB 수정</a>
       <a href= "/admin/userdb" class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">

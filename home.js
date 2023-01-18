@@ -5,6 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const router = express_1.default.Router();
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'admin',
+    password: 'admin',
+    database: 'moviedb'
+});
 const session = require('express-session');
 const mysqlStore = require('express-mysql-session')(session);
 const options = {
@@ -23,17 +30,26 @@ router.use(session({
 }));
 router.get("/", (req, res) => {
     // res.sendFile(__dirname + '/html/home.html');
-    //
-    if (!req.session.isLogined) {
-        res.render('home', { login: false, admin: false });
-    }
-    else {
-        if (req.session.user_id === 'admin') {
-            res.render('home', { login: true, admin: true });
-        }
+    let sql = 'select * from moviedetail';
+    let params = [];
+    let movielist;
+    connection.query(sql, (err, rows) => {
+        if (err)
+            console.log(err);
         else {
-            res.render('home', { login: true, admin: false });
+            movielist = rows;
+            if (!req.session.isLogined) {
+                res.render('home', { login: false, admin: false, movielist: movielist });
+            }
+            else {
+                if (req.session.user_id === 'admin') {
+                    res.render('home', { login: true, admin: true, movielist: movielist });
+                }
+                else {
+                    res.render('home', { login: true, admin: false, movielist: movielist });
+                }
+            }
         }
-    }
+    });
 });
 module.exports = router;

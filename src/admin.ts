@@ -1,4 +1,13 @@
 import express, { Express, Request, Response } from 'express';
+
+type Movie={
+    title : string,
+    content : string,
+    age : number,
+    runningTime : number,
+    poster_src : string
+}
+
 const session = require('express-session');
 const options = {
     host : 'localhost',
@@ -19,6 +28,22 @@ const connection = mysql.createConnection({
     password : 'admin',
     database : 'moviedb'
 });
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req : any, file : any, cb:any) {
+        const error = file.mimetype === 'image/jpeg'
+          ? null
+          : new Error('wrong file');
+        cb(error, 'static_image/');
+    },
+    filename : (req : any, file : any, cb:any) =>{
+        cb(null, Date.now() + file.originalname)
+    }
+    
+})
+const upload = multer({
+    storage : storage
+})
 router.use(session({
     secret : "keykey",
     resave : false,
@@ -49,7 +74,7 @@ router.get("/moviedb/post", (req : Request, res : Response) =>{
 
 
 
-router.post('/moviedb/post', (req : Request, res : Response) =>{
+router.post('/moviedb/post', upload.single('image'), (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
     }
@@ -60,7 +85,14 @@ router.post('/moviedb/post', (req : Request, res : Response) =>{
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/moviedb/post'</script>")
         }
     }
-    
+    let sql :string = "insert into moviedetail (title, content, age, runningTime, poster_src) values(?,?,?,?,?)";
+    let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename];
+    connection.query(sql, params, (err : any) =>{
+        if (err) throw err;
+        else{
+            res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
+        }
+    })
 })
 
 module.exports = router;
