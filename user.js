@@ -53,15 +53,13 @@ router.get('/mypage', (req, res) => {
     if (req.session.isLogined) {
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid = req.session.user_id;
-        // let sql : string = 'select ?,?,? from userdb where id = ?';
         let sql = 'select * from userdb where id = ?';
-        // let params : Array<string> = ['birth', 'point', 'reserve', uid];
         let params = [uid];
         connection.query(sql, params, (err, rows, fields) => {
             if (err)
                 console.log(err);
             else {
-                res.render('mypage', { login: true, uid: uid, birth: rows[0].birth, point: rows[0].point, reserve: rows[0].reserve ? rows[0].reserve : null });
+                res.render('mypage', { login: true, uid: uid, birth: rows[0].birth, point: rows[0].point });
             }
         });
     }
@@ -102,8 +100,8 @@ router.post('/register', (req, res) => {
         return res.send("<script>alert('올바른 생년월일을 입력하세요.');document.location.href='/user/signin'</script>");
     }
     else {
-        let sql = 'insert into userdb (id, password, birth, point, reserve) values (?,?,?,?,?)';
-        let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000, null];
+        let sql = 'insert into userdb (id, password, birth, point) values (?,?,?,?)';
+        let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000];
         connection.query(sql, params, (err) => {
             if (err)
                 console.log(err);

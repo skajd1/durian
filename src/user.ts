@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-import { EntryType } from 'perf_hooks';
 //user 객체 타입 지정
 type User = {
     id : string,
@@ -56,15 +55,13 @@ router.get('/mypage', (req : Request, res : Response) =>{
     if(req.session.isLogined){
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid :string = req.session.user_id;
-        // let sql : string = 'select ?,?,? from userdb where id = ?';
         let sql : string = 'select * from userdb where id = ?';
-        // let params : Array<string> = ['birth', 'point', 'reserve', uid];
         let params : Array<string> = [uid];
         connection.query(sql, params, (err : any, rows : Array<User>, fields : any) => {
             if (err) console.log(err);
             else
             {
-                res.render('mypage', { login : true, uid : uid, birth : rows[0].birth, point : rows[0].point, reserve : rows[0].reserve?rows[0].reserve:null});
+                res.render('mypage', { login : true, uid : uid, birth : rows[0].birth, point : rows[0].point});
             }
         })
 
@@ -117,8 +114,8 @@ router.post('/register', (req: Request, res : Response) =>{
     }
 
     else{
-        let sql : string = 'insert into userdb (id, password, birth, point, reserve) values (?,?,?,?,?)';
-        let params : Array<User> = [req.body['id'], req.body['password'], (req.body['year']+'-'+req.body['month']+'-' +req.body['day']),100000,null];
+        let sql : string = 'insert into userdb (id, password, birth, point) values (?,?,?,?)';
+        let params : Array<User> = [req.body['id'], req.body['password'], (req.body['year']+'-'+req.body['month']+'-' +req.body['day']),100000];
         connection.query(sql,params, (err : any) =>{
             if (err) console.log(err);
             else return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");

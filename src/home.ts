@@ -21,11 +21,18 @@ router.get("/", (req : Request, res : Response) =>{
     //
     if(!req.session.isLogined)
     {
-        res.render('home', {login : false})
+        res.render('home', {login : false,admin : false})
     }
-    else
-    {
-        res.render('home', {login : true})
+    else 
+    {   
+        if(req.session.user_id === 'admin')
+        {
+            res.render('home', {login : true, admin: true})
+        }
+        else
+        {        
+            res.render('home', {login : true, admin: false})
+        }
     }
 })
 
