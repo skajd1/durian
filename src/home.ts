@@ -35,28 +35,19 @@ router.get("/", (req : Request, res : Response) =>{
     // res.sendFile(__dirname + '/html/home.html');
     let sql :string = 'select * from moviedetail'
     let params : Array<string> = [];
-    
+    let login : boolean = false
+    let admin : boolean = false
     connection.query(sql, (err : any, rows : Array<Movie>) => {
         if (err) console.log(err)
         else{
             movielist = rows;
-            
-            if(!req.session.isLogined)
-            {
-                res.render('home', {login : false,admin : false, movielist : movielist})
+            if(req.session.isLogined){
+                login = true
             }
-            else 
-            {   
-                if(req.session.user_id === 'admin')
-                {   
-                    res.render('home', {login : true, admin: true, movielist : movielist})
-                }
-                else
-                {        
-                    res.render('home', {login : true, admin: false, movielist : movielist})
-                }
+            if(req.session.user_id == 'admin'){
+                admin = true;
             }
-
+            res.render('home', {login : login, admin: admin, movielist : movielist, pagemove : pagemove, showPage : showPage})
 
         }
     })
@@ -70,7 +61,7 @@ function pagemove(dir : number,Page : number, pages : number):void{
 		Page = pages
 	}
 	showPage(Page)
-
+    console.log(Page)
 }
 function showPage(page_now : number) : void{
     for(let i = page_now *3 - 3; i<page_now*3; i++){
