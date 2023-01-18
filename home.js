@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+let movielist;
 const router = express_1.default.Router();
 const mysql = require('mysql');
 const connection = mysql.createConnection({
@@ -32,7 +33,6 @@ router.get("/", (req, res) => {
     // res.sendFile(__dirname + '/html/home.html');
     let sql = 'select * from moviedetail';
     let params = [];
-    let movielist;
     connection.query(sql, (err, rows) => {
         if (err)
             console.log(err);
@@ -52,4 +52,19 @@ router.get("/", (req, res) => {
         }
     });
 });
+function pagemove(dir, Page, pages) {
+    Page += dir;
+    if (Page > pages) {
+        Page = 1;
+    }
+    else if (Page == 0) {
+        Page = pages;
+    }
+    showPage(Page);
+}
+function showPage(page_now) {
+    for (let i = page_now * 3 - 3; i < page_now * 3; i++) {
+        // 포스터 속성 movielist[i] 로 변경 
+    }
+}
 module.exports = router;

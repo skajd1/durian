@@ -32,14 +32,15 @@
             </svg>
           </button>
         </div>
+
         <div class="w-full flex flex-wrap -m-4">
           
           <% for(let i = 0 ; i < 3 ; i ++) { %>
-            <div class="lg:w-1/3 sm:w-1/2 p-4">
+            <div class="w-1/3 p-4 h-full">
               <% if(movielist[i]) { %>
               <div class="flex relative h-[500px]">
                 <img alt="영화" class="absolute inset-0 w-full h-full object-contain object-center" src="<%= movielist[i].poster_src %>">
-                <div class="px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-90">
+                <div class="mx-auto px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-90">
                   <h1 class="title-font text-lg font-medium text-gray-900 mb-3"><%= movielist[i].title %></h1>
                   <p class="leading-relaxed"><%= movielist[i].age %>세 이용가</p>
                   <p class="leading-relaxed">줄거리 : <%= movielist[i].content %></p>
@@ -78,7 +79,11 @@
     <% }  %>
 
   </section>
+  <script>
+    
+    
 
+  </script>
 
 </body>
 </html>
