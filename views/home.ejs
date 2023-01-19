@@ -25,7 +25,7 @@
       <div class = "flex w-full flex-row ">
 
         <div class = "my-auto mx-2">
-          <button type="button" class="focus:ring-2 focus:outline-none focus:ring-yellow-400 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+          <button onclick = 'pagemove(-1,startPage)'id = 'left' type="button" class="focus:ring-2 focus:outline-none focus:ring-yellow-400 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-big-left" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M20 15h-8v3.586a1 1 0 0 1 -1.707 .707l-6.586 -6.586a1 1 0 0 1 0 -1.414l6.586 -6.586a1 1 0 0 1 1.707 .707v3.586h8a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1z" />
@@ -34,19 +34,20 @@
         </div>
 
         <div class="w-full flex flex-wrap -m-4">
-          <%= pagemove(1,1,movielist.length); %> 
+  
           <% for(let i = 0 ; i < 3 ; i ++) { %>
             <div class="w-1/3 p-4 h-full">
               <% if(movielist[i]) { %>
-              <div class="flex relative h-[500px]">
-                <img alt="영화" class="absolute inset-0 w-full h-full object-contain object-center" src="<%= movielist[i].poster_src %>">
+              <div id = 'post<%=i%>'class="flex relative h-[500px]">
+                <img id = "image<%=i%>" class="absolute inset-0 w-full h-full object-contain object-center" src="<%= movielist[i].poster_src %>">
                 <div class="mx-auto px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-90">
-                  <h1 class="title-font text-lg font-medium text-gray-900 mb-3"><%= movielist[i].title %></h1>
-                  <p class="leading-relaxed"><%= movielist[i].age %>세 이용가</p>
-                  <p class="leading-relaxed">줄거리 : <%= movielist[i].content %></p>
-                  <p class="leading-relaxed">상영시간 : <%= movielist[i].runningTime %> 시간 </p>
+                  <h1 id = "title<%=i%>" class="title-font text-lg font-medium text-gray-900 mb-3"><%= movielist[i].title %></h1>
+                  <p id = "age<%=i%>" class="leading-relaxed"><%= movielist[i].age %>세 이용가</p>
+                  <p id = "content<%=i%>" class="leading-relaxed">줄거리 : <%= movielist[i].content %></p>
+                  <p id = "time<%=i%>" class="leading-relaxed">상영시간 : <%= movielist[i].runningTime %> 시간 </p>
                   <button href = "#" class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
-                  예매 하기</button>
+                  예매 하기
+                  </button>
                 </div>
               </div>
               <% } %>
@@ -55,7 +56,7 @@
           
         </div>
         <div class ="my-auto mx-2">
-          <button type="button" class="focus:ring-2 focus:outline-none focus:ring-yellow-400 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
+          <button onclick ='pagemove(1,startPage)' id = 'right' type="button" class="focus:ring-2 focus:outline-none focus:ring-yellow-400 font-medium rounded-full text-sm p-2 text-center inline-flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffbf00" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
               <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
@@ -79,10 +80,56 @@
     <% }  %>
 
   </section>
-  <script>
-    
-    
 
+
+  <script>
+    var startPage = 1;
+    let num_of_movie = Number('<%= movielist.length%>');
+    let pages = Math.ceil(num_of_movie / 3)
+    let movie = []
+    
+    "<% for(let i = 0 ; i < movielist.length; i ++ ) {%>"
+    movie.push({
+      title : "<%=movielist[i].title%>",
+      content : "<%=movielist[i].content%>",
+      poster_src : "<%=movielist[i].poster_src%>",
+      time : "<%=movielist[i].runningTime%>",
+      age : "<%=movielist[i].age%>"
+    })
+    "<% } %>"
+
+    function pagemove(dir ,Page){
+      Page += dir;
+      
+      if (Page > pages){
+        Page = 1
+      }
+      else if (Page ==0 ){
+        Page = pages
+      }
+      startPage = Page
+      showPage(startPage)
+      }
+    function showPage(page_now) {
+      for(let i = 0; i < 3 ; i ++)
+      {
+        if(i+page_now*3-3 < movie.length){
+          document.getElementById('title'+i).textContent = movie[i+page_now*3-3].title;
+          document.getElementById('content'+i).textContent = movie[i+page_now*3-3].content;
+          document.getElementById('age'+i).textContent = movie[i+page_now*3-3].age +'세 이용가';
+          document.getElementById('time'+i).textContent = movie[i+page_now*3-3].runningTime;
+          document.getElementById('image'+i).src = movie[i+page_now*3-3].poster_src;
+          document.getElementById('post'+i).className = "flex relative h-[500px]"
+        }
+        else{
+          
+          document.getElementById('post'+i).className = "invisible flex relative h-[500px]"
+          
+        }
+      }
+
+    }
+    
   </script>
 
 </body>

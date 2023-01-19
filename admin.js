@@ -27,7 +27,7 @@ const connection = mysql.createConnection({
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        const error = file.mimetype === 'image/jpeg'
+        const error = file.mimetype === 'image/jpeg' || 'image/png'
             ? null
             : new Error('wrong file');
         cb(error, 'static_image/');

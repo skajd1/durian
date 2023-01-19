@@ -46,12 +46,13 @@ router.get("/", (req, res) => {
             if (req.session.user_id == 'admin') {
                 admin = true;
             }
-            res.render('home', { login: login, admin: admin, movielist: movielist, pagemove: pagemove, showPage: showPage });
+            res.render('home', { login: login, admin: admin, movielist: movielist });
         }
     });
 });
-function pagemove(dir, Page, pages) {
+function pagemove(dir, Page, num_of_movie) {
     Page += dir;
+    let pages = Math.ceil(num_of_movie / 3);
     if (Page > pages) {
         Page = 1;
     }
@@ -63,7 +64,6 @@ function pagemove(dir, Page, pages) {
 }
 function showPage(page_now) {
     for (let i = page_now * 3 - 3; i < page_now * 3; i++) {
-        // 포스터 속성 movielist[i] 로 변경 
     }
 }
 module.exports = router;

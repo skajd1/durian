@@ -15,7 +15,6 @@ const options = {
     password : 'admin',
     database : 'moviedb'
 }
-
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
 const router = express.Router();
