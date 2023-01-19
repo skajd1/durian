@@ -104,7 +104,7 @@ router.post('/register', (req: Request, res : Response) =>{
     {
         return res.send("<script>alert('올바른 비밀번호 형식을 사용하세요. ');document.location.href='/user/signin'</script>");
     }
-    else if (!check.checkDup(req.body['id']))
+    else if (!check.yourFunction(req.body['id']))
     {
         return res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
     }

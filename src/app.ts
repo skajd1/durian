@@ -13,8 +13,12 @@ app.use('/static_image',express.static('static_image'));
 
 app.use('/', homeRouter);
 app.use('/home', homeRouter);
+
 app.use('/user', userRouter);
+
 app.use('/admin', adminRouter);
+
+
 
 app.get('/detail', (req : Request, res : Response) =>{
   res.render('detail', {login : false});

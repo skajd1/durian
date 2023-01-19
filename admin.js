@@ -25,6 +25,7 @@ const connection = mysql.createConnection({
     database: 'moviedb'
 });
 const multer = require('multer');
+//파일 업로드 시, 파일 이름과 확장자 및 경로 지정
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const error = file.mimetype === 'image/jpeg' || 'image/png'
@@ -47,6 +48,7 @@ router.use(session({
 }));
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: false }));
+//유저 DB 리스트 출력
 router.get("/userdb", (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
@@ -54,6 +56,7 @@ router.get("/userdb", (req, res) => {
     else
         res.render('user_db', { login: true });
 });
+// 영화 DB 리스트 출력
 router.get("/moviedb", (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
@@ -69,6 +72,7 @@ router.get("/moviedb", (req, res) => {
         });
     }
 });
+//영화 DB 수정 페이지 레이아웃
 router.get("/moviedb/edit/:id", (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
@@ -85,6 +89,7 @@ router.get("/moviedb/edit/:id", (req, res) => {
         });
     }
 });
+//영화 DB수정 서버사이드 TODO
 router.post("/moviedb/edit/:id", (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
@@ -92,6 +97,7 @@ router.post("/moviedb/edit/:id", (req, res) => {
     else {
     }
 });
+//영화 DB 최초 등록
 router.get("/moviedb/post", (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
@@ -99,6 +105,7 @@ router.get("/moviedb/post", (req, res) => {
     else
         res.render('post_movie', { login: true });
 });
+// DB 등록 시 넘어오는 파라미터 정보 유효성 검증 및 쿼리
 router.post('/moviedb/post', upload.single('image'), (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
