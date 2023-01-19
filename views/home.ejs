@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.css" rel="stylesheet" />
     <title>home</title>
 </head>
 <body>
@@ -45,7 +46,7 @@
                   <p id = "age<%=i%>" class="leading-relaxed"><%= movielist[i].age %>세 이용가</p>
                   <p id = "content<%=i%>" class="leading-relaxed">줄거리 : <%= movielist[i].content %></p>
                   <p id = "time<%=i%>" class="leading-relaxed">상영시간 : <%= movielist[i].runningTime %> 시간 </p>
-                  <button href = "#" class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+                  <button id = "resv<%=i%>" href = "#" class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
                   예매 하기
                   </button>
                 </div>
@@ -67,6 +68,10 @@
       </div>
         
     </div>
+    
+
+
+  
 
     <% if(admin) { %>
       
@@ -94,7 +99,9 @@
       content : "<%=movielist[i].content%>",
       poster_src : "<%=movielist[i].poster_src%>",
       time : "<%=movielist[i].runningTime%>",
-      age : "<%=movielist[i].age%>"
+      age : "<%=movielist[i].age%>",
+      id : "<%=movielist[i].id%>"
+      
     })
     "<% } %>"
 
@@ -119,6 +126,7 @@
           document.getElementById('age'+i).textContent = movie[i+page_now*3-3].age +'세 이용가';
           document.getElementById('time'+i).textContent = movie[i+page_now*3-3].runningTime;
           document.getElementById('image'+i).src = movie[i+page_now*3-3].poster_src;
+          document.getElementById('resv'+i).href = '#'
           document.getElementById('post'+i).className = "flex relative h-[500px]"
         }
         else{
@@ -132,5 +140,6 @@
     
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.js"></script>
 </body>
 </html>

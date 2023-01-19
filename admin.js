@@ -58,8 +58,39 @@ router.get("/moviedb", (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
     }
-    else
-        res.render('movie_db', { login: true });
+    else {
+        let sql = "select id,title from moviedetail";
+        connection.query(sql, (err, rows) => {
+            if (err)
+                console.log(err);
+            else {
+                res.render('movie_db', { login: true, rows: rows });
+            }
+        });
+    }
+});
+router.get("/moviedb/edit/:id", (req, res) => {
+    if (req.session.user_id !== 'admin') {
+        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
+    }
+    else {
+        let sql = "select * from moviedetail where id=?";
+        let params = [req.params.id];
+        connection.query(sql, params, (err, rows) => {
+            if (err)
+                console.log(err);
+            else {
+                res.render('movie_edit_page', { login: true, rows: rows });
+            }
+        });
+    }
+});
+router.post("/moviedb/edit/:id", (req, res) => {
+    if (req.session.user_id !== 'admin') {
+        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>");
+    }
+    else {
+    }
 });
 router.get("/moviedb/post", (req, res) => {
     if (req.session.user_id !== 'admin') {

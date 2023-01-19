@@ -52,25 +52,6 @@ router.get("/", (req : Request, res : Response) =>{
         }
     })
 })
-function pagemove(dir : number,Page : number, num_of_movie : number):void{
-    Page += dir;
-    let pages = Math.ceil(num_of_movie / 3)
-    if (Page > pages){
-		Page = 1
-	}
-	else if (Page ==0 ){
-		Page = pages
-	}
-	showPage(Page)
-    console.log(Page)
-}
-function showPage(page_now : number) : void{
-    for(let i = page_now *3 - 3; i<page_now*3; i++){
-        
-    }
-
-}
-
 
 
 module.exports = router;

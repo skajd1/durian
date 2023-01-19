@@ -15,13 +15,28 @@
     <% } %>
     <section class="text-gray-600 body-font">
       <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
-        <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg p-8 flex flex-col mt-10 md:mt-5">
+        <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg p-8 flex mt-10 md:mt-5">
 
-
-          <div>
-            <a href = "/admin/moviedb/post">영화 등록</a>
+          <div class = "w-2/3 bg-white rounded-lg">
+            <div class = "flex flex-col">
+              <span class= "mb-8 text-2xl text-center pt-8" >영화 리스트</span>
+                <% for(let i = 0; i < rows.length; i ++) { %>
+                  <div class = " ml-8 mb-4 ">
+                      <a class= 'py-2 w-1/3 px-8 border-0 hover:bg-yellow-500 hover:text-white rounded-lg text-lg'
+                      href = "/admin/moviedb/edit/<%=rows[i].id%>">
+                      <%= rows[i].title %>
+                    </a>
+                  </div>
+                  <% } %> 
+            </div>
           </div>
 
+          <div class="m-auto">
+          <a href= "/admin/moviedb/post"
+          class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+            영화 DB 등록</a>
+          </div>
+          
         </div>
       </div>
     </section>

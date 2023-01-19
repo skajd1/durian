@@ -1,6 +1,8 @@
 import express, { Express, Request, Response } from 'express';
+import { request } from 'http';
 
 type Movie={
+    id : number,
     title : string,
     content : string,
     age : number,
@@ -59,18 +61,64 @@ router.get("/userdb", (req : Request, res : Response) =>{
     }
     else res.render('user_db', {login : true});
 })
+
+
+
+
+
+
+
+
 router.get("/moviedb", (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
     }
-    else res.render('movie_db', {login : true});
+    else{
+        let sql : string = "select id,title from moviedetail";
+        connection.query(sql, (err : any, rows : Array<Movie>) =>{
+            if (err) console.log(err);
+            else {
+
+                res.render('movie_db', {login : true, rows : rows});
+            }
+        })
+
+    }      
+        
 })
+router.get("/moviedb/edit/:id", (req : Request, res : Response) => {
+    if(req.session.user_id !== 'admin' ){
+        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+    }
+    else {
+        let sql = "select * from moviedetail where id=?"
+        let params = [req.params.id];
+        connection.query(sql,params, (err: any, rows: Array<Movie>)=>{
+            if(err) console.log(err)
+            else{
+                res.render('movie_edit_page', {login : true, rows: rows})
+            }
+        })
+    }
+})
+router.post("/moviedb/edit/:id", (req : Request, res : Response) =>{
+    if(req.session.user_id !== 'admin' ){
+        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+    }
+    else{
+        
+    }
+})
+
+
+
 router.get("/moviedb/post", (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
         res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
     }
     else res.render('post_movie', {login : true});
 })
+
 
 
 
