@@ -145,4 +145,13 @@ router.post('/moviedb/post', upload.single('image'), (req : Request, res : Respo
     })
 })
 
+// movie_edit_page.js 에서 db 지우는 함수
+function deleteMovie(id : number){
+    let sql : string = "delete from moviedetail where id = ?"
+    let params : Array<number> = [id];
+    connection.query(sql, params, (err : any) => {
+        if(err) throw err;
+    })
+}
+
 module.exports = router;

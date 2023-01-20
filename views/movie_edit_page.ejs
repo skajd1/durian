@@ -118,8 +118,18 @@
     inputImage.addEventListener("change", e => {
     readImage(e.target)
 })
+
+    function deleteConfirm(){
+        if(confirm('이 데이터를 삭제하시겠습니까?'))
+        {
+            deleteMovie("<%= rows[0].id%>")
+            document.location.href='/admin/moviedb'
+        }
+    }
     
 
+</script>
+<script src = '../admin.js'>
 </script>
 </body>
 
