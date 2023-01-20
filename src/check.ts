@@ -37,58 +37,21 @@ function checkPw(pw : string) : boolean
     else return true;
 }
 //DB 쿼리 중복 검사 TODO FIX
-// function checkDup(id : string) : boolean
-// {
-//     let id_list : Array<string> = [];
-//     let sql : string = 'select id from userdb'
-//     connection.query(sql, (err :any  , rows : UserID[], fields : any) => {
-//         if(err) throw err;
-//         else
-//         {
-//             for(let i = 0; i < rows.length; i ++)
-//             {
-//                 id_list.push(rows[i].id)
-//             }
-//         }         
-//     });
-//     if(id_list.find(id_in_db=> id_in_db === id))
-//     {
-//         return false;
-//     }
-//     else return true;
+function checkDup(id : string)
+{
+    return new Promise((resolve, reject) =>{
+        let sql : string = 'select id from userdb where id = ?'
+        let params : Array<string>= [id]
+        connection.query(sql,params,(err:any, rows:UserID[] ) =>{
+            if(err) console.log(err);
+            else
+            {
+                resolve(!(rows.length))
+            }       
+        })
 
-//     // let sql : string = 'select id from userdb where id = ?'
-//     // let params : Array<string>= [id]
-//     // connection.query(sql,params,(err:any, rows:UserID[] ) =>{
-//     //     if(err) console.log(err);
-//     //     else{
-//     //         if(rows.length==1)
-//     //         {
-//     //             check = false;
-//     //         }
-//     //     }
-//     // })
-//     // return check;
-// }
-function checkDup(id: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        let sql: string = 'select id from userdb where id = ?'
-        let params: Array<string> = [id]
-        connection.query(sql, params, (err: any, rows: UserID[]) => {
-            if (err) reject(err);
-            else {
-                if (rows.length == 1) {
-                    resolve(false);
-                } else {
-                    resolve(true);
-                }
-            }
-        });
-    });
-}
-async function yourFunction(id: string) {
-    const check = await checkDup(id)
-    return check
+    })
+    
 }
 function checkBirth(year : string) : boolean
 {
@@ -100,4 +63,4 @@ function checkBirth(year : string) : boolean
 }
 
 
-module.exports = {checkExist,checkId,checkPw,checkDup,checkBirth, yourFunction};
+module.exports = {checkExist,checkId,checkPw,checkDup,checkBirth};

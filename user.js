@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -93,21 +102,28 @@ router.post('/register', (req, res) => {
     else if (!check.checkPw(req.body['password'])) {
         return res.send("<script>alert('올바른 비밀번호 형식을 사용하세요. ');document.location.href='/user/signin'</script>");
     }
-    else if (!check.yourFunction(req.body['id'])) {
-        return res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
-    }
     else if (!check.checkBirth(req.body['year'])) {
         return res.send("<script>alert('올바른 생년월일을 입력하세요.');document.location.href='/user/signin'</script>");
     }
     else {
         let sql = 'insert into userdb (id, password, birth, point) values (?,?,?,?)';
         let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000];
-        connection.query(sql, params, (err) => {
-            if (err)
-                console.log(err);
-            else
-                return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
-        });
+        function cd(id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let result = yield check.checkDup(id); // check값이 제대로 넘어오지 않아서 await으로 처ㅣ
+                if (!result)
+                    res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
+                else {
+                    connection.query(sql, params, (err) => {
+                        if (err)
+                            console.log(err);
+                        else
+                            res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
+                    });
+                }
+            });
+        }
+        cd(req.body['id']);
     }
 });
 router.post('/authentication', (req, res) => {

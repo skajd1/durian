@@ -104,10 +104,6 @@ router.post('/register', (req: Request, res : Response) =>{
     {
         return res.send("<script>alert('올바른 비밀번호 형식을 사용하세요. ');document.location.href='/user/signin'</script>");
     }
-    else if (!check.yourFunction(req.body['id']))
-    {
-        return res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
-    }
     else if (!check.checkBirth(req.body['year']))
     {
         return res.send("<script>alert('올바른 생년월일을 입력하세요.');document.location.href='/user/signin'</script>");
@@ -116,10 +112,17 @@ router.post('/register', (req: Request, res : Response) =>{
     else{
         let sql : string = 'insert into userdb (id, password, birth, point) values (?,?,?,?)';
         let params : Array<User> = [req.body['id'], req.body['password'], (req.body['year']+'-'+req.body['month']+'-' +req.body['day']),100000];
-        connection.query(sql,params, (err : any) =>{
-            if (err) console.log(err);
-            else return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
-        })
+        async function cd(id : string)  {
+            let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처ㅣ
+            if (!result) res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
+            else{
+                connection.query(sql,params, (err : any) =>{
+                    if (err) console.log(err);
+                    else res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
+                })
+            }
+        }
+        cd(req.body['id']);
     }   
 
 })
