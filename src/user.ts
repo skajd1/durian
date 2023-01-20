@@ -71,6 +71,7 @@ router.get('/mypage', (req : Request, res : Response) =>{
     }
     
 })
+// 로그아웃 시 세션 초기화
 router.get('/logout', (req : Request, res : Response) =>{
     if(req.session.isLogined){
         req.session.destroy( () => {
@@ -113,7 +114,7 @@ router.post('/register', (req: Request, res : Response) =>{
         let sql : string = 'insert into userdb (id, password, birth, point) values (?,?,?,?)';
         let params : Array<User> = [req.body['id'], req.body['password'], (req.body['year']+'-'+req.body['month']+'-' +req.body['day']),100000];
         async function cd(id : string)  {
-            let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처ㅣ
+            let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처리
             if (!result) res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
             else{
                 connection.query(sql,params, (err : any) =>{

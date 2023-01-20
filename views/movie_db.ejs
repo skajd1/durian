@@ -20,14 +20,34 @@
           <div class = "w-2/3 bg-white rounded-lg">
             <div class = "flex flex-col">
               <span class= "mb-8 text-2xl text-center pt-8" >영화 리스트</span>
-                <% for(let i = 0; i < rows.length; i ++) { %>
-                  <div class = " ml-8 mb-4 ">
-                      <a class= 'py-2 w-1/3 px-8 border-0 hover:bg-yellow-500 hover:text-white rounded-lg text-lg'
-                      href = "/admin/moviedb/edit/<%=rows[i].id%>">
-                      <%= rows[i].title %>
-                    </a>
-                  </div>
+
+              <div class = "w-1/2 ml-12">
+                <% for(let i = 0; i < 8; i ++) { %>
+                  <% if(rows[i]) { %>
+                    <div class = "w-[300px] ml-8 mb-4 border-b-2">
+                        <a class= 'py-2 px-8 hover:bg-yellow-500 hover:text-white rounded text-lg'
+                        href = "/admin/moviedb/edit/<%=rows[i].id%>">
+                        <%= rows[i].title %></a>
+                    </div>
                   <% } %> 
+                <% } %> 
+              </div>
+
+              <div class="grid grid-cols-4 space-x-2 rounded-xl bg-gray-200 p-2 mx-auto mt-8" x-data="app">
+                <% for(let i = 0; i < 1+ parseInt((rows.length - 1) / 8); i++ ) { %>
+                <div class="" >
+                  <% if(i == 0) { %>
+                  <input type="radio" name="option" id="<%=i+1%>" class="peer hidden" checked />
+                  <%} else { %>
+                  <input type="radio" name="option" id="<%=i+1%>" class="peer hidden"/>
+                  <% } %>
+                  <label for="<%=i+1%>"
+                    class="block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-yellow-500 peer-checked:font-bold peer-checked:text-white"><%=i+1%></label>
+                </div>
+                <%}%>
+                
+              </div>
+
             </div>
           </div>
 

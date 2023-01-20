@@ -31,10 +31,11 @@ router.use(session({
     saveUnitialized : true,
     store : sessionStore
 }))
+
+// movielist를 인자로 전달하여 html 내에서 영화 포스터 이미지 리스트로 출력
 router.get("/", (req : Request, res : Response) =>{
     // res.sendFile(__dirname + '/html/home.html');
     let sql :string = 'select * from moviedetail'
-    let params : Array<string> = [];
     let login : boolean = false
     let admin : boolean = false
     connection.query(sql, (err : any, rows : Array<Movie>) => {

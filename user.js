@@ -76,6 +76,7 @@ router.get('/mypage', (req, res) => {
         res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
     }
 });
+// 로그아웃 시 세션 초기화
 router.get('/logout', (req, res) => {
     if (req.session.isLogined) {
         req.session.destroy(() => {
@@ -110,7 +111,7 @@ router.post('/register', (req, res) => {
         let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000];
         function cd(id) {
             return __awaiter(this, void 0, void 0, function* () {
-                let result = yield check.checkDup(id); // check값이 제대로 넘어오지 않아서 await으로 처ㅣ
+                let result = yield check.checkDup(id); // check값이 제대로 넘어오지 않아서 await으로 처리
                 if (!result)
                     res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
                 else {

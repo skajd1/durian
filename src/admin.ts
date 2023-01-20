@@ -30,6 +30,10 @@ const connection = mysql.createConnection({
     database : 'moviedb'
 });
 const multer = require('multer');
+
+const err_msg :string = "<script>alert('잘못된 접근입니다.');document.location.href='/'</script>"
+
+
 //파일 업로드 시, 파일 이름과 확장자 및 경로 지정
 const storage = multer.diskStorage({
     destination: function (req : any, file : any, cb:any) {
@@ -59,7 +63,7 @@ router.use(bodyParser.urlencoded({extended : false}))
 //유저 DB 리스트 출력
 router.get("/userdb", (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+        res.send(err_msg)
     }
     else res.render('user_db', {login : true});
 })
@@ -67,7 +71,7 @@ router.get("/userdb", (req : Request, res : Response) =>{
 // 영화 DB 리스트 출력
 router.get("/moviedb", (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+        res.send(err_msg)
     }
     else{
         let sql : string = "select id,title from moviedetail";
@@ -85,7 +89,7 @@ router.get("/moviedb", (req : Request, res : Response) =>{
 //영화 DB 수정 페이지 레이아웃
 router.get("/moviedb/edit/:id", (req : Request, res : Response) => {
     if(req.session.user_id !== 'admin' ){
-        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+        res.send(err_msg)
     }
     else {
         let sql = "select * from moviedetail where id=?"
@@ -102,7 +106,7 @@ router.get("/moviedb/edit/:id", (req : Request, res : Response) => {
 //영화 DB수정 서버사이드 TODO
 router.post("/moviedb/edit/:id", (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+        res.send(err_msg)
     }
     else{
 
@@ -112,7 +116,7 @@ router.post("/moviedb/edit/:id", (req : Request, res : Response) =>{
 //영화 DB 최초 등록
 router.get("/moviedb/post", (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+        res.send(err_msg)
     }
     else res.render('post_movie', {login : true});
 })
@@ -122,7 +126,7 @@ router.get("/moviedb/post", (req : Request, res : Response) =>{
 // DB 등록 시 넘어오는 파라미터 정보 유효성 검증 및 쿼리
 router.post('/moviedb/post', upload.single('image'), (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send("<script>alert('잘못된 접근입니다.');document.location.href='/'</script>")
+        res.send(err_msg)
     }
     for (let key of Object.keys(req.body))
     {

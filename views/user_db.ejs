@@ -1,1 +1,24 @@
-user DB 수정 페이지
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+    <% if (login == false){ %>
+    <%- include ("header.ejs") %>
+    <% }else{ %>
+    <%- include ("header_logout.ejs") %>
+    <% } %>
+    <section class="text-gray-600 body-font">
+        <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
+            <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
+                userdb 수정 미구현
+            </div>
+        </div>
+    </section>
+</body>
+</html>

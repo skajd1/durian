@@ -29,10 +29,10 @@ router.use(session({
     saveUnitialized: true,
     store: sessionStore
 }));
+// movielist를 인자로 전달하여 html 내에서 영화 포스터 이미지 리스트로 출력
 router.get("/", (req, res) => {
     // res.sendFile(__dirname + '/html/home.html');
     let sql = 'select * from moviedetail';
-    let params = [];
     let login = false;
     let admin = false;
     connection.query(sql, (err, rows) => {
