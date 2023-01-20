@@ -17,7 +17,7 @@
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
             <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg py-8 pl-8 pr-2 flex flex-row mt-10 md:mt-5">
                 <div class = "w-1/2 h-full flex flex-col" >
-                <form id ="moviepost" action = "/admin/moviedb/post" method = 'POST' enctype="multipart/form-data" >
+                <form id ="moviepost" action = "/adminmoviedb/edit/<%=rows[0].id%>" method = 'POST' enctype="multipart/form-data" >
                     <div class="mt-8  relative mb-4 w-full">
                       <div>
                         <label for="title" class="leading-7 text-sm text-gray-600">
@@ -78,7 +78,7 @@
                      </div>
                 </form>
                 <div class="w-1/4 mt-4 mx-auto">
-                    <button href="#" class="w-full h-full text-white leading-5 bg-red-500 border-0 py-2 px-2 focus:outline-none hover:bg-red-600 rounded text-lg">
+                    <button href="#" onclick = 'deleteConfirm()' class="w-full h-full text-white leading-5 bg-red-500 border-0 py-2 px-2 focus:outline-none hover:bg-red-600 rounded text-lg">
                         삭제
                     </button>
                 </div>

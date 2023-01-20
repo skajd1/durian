@@ -109,7 +109,22 @@ router.post("/moviedb/edit/:id", (req : Request, res : Response) =>{
         res.send(err_msg)
     }
     else{
-
+        for (let key of Object.keys(req.body))
+    {
+        if(!(check.checkExist(req.body[key])))
+        {
+            return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/moviedb/'</script>")
+        }
+    }
+    // update로 변경
+    let sql :string = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where id = ?";
+    let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename, req.body.id];
+    connection.query(sql, params, (err : any) =>{
+        if (err) throw err;
+        else{
+            res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
+        }
+    })
     }
 })
 
