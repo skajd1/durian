@@ -81,6 +81,9 @@
         영화 DB 수정</a>
       <a href= "/admin/userdb" class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
         유저 정보 조회</a>
+        <a href = '/admin/movieentity' class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+          극장 및 날짜 선택
+          </a>
     </div>
     <% }  %>
 
@@ -122,7 +125,7 @@
       {
         if(i+page_now*3-3 < movie.length){
           document.getElementById('title'+i).textContent = movie[i+page_now*3-3].title;
-          document.getElementById('content'+i).textContent = movie[i+page_now*3-3].content;
+          document.getElementById('content'+i).textContent = '줄거리 : ' + movie[i+page_now*3-3].content;
           document.getElementById('age'+i).textContent = movie[i+page_now*3-3].age +'세 이용가';
           document.getElementById('time'+i).textContent = Math.floor(movie[i+page_now*3-3].time) + '시간 ' +  Math.round(60*(movie[i+page_now*3-3].time - Math.floor(movie[i+page_now*3-3].time))) + '분';
           document.getElementById('image'+i).src = movie[i+page_now*3-3].poster_src;

@@ -9,9 +9,9 @@
 </head>
 <body>
   <% if (login == false){ %>
-    <%- include ("header.ejs") %>
+    <%- include ("../../header.ejs") %>
     <% }else{ %>
-    <%- include ("header_logout.ejs") %>
+    <%- include ("../../header_logout.ejs") %>
     <% } %>
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
@@ -86,7 +86,7 @@
                 </div>
                     
                 
-                <div class = "w-1/2 ml-4 py-8">
+                <div class = "w-1/2 ml-4 py-8 flex flex-col">
                     <img id="poster" class= "w-full h-full object-contain object-center" src = "<%=rows[0].poster_src%>">
                 </div>
                 

@@ -6,7 +6,9 @@ const userRouter = require('./user')
 const homeRouter = require('./home')
 const adminRouter = require('./admin')
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', ['./views','./views/admin/movie', './views/admin/user', './views/admin/entity']);
+
+
 app.use(express.json())
 app.use('/static_image',express.static('static_image'));
 

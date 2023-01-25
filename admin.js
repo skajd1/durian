@@ -116,7 +116,19 @@ router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => {
         });
     }
 });
-//영화 DB 최초 등록
+//delete 메소드로 요청받아서 해당 영화 삭제
+router.delete('/moviedb/edit/:id', (req, res) => {
+    let sql = "delete from moviedetail where id = ?";
+    let params = [req.body.id];
+    connection.query(sql, params, (err) => {
+        if (err)
+            console.log(err);
+        else {
+            res.send("<script>alert('삭제가 완료되었습니다.');document.location.href='/admin/moviedb'</script>");
+        }
+    });
+});
+// 영화 DB 리스트 
 router.get("/moviedb/post", (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send(err_msg);
@@ -124,6 +136,7 @@ router.get("/moviedb/post", (req, res) => {
     else
         res.render('post_movie', { login: true });
 });
+// 영화 DB 최초 등록
 // DB 등록 시 넘어오는 파라미터 정보 유효성 검증 및 쿼리
 router.post('/moviedb/post', upload.single('image'), (req, res) => {
     if (req.session.user_id !== 'admin') {
@@ -147,16 +160,19 @@ router.post('/moviedb/post', upload.single('image'), (req, res) => {
         }
     });
 });
-//delete 메소드로 요청받아서 해당 영화 삭제
-router.delete('/moviedb/edit/:id', (req, res) => {
-    let sql = "delete from moviedetail where id = ?";
-    let params = [req.body.id];
-    connection.query(sql, params, (err) => {
-        if (err)
-            console.log(err);
-        else {
-            res.send("<script>alert('삭제가 완료되었습니다.');document.location.href='/admin/moviedb'</script>");
-        }
-    });
+router.get('/movieentity', (req, res) => {
+    if (req.session.user_id !== 'admin') {
+        res.send(err_msg);
+    }
+    else {
+        let sql = "select id,title, runningTime from moviedetail";
+        connection.query(sql, (err, rows) => {
+            if (err)
+                console.log(err);
+            else {
+                res.render('movie_entity', { login: true, rows: rows });
+            }
+        });
+    }
 });
 module.exports = router;
