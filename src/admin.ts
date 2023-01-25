@@ -122,7 +122,6 @@ router.post("/moviedb/edit/:id",upload.single('image'), (req : Request, res : Re
     // update로 변경
     let sql :string = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where id = ?";
     let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename, req.body.id];
-    console.log(params)
     connection.query(sql, params, (err : any) =>{
         if (err) throw err;
         else{
@@ -149,9 +148,7 @@ router.post('/moviedb/post', upload.single('image'), (req : Request, res : Respo
     }
     
     for (let key of Object.keys(req.body))
-    {
-
-        
+    {   
         if(!(check.checkExist(req.body[key])))
         {
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/moviedb/post'</script>")
@@ -171,14 +168,17 @@ router.post('/moviedb/post', upload.single('image'), (req : Request, res : Respo
 })
 
 
-
-// db 지우는 함수
-function deleteMovie(id : number){
-    let sql : string = "delete from moviedetail where id = ?"
-    let params : Array<number> = [id];
-    connection.query(sql, params, (err : any) => {
-        if(err) throw err;
+router.delete('/moviedb/edit/:id', (req : Request, res: Response) =>{
+    let sql = "delete from moviedetail where id = ?"
+    let params = [req.body.id]
+    connection.query(sql,params, (err : any) => {
+        if(err) console.log(err)
+        else
+        {
+            res.send("<script>alert('삭제가 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
+        }
     })
-}
+    
+})
 
 module.exports = router;
