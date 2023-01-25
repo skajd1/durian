@@ -10,12 +10,10 @@ app.set('views', './views');
 app.use(express.json())
 app.use('/static_image',express.static('static_image'));
 
-
+//라우팅
 app.use('/', homeRouter);
 app.use('/home', homeRouter);
-
 app.use('/user', userRouter);
-
 app.use('/admin', adminRouter);
 
 

@@ -167,7 +167,7 @@ router.post('/moviedb/post', upload.single('image'), (req : Request, res : Respo
     })
 })
 
-
+//delete 메소드로 요청받아서 해당 영화 삭제
 router.delete('/moviedb/edit/:id', (req : Request, res: Response) =>{
     let sql = "delete from moviedetail where id = ?"
     let params = [req.body.id]

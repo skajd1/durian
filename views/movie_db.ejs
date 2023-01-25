@@ -24,9 +24,10 @@
               <div class = "w-1/2 ml-4 ">
                 <% for(let i = 0; i < 8; i ++) { %>
                   <% if(rows[i]) { %>
-                    <div class = "w-[300px] ml-4 mb-4 border-b-2">
-                        <a class= 'py-2 px-8 hover:bg-yellow-500 hover:text-white rounded text-lg'
-                        href = "/admin/moviedb/edit/<%=rows[i].id%>">
+                    <div id = 'row<%=i%>' class = "w-[300px] ml-4 mb-4 border-b-2">
+                        <a class = 'py-2 px-8 hover:bg-yellow-500 hover:text-white rounded text-lg'
+                        href = "/admin/moviedb/edit/<%=rows[i].id%>"
+                        id = "movie<%=i%>">
                         <%= rows[i].title %></a>
                     </div>
                   <% } %> 
@@ -37,9 +38,9 @@
                 <% for(let i = 0; i < 1+ parseInt((rows.length - 1) / 8); i++ ) { %>
                 <div class="" >
                   <% if(i == 0) { %>
-                  <input type="radio" name="option" id="<%=i+1%>" class="peer hidden" checked />
+                  <input type="radio" name="option" id="<%=i+1%>" onclick = 'movePage(event.target.id)' class="peer hidden" checked />
                   <%} else { %>
-                  <input type="radio" name="option" id="<%=i+1%>" class="peer hidden"/>
+                  <input type="radio" name="option" id="<%=i+1%>" onclick = 'movePage(event.target.id)'class="peer hidden"/>
                   <% } %>
                   <label for="<%=i+1%>"
                     class="block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-yellow-500 peer-checked:font-bold peer-checked:text-white"><%=i+1%></label>
@@ -61,6 +62,35 @@
       </div>
     </section>
 
+
+
+<script>
+  let rows= []
+    "<% for(let i = 0 ; i < rows.length; i ++ ) {%>"
+    rows.push({
+      title : "<%=rows[i].title%>",
+      id : "<%=rows[i].id%>"
+    })
+    "<% } %>"
+  function movePage(page)
+  {
+
+    for(let i = (page-1) * 8 ; i < 8 * page ; i++){
+      let com = document.getElementById("movie" + (i%8) )
+      if(rows[i]){
+        com.textContent = rows[i].title;
+        com.href = "/admin/moviedb/edit/" + rows[i].id ;
+        document.getElementById("row" + (i%8)).className = "w-[300px] ml-4 mb-4 border-b-2"
+      }
+      else {
+        document.getElementById("row" + (i%8)).className = "w-[300px] ml-4 mb-4 border-b-2 invisible"
+      }
+    }
+
+
+  }
+
+</script>
 </body>
 
 </html>
