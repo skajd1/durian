@@ -104,21 +104,25 @@ router.get("/moviedb/edit/:id", (req : Request, res : Response) => {
 })
 
 //영화 DB수정 서버사이드 TODO
-router.post("/moviedb/edit/:id", (req : Request, res : Response) =>{
+router.post("/moviedb/edit/:id",upload.single('image'), (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
         res.send(err_msg)
     }
     else{
         for (let key of Object.keys(req.body))
-    {
-        if(!(check.checkExist(req.body[key])))
         {
-            return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/moviedb/'</script>")
+            if(!(check.checkExist(req.body[key])))
+            {
+                return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>")
+            }
         }
-    }
+        if(!req.file){
+            return res.send("<script>alert('이미지 등록에 실패하였습니다.');document.location.href=document.referrer</script>")
+        }
     // update로 변경
     let sql :string = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where id = ?";
     let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename, req.body.id];
+    console.log(params)
     connection.query(sql, params, (err : any) =>{
         if (err) throw err;
         else{
@@ -143,12 +147,18 @@ router.post('/moviedb/post', upload.single('image'), (req : Request, res : Respo
     if(req.session.user_id !== 'admin' ){
         res.send(err_msg)
     }
+    
     for (let key of Object.keys(req.body))
     {
+
+        
         if(!(check.checkExist(req.body[key])))
         {
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/moviedb/post'</script>")
         }
+    }
+    if(!req.file){
+        return res.send("<script>alert('이미지 등록에 실패하였습니다.');document.location.href='/admin/moviedb/post'</script>")
     }
     let sql :string = "insert into moviedetail (title, content, age, runningTime, poster_src) values(?,?,?,?,?)";
     let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename];
@@ -160,7 +170,9 @@ router.post('/moviedb/post', upload.single('image'), (req : Request, res : Respo
     })
 })
 
-// movie_edit_page.js 에서 db 지우는 함수
+
+
+// db 지우는 함수
 function deleteMovie(id : number){
     let sql : string = "delete from moviedetail where id = ?"
     let params : Array<number> = [id];

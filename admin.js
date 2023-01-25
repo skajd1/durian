@@ -91,11 +91,30 @@ router.get("/moviedb/edit/:id", (req, res) => {
     }
 });
 //영화 DB수정 서버사이드 TODO
-router.post("/moviedb/edit/:id", (req, res) => {
+router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send(err_msg);
     }
     else {
+        for (let key of Object.keys(req.body)) {
+            if (!(check.checkExist(req.body[key]))) {
+                return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>");
+            }
+        }
+        if (!req.file) {
+            return res.send("<script>alert('이미지 등록에 실패하였습니다.');document.location.href=document.referrer</script>");
+        }
+        // update로 변경
+        let sql = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where id = ?";
+        let params = [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute) / 60, '/static_image/' + req.file.filename, req.body.id];
+        console.log(params);
+        connection.query(sql, params, (err) => {
+            if (err)
+                throw err;
+            else {
+                res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/moviedb'</script>");
+            }
+        });
     }
 });
 //영화 DB 최초 등록
@@ -116,6 +135,9 @@ router.post('/moviedb/post', upload.single('image'), (req, res) => {
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/moviedb/post'</script>");
         }
     }
+    if (!req.file) {
+        return res.send("<script>alert('이미지 등록에 실패하였습니다.');document.location.href='/admin/moviedb/post'</script>");
+    }
     let sql = "insert into moviedetail (title, content, age, runningTime, poster_src) values(?,?,?,?,?)";
     let params = [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute) / 60, '/static_image/' + req.file.filename];
     connection.query(sql, params, (err) => {
@@ -126,4 +148,13 @@ router.post('/moviedb/post', upload.single('image'), (req, res) => {
         }
     });
 });
+// db 지우는 함수
+function deleteMovie(id) {
+    let sql = "delete from moviedetail where id = ?";
+    let params = [id];
+    connection.query(sql, params, (err) => {
+        if (err)
+            throw err;
+    });
+}
 module.exports = router;

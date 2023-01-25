@@ -17,8 +17,9 @@
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
             <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg py-8 pl-8 pr-2 flex flex-row mt-10 md:mt-5">
                 <div class = "w-1/2 h-full flex flex-col" >
-                <form id ="moviepost" action = "/adminmoviedb/edit/<%=rows[0].id%>" method = 'POST' enctype="multipart/form-data" >
+                <form id ="moviepost" action = "/admin/moviedb/edit/<%=rows[0].id%>" method = 'POST' enctype="multipart/form-data" >
                     <div class="mt-8  relative mb-4 w-full">
+                        <input type = "hidden" name = 'id' value = "<%= rows[0].id%>">
                       <div>
                         <label for="title" class="leading-7 text-sm text-gray-600">
                           영화 제목
@@ -86,9 +87,7 @@
                     
                 
                 <div class = "w-1/2 ml-4 py-8">
-                    
                     <img id="poster" class= "w-full h-full object-contain object-center" src = "<%=rows[0].poster_src%>">
-                    
                 </div>
                 
             </div>
@@ -119,18 +118,16 @@
     readImage(e.target)
 })
 
-    function deleteConfirm(){
-        if(confirm('이 데이터를 삭제하시겠습니까?'))
-        {
-            deleteMovie("<%= rows[0].id%>")
-            document.location.href='/admin/moviedb'
-        }
+function deleteConfirm(){
+
+
     }
     
 
+    
+
 </script>
-<script src = '../admin.js'>
-</script>
+
 </body>
 
 </html>
