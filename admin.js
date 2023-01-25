@@ -10,7 +10,7 @@ const options = {
     port: 3306,
     user: 'admin',
     password: 'admin',
-    database: 'moviedb'
+    database: 'moviedb',
 };
 const check = require('./check');
 const mysqlStore = require('express-mysql-session')(session);
@@ -22,7 +22,8 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'admin',
     password: 'admin',
-    database: 'moviedb'
+    database: 'moviedb',
+    multipleStatements: true
 });
 const multer = require('multer');
 const err_msg = "<script>alert('잘못된 접근입니다.');document.location.href='/'</script>";
@@ -104,6 +105,9 @@ router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => {
         if (!req.file) {
             return res.send("<script>alert('이미지 등록에 실패하였습니다.');document.location.href=document.referrer</script>");
         }
+        if (Number(req.body.hour) + Number(req.body.minute) / 60 > 4) {
+            return res.send("<script>alert('최대 상영시간은 4시간 입니다.');document.location.href=document.referrer</script>");
+        }
         // update로 변경
         let sql = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where id = ?";
         let params = [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute) / 60, '/static_image/' + req.file.filename, req.body.id];
@@ -150,6 +154,9 @@ router.post('/moviedb/post', upload.single('image'), (req, res) => {
     if (!req.file) {
         return res.send("<script>alert('이미지 등록에 실패하였습니다.');document.location.href='/admin/moviedb/post'</script>");
     }
+    if (Number(req.body.hour) + Number(req.body.minute) / 60 > 4) {
+        return res.send("<script>alert('최대 상영시간은 4시간 입니다.');document.location.href='/admin/moviedb/post'</script>");
+    }
     let sql = "insert into moviedetail (title, content, age, runningTime, poster_src) values(?,?,?,?,?)";
     let params = [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute) / 60, '/static_image/' + req.file.filename];
     connection.query(sql, params, (err) => {
@@ -161,16 +168,31 @@ router.post('/moviedb/post', upload.single('image'), (req, res) => {
     });
 });
 router.get('/movieentity', (req, res) => {
+    let sql_movieetail = "select id,title, runningTime from moviedetail; ";
+    let sql_places = "select * from places;";
     if (req.session.user_id !== 'admin') {
         res.send(err_msg);
     }
     else {
-        let sql = "select id,title, runningTime from moviedetail";
+        connection.query(sql_movieetail + sql_places, (err, rows) => {
+            if (err)
+                console.log(err);
+            else {
+                res.render('movie_entity', { login: true, moviedetail: rows[0], places: rows[1] });
+            }
+        });
+    }
+});
+router.post('/movieentity', (req, res) => {
+    let sql;
+    if (req.session.user_id !== 'admin') {
+        res.send(err_msg);
+    }
+    else {
         connection.query(sql, (err, rows) => {
             if (err)
                 console.log(err);
             else {
-                res.render('movie_entity', { login: true, rows: rows });
             }
         });
     }
