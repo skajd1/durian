@@ -32,19 +32,19 @@
             <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
                 <form id ="entitypost" class = "w-full flex flex-row ml-4 h-full" action = "/admin/postentity" method = 'POST'>
 
-                    <div class= "w-1/2 ">
-                        <div class="mx-auto relative my-4">
+                    <div class= "w-1/2 flex flex-col">
+                        <div class="mx-auto relative mt-16 w-1/2">
                             <div>
                                 <label for="select-place" class="leading-7 text-sm text-gray-600">
                                     극장 선택
                                 </label>
                             </div>
-                            <select id="select-place" name = "select-place" readonly class="w-[50%] h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                            <select id="select-place" name = "select-place" readonly class="w-full h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                 <option value='<%=placeid%>' selected> <%= selected_place %></option>
                             </select> 
                         </div>
 
-                        <div class = "mx-auto relative mb-4">
+                        <div class = "mx-auto relative my-4 w-1/2">
                             <div class="flex">
                                 <div class="datepicker relative form-floating mb-3 w-full" data-mdb-toggle-button="false">
                                 <span class = "leading-7 text-sm text-gray-600">날짜 선택</span>
@@ -53,27 +53,27 @@
                                     id = "select-date"
                                     value ="<%= selected_date%>"
                                     readonly
-                                    class="mt-2 w-1/2 form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"
+                                    class="mt-2 w-full form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"
                                     placeholder="날짜 선택" data-mdb-toggle="datepicker" />
                                 <label for="floatingInput" class="mt-2 text-gray-700"></label>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-4 mx-auto relative">
+                        <div class="mb-4 mx-auto relative w-1/2">
                             <div>
                                 <label for="select-movie" class="leading-7 text-sm text-gray-600">
                                 영화 선택
                                 </label>
                             </div>
-                            <select id="select-movie" name = "select-movie" class="w-[50%] h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                            <select id="select-movie" name = "select-movie" class="w-full h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                             <option value='' selected>선택</option>
                             <% for(let i = 0; i < movielist.length; i++) { %>
                             <option value ='<%=movielist[i].id%>'><%=movielist[i].title%></option>
                             <%} %>
                             </select>
                         </div>
-                        <div class="w-1/3 mx-auto mt-40" >
+                        <div class="w-1/3 mx-auto mt-20" >
                             <button type = "submit" class="w-full h-[40px] text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded text-lg">
                             등록
                             </button>
@@ -91,85 +91,85 @@
                         <tbody>
                           <tr id = "table-row-0" class = "cursor-pointer border-b border-gray-300">
                               <% if(timetable[0].time1){ %>
-                                <td class = "px-12 py-8">
+                                <td class = "whitespace-nowrap px-8 py-8">
                                     <input type = radio value = '0' id = '0' name = 'select-time' disabled> 06:00~10:00
                                 </td>
-                                <td class = "px-12 py-8">
+                                <td class = "px-8 py-8 whitespace-nowrap overflow-hidden text-ellipsis ">
                                     <%= moviedetail[timetable[0].time1] %>
                                 <% } else { %>
                                         
-                                <td class = "px-12 py-8">
-                                    <input type = radio value = '0' id = '0' name = 'select-time'> 06:00~10:00
+                                <td class = "whitespace-nowrap px-8 py-8">
+                                    <input type = radio value = '0' id = '0' name = 'select-time' > 06:00~10:00
                                 </td>
-                                <td class = "px-12 py-8">
+                                <td class = "px-8 py-8">
                                     비어 있음
                                 <% } %>
                                 </td>  
                           </tr>
                           <tr id = "table-row-1" class = "cursor-pointer border-b border-gray-300">
                             <% if(timetable[0].time2){ %>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '1' id = '1' name = 'select-time' disabled> 10:00~14:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8 whitespace-nowrap overflow-hidden text-ellipsis ">
                                   <%= moviedetail[timetable[0].time2] %>
                               <% } else { %>
                                       
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '1' id = '1' name = 'select-time'> 10:00~14:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
                               </td>  
                         </tr>
                         <tr id = "table-row-2" class = "cursor-pointer border-b border-gray-300">
                             <% if(timetable[0].time3){ %>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '2' id = '2' name = 'select-time' disabled> 14:00~18:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8 whitespace-nowrap overflow-hidden text-ellipsis ">
                                   <%= moviedetail[timetable[0].time3] %>
                               <% } else { %>
                                       
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '2' id = '2' name = 'select-time'> 14:00~18:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
                               </td>  
                         </tr>
                         <tr id = "table-row-3" class = "cursor-pointer border-b border-gray-300">
                             <% if(timetable[0].time4){ %>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '3' id = '3' name = 'select-time' disabled> 18:00~22:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8 whitespace-nowrap overflow-hidden text-ellipsis ">
                                   <%= moviedetail[timetable[0].time4] %>
                               <% } else { %>
                                       
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '3' id = '3' name = 'select-time'> 18:00~22:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
                               </td>  
                         </tr>
                         <tr id = "table-row-4" class = "cursor-pointer border-b border-gray-300">
                             <% if(timetable[0].time5){ %>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '4' id = '4' name = 'select-time' disabled> 22:00~02:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8 whitespace-nowrap overflow-hidden text-ellipsis ">
                                   <%= moviedetail[timetable[0].time5] %>
                               <% } else { %>
                                       
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   <input type = radio value = '4' id = '4' name = 'select-time'> 22:00~02:00
                               </td>
-                              <td class = "px-12 py-8">
+                              <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
                               </td>  
