@@ -191,7 +191,7 @@ router.get('/selectdate', (req, res) => {
         });
     }
 });
-// 날짜와 극장 ID 받아서 select 후 없으면 타임테이블 생성, 있으면 그대로 정보 쏴주기
+// 날짜와 극장 ID 받아서 select 후 없으면 타임테이블 생성
 router.post('/selectdate', (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send(err_msg);
@@ -214,13 +214,12 @@ router.post('/selectdate', (req, res) => {
             console.log(err);
         place = placename[0]['placename'];
     });
-    // 이미 타임테이블이 존재하면 그대로 정보를 전송하고 없으면 타임테이블 생성후 default rows 선언해서 전송 => 콜백 3번이나 부를 필요 없게됨
+    // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 => 콜백 3번이나 부를 필요 없게됨
     connection.query(sql_timetable + sql_moviedetail, params, (err, rows) => {
         let moviedetail = {};
         for (let i = 0; i < rows[1].length; i++) {
             moviedetail[rows[1][i]['id']] = rows[1][i]['title'];
         }
-        console.log(rows[0]);
         if (err)
             console.log(err);
         else {
@@ -235,7 +234,7 @@ router.post('/selectdate', (req, res) => {
                     }
                 });
             }
-            res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date });
+            res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date, disable: disable });
         }
     });
 });
@@ -270,7 +269,8 @@ router.post('/postentity', (req, res) => {
             });
         }
     });
-    //덮어쓰기?
-    // 삭제는 어떻게?
 });
+function disable(id) {
+    document.getElementById(id).disabled = true;
+}
 module.exports = router;

@@ -90,65 +90,90 @@
                         </thead>
                         <tbody>
                           <tr id = "table-row-0" class = "cursor-pointer border-b border-gray-300">
-                            <td class = "px-12 py-8">
-                                <input type = radio value = '0' id = '0' name = 'select-time' > 06:00~10:00
-                            </td>
-                            <td class = "px-12 py-8">
-                                <% if(timetable[0].time1){ %>
+                              <% if(timetable[0].time1){ %>
+                                <td class = "px-12 py-8">
+                                    <input type = radio value = '0' id = '0' name = 'select-time' disabled> 06:00~10:00
+                                </td>
+                                <td class = "px-12 py-8">
                                     <%= moviedetail[timetable[0].time1] %>
                                 <% } else { %>
+                                        
+                                <td class = "px-12 py-8">
+                                    <input type = radio value = '0' id = '0' name = 'select-time'> 06:00~10:00
+                                </td>
+                                <td class = "px-12 py-8">
                                     비어 있음
                                 <% } %>
-                            </td>  
+                                </td>  
                           </tr>
                           <tr id = "table-row-1" class = "cursor-pointer border-b border-gray-300">
-                            <td class = "px-12 py-8">
-                                <input type = radio value = '1' id = '1' name = 'select-time' > 10:00~14:00
-                            </td>
-                            <td class = "px-12 py-8">
-                                <% if(timetable[0].time2){ %>
-                                    <%= moviedetail[timetable[0].time2] %>
-                                <% } else { %>
-                                    비어 있음
-                                <% } %>
-                            </td>                            
-                          </tr>
-                          <tr id = "table-row-2" class = "cursor-pointer border-b border-gray-300">
-                            <td class = "px-12 py-8">
-                                <input type = radio value = '2' id = '2' name = 'select-time' > 14:00~18:00
-                            </td>
-                            <td class = "px-12 py-8">
-                                <% if(timetable[0].time3){ %>
-                                    <%= moviedetail[timetable[0].time3] %>
-                                <% } else { %>
-                                    비어 있음
-                                <% } %>
-                            </td>
-                          </tr>
-                          <tr id = "table-row-3" class = "cursor-pointer border-b border-gray-300">
-                            <td class = "px-12 py-8">
-                                <input type = radio value = '3' id = '3' name = 'select-time' > 18:00~22:00
-                            </td>
-                            <td class = "px-12 py-8">
-                                <% if(timetable[0].time4){ %>
-                                    <%= moviedetail[timetable[0].time4] %>
-                                <% } else { %>
-                                    비어 있음
-                                <% } %>
-                            </td>
-                          </tr>
-                          <tr id = "table-row-4" class = "cursor-pointer border-b border-gray-300">
-                            <td class = "px-12 py-8">
-                                <input type = radio value = '4' id = '4' name = 'select-time' > 22:00~02:00
-                            </td>
-                            <td class = "px-12 py-8">
-                                <% if(timetable[0].time5){ %>
-                                    <%= moviedetail[timetable[0].time5] %>
-                                <% } else { %>
-                                    비어 있음
-                                <% } %>
-                            </td>
-                          </tr>
+                            <% if(timetable[0].time2){ %>
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '1' id = '1' name = 'select-time' disabled> 10:00~14:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  <%= moviedetail[timetable[0].time2] %>
+                              <% } else { %>
+                                      
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '1' id = '1' name = 'select-time'> 10:00~14:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  비어 있음
+                              <% } %>
+                              </td>  
+                        </tr>
+                        <tr id = "table-row-2" class = "cursor-pointer border-b border-gray-300">
+                            <% if(timetable[0].time3){ %>
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '2' id = '2' name = 'select-time' disabled> 14:00~18:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  <%= moviedetail[timetable[0].time3] %>
+                              <% } else { %>
+                                      
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '2' id = '2' name = 'select-time'> 14:00~18:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  비어 있음
+                              <% } %>
+                              </td>  
+                        </tr>
+                        <tr id = "table-row-3" class = "cursor-pointer border-b border-gray-300">
+                            <% if(timetable[0].time4){ %>
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '3' id = '3' name = 'select-time' disabled> 18:00~22:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  <%= moviedetail[timetable[0].time4] %>
+                              <% } else { %>
+                                      
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '3' id = '3' name = 'select-time'> 18:00~22:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  비어 있음
+                              <% } %>
+                              </td>  
+                        </tr>
+                        <tr id = "table-row-4" class = "cursor-pointer border-b border-gray-300">
+                            <% if(timetable[0].time5){ %>
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '4' id = '4' name = 'select-time' disabled> 22:00~02:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  <%= moviedetail[timetable[0].time5] %>
+                              <% } else { %>
+                                      
+                              <td class = "px-12 py-8">
+                                  <input type = radio value = '4' id = '4' name = 'select-time'> 22:00~02:00
+                              </td>
+                              <td class = "px-12 py-8">
+                                  비어 있음
+                              <% } %>
+                              </td>  
+                        </tr>
                         </tbody>
                       </table>
                     </div>
@@ -159,10 +184,17 @@
 
 <script>
     for (let i = 0; i < 5 ; i ++){
-        document.getElementById('table-row-'+i).addEventListener('click',(event)=>{
-            document.getElementById(''+i).checked=true;
-        })
+        let button = document.getElementById(''+i)
+        if(!button.disabled) {
+            document.getElementById('table-row-'+i).addEventListener('click',(event)=>{
+                button.checked=true;
+            })
+        }
     } 
+
+    function dis(){
+
+    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/index.min.js"></script>
