@@ -34,6 +34,14 @@ const connection = mysql.createConnection({
 });
 const multer = require('multer');
 
+const seat : Array<Array<Number>> = [];
+for(let i = 0; i < 5 ; i++){
+    let tmp : Array<Number> = []
+    for(let j = 0; j < 12; j ++){
+        tmp.push(0)
+    }
+    seat.push(tmp)
+}
 const err_msg :string = "<script>alert('잘못된 접근입니다.');document.location.href='/'</script>"
 
 
@@ -224,7 +232,7 @@ router.post('/selectdate', (req : Request, res : Response) => {
     }
 
     
-    let sql_timetable : string = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%m/%d/%Y'); " ;
+    let sql_timetable : string = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); " ;
     let sql_moviedetail : string = "select id,title, runningTime from moviedetail;";
     let placeid :string=req.body['select-place'],
     date :string = req.body['select-date'];
@@ -240,17 +248,25 @@ router.post('/selectdate', (req : Request, res : Response) => {
     })
     // 이미 타임테이블이 존재하면 그대로 정보를 전송하고 없으면 타임테이블 생성후 default rows 선언해서 전송 => 콜백 3번이나 부를 필요 없게됨
     connection.query(sql_timetable + sql_moviedetail,params, (err:any, rows : Array<any>) =>{
+        let moviedetail : any = {}
+        for (let i = 0; i< rows[1].length; i ++){
+            moviedetail[rows[1][i]['id']] = rows[1][i]['title']    
+        }
+        console.log(rows[0])
         if (err) console.log(err);
         else {
             if(!rows[0].length)
             {   
                 rows[0] = [{time1 : 0, time2:0, time3:0, time4:0, time5:0}]
-                let sql : string = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%m/%d/%Y'));"
+                let sql : string = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%d/%m/%Y'));"
                 connection.query(sql, params, (err:any) =>{
-                    if(err) console.log(err);
+                    if(err) console.log(err)
+                    else{
+                        res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date} )
+                    }     
                 })      
             }
-            res.render('post_entity', {login : true, timetable : rows[0], moviedetail : rows[1], selected_place : place, selected_date : date} )
+            res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date} )
         }
 
     })
@@ -259,15 +275,47 @@ router.post('/selectdate', (req : Request, res : Response) => {
     
 })
 
-// movieentity 및 timetable 등록
+// movieentity 및 timetable 등록, 
 router.post('/postentity', (req : Request, res : Response) => {
     if(req.session.user_id !== 'admin' ){
         res.send(err_msg)
     }
-    //req.body[select-movie] : movieentity.id
-    //req.body[select-time] : timetable.timeN
-    let sql_timetable : string = "insert into timetable "
-    let sql_movieentity : string = ""
+    for (let key of Object.keys(req.body))
+    {   
+        if(!(check.checkExist(req.body[key])))
+        {
+            return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>")
+        }
+    }
+
+
+    let date : string = req.body['select-date']
+    let movieId :string = req.body['select-movie']
+    let placeId :string = req.body['select-place']
+    let time : Number = Number(req.body['select-time']) + 1
+    let sql_timetable : string = "update timetable set time" + time + "=" + movieId +" where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ); "
+    let params_timetable : Array<string> = [placeId, date];
+    let sql_movieentity : string = "insert into movieentity (start_time,placeid,movie,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));"
+    let params_movieentity : Array<any> = [time, placeId, movieId, JSON.stringify(seat), date]
+
+    connection.query(sql_timetable, params_timetable, (err:any)=>{
+        if(err) console.log(err)
+        else{
+            connection.query(sql_movieentity, params_movieentity, (err:any)=>{
+                if(err) console.log(err)
+                else{
+                    res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/selectdate'</script>")
+                }  
+            })
+            
+        }
+    })
+//덮어쓰기?
+// 삭제는 어떻게?
+
+    
+
+
 })
 
 module.exports = router;

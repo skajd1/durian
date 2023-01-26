@@ -30,7 +30,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
             <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
-                <form id ="entitypost" class = "w-full flex flex-row ml-4 h-full" action = "/admin/postentity" method = 'POST' enctype="multipart/form-data" >
+                <form id ="entitypost" class = "w-full flex flex-row ml-4 h-full" action = "/admin/postentity" method = 'POST'>
 
                     <div class= "w-1/2 ">
                         <div class="mx-auto relative my-4">
@@ -39,8 +39,8 @@
                                     극장 선택
                                 </label>
                             </div>
-                            <select id="select-place" name = "select-place" disabled class="w-[50%] h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-                                <option value='' selected> <%= selected_place %></option>
+                            <select id="select-place" name = "select-place" readonly class="w-[50%] h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                <option value='<%=placeid%>' selected> <%= selected_place %></option>
                             </select> 
                         </div>
 
@@ -50,10 +50,12 @@
                                 <span class = "leading-7 text-sm text-gray-600">날짜 선택</span>
                                 <input type="text"
                                     name = "select-date"
-                                    id = "select-data"
-                                    disabled class="mt-2 w-1/2 form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"
+                                    id = "select-date"
+                                    value ="<%= selected_date%>"
+                                    readonly
+                                    class="mt-2 w-1/2 form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"
                                     placeholder="날짜 선택" data-mdb-toggle="datepicker" />
-                                <label for="floatingInput" class="mt-8 text-gray-700"><%= selected_date%></label>
+                                <label for="floatingInput" class="mt-2 text-gray-700"></label>
                                 </div>
                             </div>
                         </div>
@@ -66,8 +68,8 @@
                             </div>
                             <select id="select-movie" name = "select-movie" class="w-[50%] h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                             <option value='' selected>선택</option>
-                            <% for(let i = 0; i < moviedetail.length; i++) { %>
-                            <option value ='<%=moviedetail[i].id%>'><%=moviedetail[i].title%></option>
+                            <% for(let i = 0; i < movielist.length; i++) { %>
+                            <option value ='<%=movielist[i].id%>'><%=movielist[i].title%></option>
                             <%} %>
                             </select>
                         </div>
@@ -89,11 +91,11 @@
                         <tbody>
                           <tr id = "table-row-0" class = "cursor-pointer border-b border-gray-300">
                             <td class = "px-12 py-8">
-                                <input type = radio id = '0' name = 'select-time' > 06:00~10:00
+                                <input type = radio value = '0' id = '0' name = 'select-time' > 06:00~10:00
                             </td>
                             <td class = "px-12 py-8">
                                 <% if(timetable[0].time1){ %>
-                                    <%= moviedetail[timetable[0].time1].title %>
+                                    <%= moviedetail[timetable[0].time1] %>
                                 <% } else { %>
                                     비어 있음
                                 <% } %>
@@ -101,11 +103,11 @@
                           </tr>
                           <tr id = "table-row-1" class = "cursor-pointer border-b border-gray-300">
                             <td class = "px-12 py-8">
-                                <input type = radio id = '1' name = 'select-time' > 10:00~14:00
+                                <input type = radio value = '1' id = '1' name = 'select-time' > 10:00~14:00
                             </td>
                             <td class = "px-12 py-8">
-                                <% if(timetable[0].time1){ %>
-                                    <%= moviedetail[timetable[0].time2].title %>
+                                <% if(timetable[0].time2){ %>
+                                    <%= moviedetail[timetable[0].time2] %>
                                 <% } else { %>
                                     비어 있음
                                 <% } %>
@@ -113,11 +115,11 @@
                           </tr>
                           <tr id = "table-row-2" class = "cursor-pointer border-b border-gray-300">
                             <td class = "px-12 py-8">
-                                <input type = radio id = '2' name = 'select-time' > 14:00~18:00
+                                <input type = radio value = '2' id = '2' name = 'select-time' > 14:00~18:00
                             </td>
                             <td class = "px-12 py-8">
-                                <% if(timetable[0].time1){ %>
-                                    <%= moviedetail[timetable[0].time3].title %>
+                                <% if(timetable[0].time3){ %>
+                                    <%= moviedetail[timetable[0].time3] %>
                                 <% } else { %>
                                     비어 있음
                                 <% } %>
@@ -125,11 +127,11 @@
                           </tr>
                           <tr id = "table-row-3" class = "cursor-pointer border-b border-gray-300">
                             <td class = "px-12 py-8">
-                                <input type = radio id = '3' name = 'select-time' > 18:00~22:00
+                                <input type = radio value = '3' id = '3' name = 'select-time' > 18:00~22:00
                             </td>
                             <td class = "px-12 py-8">
-                                <% if(timetable[0].time1){ %>
-                                    <%= moviedetail[timetable[0].time4].title %>
+                                <% if(timetable[0].time4){ %>
+                                    <%= moviedetail[timetable[0].time4] %>
                                 <% } else { %>
                                     비어 있음
                                 <% } %>
@@ -137,11 +139,11 @@
                           </tr>
                           <tr id = "table-row-4" class = "cursor-pointer border-b border-gray-300">
                             <td class = "px-12 py-8">
-                                <input type = radio id = '4' name = 'select-time' > 22:00~02:00
+                                <input type = radio value = '4' id = '4' name = 'select-time' > 22:00~02:00
                             </td>
                             <td class = "px-12 py-8">
-                                <% if(timetable[0].time1){ %>
-                                    <%= moviedetail[timetable[0].time5].title %>
+                                <% if(timetable[0].time5){ %>
+                                    <%= moviedetail[timetable[0].time5] %>
                                 <% } else { %>
                                     비어 있음
                                 <% } %>
