@@ -30,7 +30,7 @@
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
             <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
-                <form id ="entitypost" class = "w-full flex flex-row ml-4 h-full" action = "/admin/postentity" method = 'POST'>
+                <form id ="entitypost" class = "w-full flex flex-row ml-4 h-full" action = "/admin/posttable" method = 'POST'>
 
                     <div class= "w-1/2 flex flex-col">
                         <div class="mx-auto relative mt-16 w-1/2">
@@ -219,7 +219,7 @@
         }
     } 
 
-    function deleteConfirm(time){
+    function deleteConfirm(selecttime){
         if(confirm('삭제하시겠습니까?'))
         {
             fetch('', {
@@ -228,12 +228,12 @@
                     "Content-Type" : "application/json"
                 },
                 body : JSON.stringify({
-                    id : "123"
+                    time : selecttime
                 })        
             })
             .then(res => console.log(res.json))
             .then(alert('삭제가 완료되었습니다.'))
-            .then(document.location.href='/admin/moviedb')
+            .then(document.location.href='/admin/selectdate')
         }
         
     } 
