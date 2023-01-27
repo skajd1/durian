@@ -17,9 +17,9 @@
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
             <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg py-8 pl-8 pr-2 flex flex-row mt-10 md:mt-5">
                 <div class = "w-1/2 h-full flex flex-col" >
-                <form id ="moviepost" action = "/admin/moviedb/edit/<%=rows[0].id%>" method = 'POST' enctype="multipart/form-data" >
+                <form id ="moviepost" action = "/admin/moviedb/edit/<%=rows[0].movieid%>" method = 'POST' enctype="multipart/form-data" >
                     <div class="mt-8  relative mb-4 w-full">
-                        <input type = "hidden" name = 'id' value = "<%= rows[0].id%>">
+                        <input type = "hidden" name = 'id' value = "<%= rows[0].movieid%>">
                       <div>
                         <label for="title" class="leading-7 text-sm text-gray-600">
                           영화 제목
@@ -127,7 +127,7 @@ function deleteConfirm(){
                     "Content-Type" : "application/json"
                 },
                 body : JSON.stringify({
-                    id : "<%=rows[0].id%>"
+                    id : "<%=rows[0].movieid%>"
                 })        
             })
             .then(res => console.log(res.json))

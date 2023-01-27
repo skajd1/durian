@@ -85,7 +85,7 @@ router.get("/moviedb", (req : Request, res : Response) =>{
         res.send(err_msg)
     }
     else{
-        let sql : string = "select id,title from moviedetail";
+        let sql : string = "select movieid,title from moviedetail";
         connection.query(sql, (err : any, rows : Array<Movie>) =>{
             if (err) console.log(err);
             else {
@@ -103,7 +103,7 @@ router.get("/moviedb/edit/:id", (req : Request, res : Response) => {
         res.send(err_msg)
     }
     else {
-        let sql = "select * from moviedetail where id=?"
+        let sql = "select * from moviedetail where movieid=?"
         let params = [req.params.id];
         connection.query(sql,params, (err: any, rows: Array<Movie>)=>{
             if(err) console.log(err)
@@ -134,7 +134,7 @@ router.post("/moviedb/edit/:id",upload.single('image'), (req : Request, res : Re
             return res.send("<script>alert('최대 상영시간은 4시간 입니다.');document.location.href=document.referrer</script>")      
         }
     // update로 변경
-        let sql :string = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where id = ?";
+        let sql :string = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where movieid = ?";
         let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename, req.body.id];
         connection.query(sql, params, (err : any) =>{
             if (err) throw err;
@@ -146,7 +146,7 @@ router.post("/moviedb/edit/:id",upload.single('image'), (req : Request, res : Re
 })
 //delete 메소드로 요청받아서 해당 영화 삭제
 router.delete('/moviedb/edit/:id', (req : Request, res: Response) =>{
-    let sql = "delete from moviedetail where id = ?"
+    let sql = "delete from moviedetail where movieid = ?"
     let params = [req.body.id]
     connection.query(sql,params, (err : any) => {
         if(err) console.log(err)
@@ -233,13 +233,14 @@ router.post('/selectdate', (req : Request, res : Response) => {
 
     
     let sql_timetable : string = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); " ;
-    let sql_moviedetail : string = "select id,title, runningTime from moviedetail;";
+    let sql_moviedetail : string = "select movieid,title, runningTime from moviedetail;";
     let placeid :string=req.body['select-place'],
     date :string = req.body['select-date'];
     let params :Array<string> = [placeid,date];
     
-    let sql_places : string = "select placename from places where id = ?"
+    let sql_places : string = "select placename from places where placeid = ?"
     let params_places : Array<string> = [placeid]
+
     let place : string
     connection.query(sql_places, params_places,(err:any, placename : Array<any>) =>{
         if(err) console.log(err)
@@ -250,7 +251,7 @@ router.post('/selectdate', (req : Request, res : Response) => {
     connection.query(sql_timetable + sql_moviedetail,params, (err:any, rows : Array<any>) =>{
         let moviedetail : any = {}
         for (let i = 0; i< rows[1].length; i ++){
-            moviedetail[rows[1][i]['id']] = rows[1][i]['title']    
+            moviedetail[rows[1][i]['movieid']] = rows[1][i]['title']    
         }
         if (err) console.log(err);
         else {
@@ -261,11 +262,11 @@ router.post('/selectdate', (req : Request, res : Response) => {
                 connection.query(sql, params, (err:any) =>{
                     if(err) console.log(err)
                     else{
-                        res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date} )
+                        res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date})
                     }     
                 })      
             }
-            res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date, disable : disable})
+            res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date})
         }
 
     })
@@ -294,7 +295,7 @@ router.post('/postentity', (req : Request, res : Response) => {
     let time : Number = Number(req.body['select-time']) + 1
     let sql_timetable : string = "update timetable set time" + time + "=" + movieId +" where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ); "
     let params_timetable : Array<string> = [placeId, date];
-    let sql_movieentity : string = "insert into movieentity (start_time,placeid,movie,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));"
+    let sql_movieentity : string = "insert into movieentity (start_time,placeid,movieid,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));"
     let params_movieentity : Array<any> = [time, placeId, movieId, JSON.stringify(seat), date]
 
     connection.query(sql_timetable, params_timetable, (err:any)=>{
@@ -309,10 +310,18 @@ router.post('/postentity', (req : Request, res : Response) => {
             
         }
     })
+
+    // movieentity 등록 -> 타임테이블을 등록할 때 movieID가 아닌 entityId를 넣어준다
+})
+router.delete('/postentity', (res : Response, req: Request) =>{
+    if(req.session.user_id !== 'admin' ){
+        res.send(err_msg)
+    }
+    //삭제하려면?
+    // 타임테이블 삭제
+    // movieentity 삭제
+    // id (PK) 
 })
 
 
-function disable(id:string){
-    document.getElementById(id).disabled = true;
-}
 module.exports = router;

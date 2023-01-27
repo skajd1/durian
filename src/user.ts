@@ -55,7 +55,7 @@ router.get('/mypage', (req : Request, res : Response) =>{
     if(req.session.isLogined){
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid :string = req.session.user_id;
-        let sql : string = 'select * from userdb where id = ?';
+        let sql : string = 'select * from userdb where userid = ?';
         let params : Array<string> = [uid];
         connection.query(sql, params, (err : any, rows : Array<User>, fields : any) => {
             if (err) console.log(err);
@@ -111,7 +111,7 @@ router.post('/register', (req: Request, res : Response) =>{
     }
 
     else{
-        let sql : string = 'insert into userdb (id, password, birth, point) values (?,?,?,?)';
+        let sql : string = 'insert into userdb (userid, password, birth, point) values (?,?,?,?)';
         let params : Array<User> = [req.body['id'], req.body['password'], (req.body['year']+'-'+req.body['month']+'-' +req.body['day']),100000];
         async function cd(id : string)  {
             let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처리
@@ -133,7 +133,7 @@ router.post('/authentication', (req : Request, res : Response) => {
     {
         return res.send("<script>alert('아이디와 비밀번호를 입력하세요.');document.location.href='/user/login'</script>");
     }
-    let sql :string= "select * from userdb where id = ?";
+    let sql :string= "select * from userdb where userid = ?";
     let params : Array<string> = [req.body['id']]
     connection.query(sql, params, (err : any, rows : Array<User>, fields : any) =>{
         if(err) throw err;
@@ -157,7 +157,7 @@ router.post('/authentication', (req : Request, res : Response) => {
     })
 })
 router.post('/edit', (req : Request, res: Response) => {
-    let sql : string = "select password from userdb where id = ?"
+    let sql : string = "select password from userdb where userid = ?"
     let params : Array<string> = [req.session.user_id]
     if(!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv'])
     {
@@ -181,7 +181,7 @@ router.post('/edit', (req : Request, res: Response) => {
             }
             else
             {
-                let sql : string = "update userdb set password = ? where id = ?";
+                let sql : string = "update userdb set password = ? where userid = ?";
                 let params : Array<string> = [req.body['npassword'], req.session.user_id];
                 connection.query(sql, params, (err:any)=>{
                     if (err) throw err;

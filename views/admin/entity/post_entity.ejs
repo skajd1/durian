@@ -69,7 +69,7 @@
                             <select id="select-movie" name = "select-movie" class="w-full h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                             <option value='' selected>선택</option>
                             <% for(let i = 0; i < movielist.length; i++) { %>
-                            <option value ='<%=movielist[i].id%>'><%=movielist[i].title%></option>
+                            <option value ='<%=movielist[i].movieid%>'><%=movielist[i].title%></option>
                             <%} %>
                             </select>
                         </div>
@@ -86,6 +86,7 @@
                           <tr>
                             <th>시간표</th>
                             <th>영화 이름</th>
+                            <th> </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -104,6 +105,11 @@
                                 <td class = "px-8 py-8">
                                     비어 있음
                                 <% } %>
+                                </td>
+                                <td>
+                                    <% if (timetable[0].time1) { %>
+                                        <a href ='#' >삭제</a>
+                                    <% } %>
                                 </td>  
                           </tr>
                           <tr id = "table-row-1" class = "cursor-pointer border-b border-gray-300">
@@ -121,7 +127,12 @@
                               <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
-                              </td>  
+                              </td>
+                              <td>
+                                <% if (timetable[0].time2) { %>
+                                    <a href ='#' >삭제</a>
+                                <% } %>
+                            </td>  
                         </tr>
                         <tr id = "table-row-2" class = "cursor-pointer border-b border-gray-300">
                             <% if(timetable[0].time3){ %>
@@ -138,7 +149,12 @@
                               <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
-                              </td>  
+                              </td>
+                              <td>
+                                <% if (timetable[0].time3) { %>
+                                    <a href ='#' >삭제</a>
+                                <% } %>
+                            </td>  
                         </tr>
                         <tr id = "table-row-3" class = "cursor-pointer border-b border-gray-300">
                             <% if(timetable[0].time4){ %>
@@ -147,6 +163,7 @@
                               </td>
                               <td class = "px-8 py-8 whitespace-nowrap overflow-hidden text-ellipsis ">
                                   <%= moviedetail[timetable[0].time4] %>
+                                
                               <% } else { %>
                                       
                               <td class = "px-8 py-8">
@@ -155,7 +172,12 @@
                               <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
-                              </td>  
+                              </td>
+                              <td>
+                                <% if (timetable[0].time4) { %>
+                                    <a href ='#' >삭제</a>
+                                <% } %>
+                            </td>  
                         </tr>
                         <tr id = "table-row-4" class = "cursor-pointer border-b border-gray-300">
                             <% if(timetable[0].time5){ %>
@@ -172,7 +194,12 @@
                               <td class = "px-8 py-8">
                                   비어 있음
                               <% } %>
-                              </td>  
+                              </td>
+                              <td>
+                                <% if (timetable[0].time5) { %>
+                                    <a href ='#' >삭제</a>
+                                <% } %>
+                            </td>  
                         </tr>
                         </tbody>
                       </table>
@@ -192,9 +219,6 @@
         }
     } 
 
-    function dis(){
-
-    }
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/index.min.js"></script>

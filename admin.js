@@ -72,7 +72,7 @@ router.get("/moviedb", (req, res) => {
         res.send(err_msg);
     }
     else {
-        let sql = "select id,title from moviedetail";
+        let sql = "select movieid,title from moviedetail";
         connection.query(sql, (err, rows) => {
             if (err)
                 console.log(err);
@@ -88,7 +88,7 @@ router.get("/moviedb/edit/:id", (req, res) => {
         res.send(err_msg);
     }
     else {
-        let sql = "select * from moviedetail where id=?";
+        let sql = "select * from moviedetail where movieid=?";
         let params = [req.params.id];
         connection.query(sql, params, (err, rows) => {
             if (err)
@@ -117,7 +117,7 @@ router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => {
             return res.send("<script>alert('최대 상영시간은 4시간 입니다.');document.location.href=document.referrer</script>");
         }
         // update로 변경
-        let sql = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where id = ?";
+        let sql = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where movieid = ?";
         let params = [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute) / 60, '/static_image/' + req.file.filename, req.body.id];
         connection.query(sql, params, (err) => {
             if (err)
@@ -130,7 +130,7 @@ router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => {
 });
 //delete 메소드로 요청받아서 해당 영화 삭제
 router.delete('/moviedb/edit/:id', (req, res) => {
-    let sql = "delete from moviedetail where id = ?";
+    let sql = "delete from moviedetail where movieid = ?";
     let params = [req.body.id];
     connection.query(sql, params, (err) => {
         if (err)
@@ -203,10 +203,10 @@ router.post('/selectdate', (req, res) => {
         }
     }
     let sql_timetable = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); ";
-    let sql_moviedetail = "select id,title, runningTime from moviedetail;";
+    let sql_moviedetail = "select movieid,title, runningTime from moviedetail;";
     let placeid = req.body['select-place'], date = req.body['select-date'];
     let params = [placeid, date];
-    let sql_places = "select placename from places where id = ?";
+    let sql_places = "select placename from places where placeid = ?";
     let params_places = [placeid];
     let place;
     connection.query(sql_places, params_places, (err, placename) => {
@@ -218,7 +218,7 @@ router.post('/selectdate', (req, res) => {
     connection.query(sql_timetable + sql_moviedetail, params, (err, rows) => {
         let moviedetail = {};
         for (let i = 0; i < rows[1].length; i++) {
-            moviedetail[rows[1][i]['id']] = rows[1][i]['title'];
+            moviedetail[rows[1][i]['movieid']] = rows[1][i]['title'];
         }
         if (err)
             console.log(err);
@@ -234,7 +234,7 @@ router.post('/selectdate', (req, res) => {
                     }
                 });
             }
-            res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date, disable: disable });
+            res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date });
         }
     });
 });
@@ -254,7 +254,7 @@ router.post('/postentity', (req, res) => {
     let time = Number(req.body['select-time']) + 1;
     let sql_timetable = "update timetable set time" + time + "=" + movieId + " where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ); ";
     let params_timetable = [placeId, date];
-    let sql_movieentity = "insert into movieentity (start_time,placeid,movie,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));";
+    let sql_movieentity = "insert into movieentity (start_time,placeid,movieid,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));";
     let params_movieentity = [time, placeId, movieId, JSON.stringify(seat), date];
     connection.query(sql_timetable, params_timetable, (err) => {
         if (err)
@@ -269,8 +269,15 @@ router.post('/postentity', (req, res) => {
             });
         }
     });
+    // movieentity 등록 -> 타임테이블을 등록할 때 movieID가 아닌 entityId를 넣어준다
 });
-function disable(id) {
-    document.getElementById(id).disabled = true;
-}
+router.delete('/postentity', (res, req) => {
+    if (req.session.user_id !== 'admin') {
+        res.send(err_msg);
+    }
+    //삭제하려면?
+    // 타임테이블 삭제
+    // movieentity 삭제
+    // id (PK) 
+});
 module.exports = router;

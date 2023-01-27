@@ -79,11 +79,10 @@
       관리자 페이지 : 
       <a href= "/admin/moviedb" class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
         영화 DB</a>
+      <a href = '/admin/selectdate' class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+        타임 테이블 수정</a>
       <a href= "/admin/userdb" class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
         유저 DB</a>
-        <a href = '/admin/selectdate' class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
-          타임 테이블 수정
-          </a>
     </div>
     <% }  %>
 
@@ -103,7 +102,7 @@
       poster_src : "<%=movielist[i].poster_src%>",
       time : "<%=movielist[i].runningTime%>",
       age : "<%=movielist[i].age%>",
-      id : "<%=movielist[i].id%>"
+      id : "<%=movielist[i].userid%>"
       
     })
     "<% } %>"
