@@ -191,6 +191,7 @@ router.get('/selectdate', (req, res) => {
         });
     }
 });
+// 날짜와 극장 ID 받아서 select 후 없으면 타임테이블 생성
 router.get('/posttable', (req, res) => {
     if (req.session.user_id !== 'admin') {
         res.send(err_msg);
@@ -212,54 +213,7 @@ router.get('/posttable', (req, res) => {
             console.log(err);
         place = placename[0]['placename'];
     });
-    // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 => 콜백 3번이나 부를 필요 없게됨
-    connection.query(sql_timetable + sql_moviedetail, params, (err, rows) => {
-        let moviedetail = {};
-        for (let i = 0; i < rows[1].length; i++) {
-            moviedetail[rows[1][i]['movieid']] = rows[1][i]['title'];
-        }
-        if (err)
-            console.log(err);
-        else {
-            if (!rows[0].length) {
-                rows[0] = [{ time1: 0, time2: 0, time3: 0, time4: 0, time5: 0 }];
-                let sql = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%d/%m/%Y'));";
-                connection.query(sql, params, (err) => {
-                    if (err)
-                        console.log(err);
-                    else {
-                        res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date });
-                    }
-                });
-            }
-            res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date });
-        }
-    });
-});
-// 날짜와 극장 ID 받아서 select 후 없으면 타임테이블 생성
-router.post('/selectdate', (req, res) => {
-    if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
-    }
-    // 공백 검사
-    for (let key of Object.keys(req.body)) {
-        if (!(check.checkExist(req.body[key]))) {
-            return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/selectdate'</script>");
-        }
-    }
-    let sql_timetable = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); ";
-    let sql_moviedetail = "select movieid,title from moviedetail;"; // 수정
-    let placeid = req.body['select-place'], date = req.body['select-date'];
-    let params = [placeid, date];
-    let sql_places = "select placename from places where placeid = ?";
-    let params_places = [placeid];
-    let place;
-    connection.query(sql_places, params_places, (err, placename) => {
-        if (err)
-            console.log(err);
-        place = placename[0]['placename'];
-    });
-    // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 => 콜백 3번이나 부를 필요 없게됨
+    // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 
     connection.query(sql_timetable + sql_moviedetail, params, (err, rows) => {
         let moviedetail = {};
         for (let i = 0; i < rows[1].length; i++) {
@@ -297,12 +251,25 @@ router.post('/posttable', (req, res) => {
     let movieId = req.body['select-movie'];
     let placeId = req.body['select-place'];
     let time = Number(req.body['select-time']) + 1;
-    let entityId;
     let sql_timetable = "update timetable set time" + time + "=" + movieId + " where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ); ";
     let params_timetable = [placeId, date];
     let sql_movieentity = "insert into movieentity (start_time,placeid,movieid,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));";
     let params_movieentity = [time, placeId, movieId, JSON.stringify(seat), date];
+    connection.query(sql_timetable, params_timetable, (err) => {
+        if (err)
+            console.log(err);
+        else {
+            connection.query(sql_movieentity, params_movieentity, (err) => {
+                if (err)
+                    console.log(err);
+                else {
+                    res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/selectdate'</script>");
+                }
+            });
+        }
+    });
     // movieentity 등록 -> 타임테이블을 등록할 때 movieID가 아닌 entityId를 넣어준다
+    // let entityId : Number ;
     // connection.query(sql_movieentity, params_movieentity, (err:any) =>{
     //     if(err) console.log(err)
     //     else{
@@ -319,27 +286,14 @@ router.post('/posttable', (req, res) => {
     //         })
     //     }     
     // })
-    connection.query(sql_timetable, params_timetable, (err) => {
-        if (err)
-            console.log(err);
-        else {
-            connection.query(sql_movieentity, params_movieentity, (err) => {
-                if (err)
-                    console.log(err);
-                else {
-                    res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/selectdate'</script>");
-                }
-            });
-        }
-    });
 });
+// 타임테이블에서 time = 0으로 되돌리기
+// movieentity 삭제
+// TODO
 router.delete('/posttable', (req, res) => {
     let time = req.body.time;
     let placeid = Number(req.query['select-place']);
     let date = req.query['select-date'];
-    //삭제하려면?
-    // 타임테이블에서 time = 0으로 되돌리기
-    // movieentity 삭제
     let sql_setTimeTable = "update timetable set time" + time + "= 0 where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ); ";
     let sql_deleteEntity = "delete from movieentity where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ) and start_time = ? ";
     let params_timetable = [placeid, date];

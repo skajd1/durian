@@ -6,7 +6,7 @@ const userRouter = require('./user')
 const homeRouter = require('./home')
 const adminRouter = require('./admin')
 app.set('view engine', 'ejs');
-app.set('views', ['./views','./views/admin/movie', './views/admin/user', './views/admin/entity']);
+app.set('views', ['./views','./views/admin/movie', './views/admin/user', './views/admin/entity','./views/css']);
 
 
 app.use(express.json())
