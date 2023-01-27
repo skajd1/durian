@@ -10,7 +10,7 @@ const userRouter = require('./user');
 const homeRouter = require('./home');
 const adminRouter = require('./admin');
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', ['./views', './views/admin/movie', './views/admin/user', './views/admin/entity', './views/css']);
 app.use(express_1.default.json());
 app.use('/static_image', express_1.default.static('static_image'));
 //라우팅
@@ -18,9 +18,6 @@ app.use('/', homeRouter);
 app.use('/home', homeRouter);
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
-app.get('/detail', (req, res) => {
-    res.render('detail', { login: false });
-});
 app.get('/pay', (req, res) => {
     res.render('pay', { login: false });
 });

@@ -40,7 +40,7 @@ function checkPw(pw : string) : boolean
 function checkDup(id : string)
 {
     return new Promise((resolve, reject) =>{
-        let sql : string = 'select id from userdb where id = ?'
+        let sql : string = 'select userid from userdb where userid = ?'
         let params : Array<string>= [id]
         connection.query(sql,params,(err:any, rows:UserID[] ) =>{
             if(err) console.log(err);

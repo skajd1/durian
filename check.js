@@ -32,7 +32,7 @@ function checkPw(pw) {
 //DB 쿼리 중복 검사 TODO FIX
 function checkDup(id) {
     return new Promise((resolve, reject) => {
-        let sql = 'select id from userdb where id = ?';
+        let sql = 'select userid from userdb where userid = ?';
         let params = [id];
         connection.query(sql, params, (err, rows) => {
             if (err)

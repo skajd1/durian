@@ -17,6 +17,7 @@
 
     img {
       vertical-align: middle;
+      
     }
 
     /* Slideshow container */
@@ -94,18 +95,18 @@
   <%- include ("header_logout.ejs") %>
   <% } %>
 
-  <section class="text-gray-600 body-font mt-24">
-    <div class="w-2/3 container px-5 py-24 mx-auto flex flex-wrap items-center">
-      <div class = "lg:w-3/6 md:w-1/2 rounded-lg p-8 flex flex-col ml-auto w-full mt-10 md:mt-0">
-        <div class="slideshow-container">
+  <section class="text-gray-600 body-font mt-4">
+    <div class="w-2/3 container px-5 py-12 mx-auto flex flex-wrap items-center">
+      <div class = "lg:w-2/3 md:w-2/3 rounded-lg p-8 flex flex-col ml-auto w-full mt-5 md:mt-0">
+        <div class="slideshow-container ">
           <div class="mySlides fade">
-            <img src='/static_image/1.png' style="width:100%">  
+            <img src='/static_image/1.png' class = "w-full h-[700px] object-contain object-center">  
           </div>
           <div class="mySlides fade">
-            <img src="/static_image/2.png" style="width:100%">           
+            <img src="/static_image/2.png" class = "w-full h-[700px] object-contain object-center">           
           </div>
           <div class="mySlides fade">          
-            <img src="/static_image/3.png" style="width:100%">        
+            <img src="/static_image/3.png" class = "w-full h-[700px] object-contain object-center">        
           </div>
         </div>
         <div style="text-align:center">

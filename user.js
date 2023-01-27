@@ -62,7 +62,7 @@ router.get('/mypage', (req, res) => {
     if (req.session.isLogined) {
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid = req.session.user_id;
-        let sql = 'select * from userdb where id = ?';
+        let sql = 'select * from userdb where userid = ?';
         let params = [uid];
         connection.query(sql, params, (err, rows, fields) => {
             if (err)
@@ -107,7 +107,7 @@ router.post('/register', (req, res) => {
         return res.send("<script>alert('올바른 생년월일을 입력하세요.');document.location.href='/user/signin'</script>");
     }
     else {
-        let sql = 'insert into userdb (id, password, birth, point) values (?,?,?,?)';
+        let sql = 'insert into userdb (userid, password, birth, point) values (?,?,?,?)';
         let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000];
         function cd(id) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -131,7 +131,7 @@ router.post('/authentication', (req, res) => {
     if (!req.body['id'] || !req.body['password']) {
         return res.send("<script>alert('아이디와 비밀번호를 입력하세요.');document.location.href='/user/login'</script>");
     }
-    let sql = "select * from userdb where id = ?";
+    let sql = "select * from userdb where userid = ?";
     let params = [req.body['id']];
     connection.query(sql, params, (err, rows, fields) => {
         if (err)
@@ -154,7 +154,7 @@ router.post('/authentication', (req, res) => {
     });
 });
 router.post('/edit', (req, res) => {
-    let sql = "select password from userdb where id = ?";
+    let sql = "select password from userdb where userid = ?";
     let params = [req.session.user_id];
     if (!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv']) {
         return res.send("<script>alert('입력되지 않은 사항이 있습니다.');document.location.href='/user/mypage'</script>");
@@ -173,7 +173,7 @@ router.post('/edit', (req, res) => {
                 return res.send("<script>alert('현재 비밀번호와 일치하지 않습니다.');document.location.href='/user/mypage'</script>");
             }
             else {
-                let sql = "update userdb set password = ? where id = ?";
+                let sql = "update userdb set password = ? where userid = ?";
                 let params = [req.body['npassword'], req.session.user_id];
                 connection.query(sql, params, (err) => {
                     if (err)

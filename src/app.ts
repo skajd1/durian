@@ -6,7 +6,9 @@ const userRouter = require('./user')
 const homeRouter = require('./home')
 const adminRouter = require('./admin')
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', ['./views','./views/admin/movie', './views/admin/user', './views/admin/entity','./views/css']);
+
+
 app.use(express.json())
 app.use('/static_image',express.static('static_image'));
 
@@ -16,11 +18,6 @@ app.use('/home', homeRouter);
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 
-
-
-app.get('/detail', (req : Request, res : Response) =>{
-  res.render('detail', {login : false});
-})
 app.get('/pay', (req : Request, res : Response) =>{
   res.render('pay' , {login : false});
 })

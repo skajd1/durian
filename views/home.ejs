@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('./css/home'); %>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.css" rel="stylesheet" />
     <title>home</title>
@@ -41,11 +42,11 @@
               <% if(movielist[i]) { %>
               <div id = 'post<%=i%>'class="flex relative h-[500px]">
                 <img id = "image<%=i%>" class="absolute inset-0 w-full h-full object-contain object-center" src="<%= movielist[i].poster_src %>">
-                <div class="mx-auto px-8 py-10 relative z-10 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-90">
+                <div class="mx-auto px-8 py-10 relative z-8 w-full border-4 border-gray-200 bg-white opacity-0 hover:opacity-90">
                   <h1 id = "title<%=i%>" class="title-font text-lg font-medium text-gray-900 mb-3"><%= movielist[i].title %></h1>
                   <p id = "age<%=i%>" class="leading-relaxed"><%= movielist[i].age %>세 이용가</p>
                   <p id = "content<%=i%>" class="leading-relaxed">줄거리 : <%= movielist[i].content %></p>
-                  <p id = "time<%=i%>" class="leading-relaxed">상영시간 : <%= movielist[i].runningTime %> 시간 </p>
+                  <p id = "time<%=i%>" class="leading-relaxed">상영시간 : <%= Math.floor(movielist[i].runningTime) %> 시간 <%= Math.round(60*(movielist[i].runningTime - Math.floor(movielist[i].runningTime)))%> 분 </p>
                   <button id = "resv<%=i%>" href = "#" class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
                   예매 하기
                   </button>
@@ -78,12 +79,68 @@
     <div class = "text-center">
       관리자 페이지 : 
       <a href= "/admin/moviedb" class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
-        영화 DB 수정</a>
+        영화 DB</a>
+      <a href = '/admin/selectdate' class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+        타임 테이블 수정</a>
       <a href= "/admin/userdb" class="w-1/3 text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
-        유저 정보 조회</a>
+        유저 DB</a>
     </div>
     <% }  %>
 
+
+    <div id="modal" class="modal-overlay">
+      <div class="modal-window">
+          <div class="title">
+              <h2>극장 및 날짜 선택</h2>
+          </div>
+          <div class="close-area">X</div>
+          <div class="content">
+              <form method = 'GET' action = "/pay">
+                  <div class= "w-2/3 mx-auto flex flex-row">
+                        <div class="mx-auto w-1/2">
+                            <div class="my-4">
+                                <div class ='w-2/3'>
+                                    <label for="select-place" class="leading-7 text-sm text-gray-600">
+                                        극장 선택
+                                    </label>
+                                </div>
+                                <select
+                                id="select-place"
+                                name = "select-place"
+                                class="w-full h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+                                    <option value='' selected>선택</option>
+                                <% for(let i = 0; i < places.length; i++) { %>
+                                <option value = '<%=places[i].placeid%>' ><%=places[i].placename%></option>
+                                <% } %>
+                                </select> 
+                            </div>
+
+                            <div class = "mb-4">
+                                <div class="flex">
+                                    <div class="datepicker relative form-floating mb-3 w-full" data-mdb-toggle-button="false">
+                                    <span class = "leading-7 text-sm text-gray-600">날짜 선택</span>
+                                    <input type="text"
+                                        name = "select-date"
+                                        id = "select-data"
+                                        class="mt-2 w-full form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"
+                                        placeholder="날짜 선택" data-mdb-toggle="datepicker" />
+                                    <label for="floatingInput" class="mt-8 text-gray-700">날짜 선택</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-1/3 mx-auto mt-20" >
+                        <button type = "submit" class="w-full h-[40px] text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+                        시간표 확인
+                        </button>
+                    </div>
+                    <input type = "hidden" name = 'movie-id' value = "">
+
+              </form>
+          </div>
+      </div>
+    </div>
   </section>
 
 
@@ -100,7 +157,7 @@
       poster_src : "<%=movielist[i].poster_src%>",
       time : "<%=movielist[i].runningTime%>",
       age : "<%=movielist[i].age%>",
-      id : "<%=movielist[i].id%>"
+      id : "<%=movielist[i].userid%>"
       
     })
     "<% } %>"
@@ -122,9 +179,9 @@
       {
         if(i+page_now*3-3 < movie.length){
           document.getElementById('title'+i).textContent = movie[i+page_now*3-3].title;
-          document.getElementById('content'+i).textContent = movie[i+page_now*3-3].content;
+          document.getElementById('content'+i).textContent = '줄거리 : ' + movie[i+page_now*3-3].content;
           document.getElementById('age'+i).textContent = movie[i+page_now*3-3].age +'세 이용가';
-          document.getElementById('time'+i).textContent = movie[i+page_now*3-3].runningTime;
+          document.getElementById('time'+i).textContent = Math.floor(movie[i+page_now*3-3].time) + '시간 ' +  Math.round(60*(movie[i+page_now*3-3].time - Math.floor(movie[i+page_now*3-3].time))) + '분';
           document.getElementById('image'+i).src = movie[i+page_now*3-3].poster_src;
           document.getElementById('resv'+i).href = '#'
           document.getElementById('post'+i).className = "flex relative h-[500px]"
@@ -137,7 +194,20 @@
       }
 
     }
-    
+
+    const modal = document.getElementById("modal")
+    for (let i = 0; i <3 ; i ++)
+    {
+      const btnModal = document.getElementById("resv"+i)
+      btnModal.addEventListener("click", e => {
+          modal.style.display = "flex"
+      })
+    }  
+    const closeBtn = modal.querySelector(".close-area")
+    closeBtn.addEventListener("click", e => {
+        modal.style.display = "none"
+    })
+  
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.js"></script>
