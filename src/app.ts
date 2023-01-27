@@ -18,11 +18,6 @@ app.use('/home', homeRouter);
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 
-
-
-app.get('/detail', (req : Request, res : Response) =>{
-  res.render('detail', {login : false});
-})
 app.get('/pay', (req : Request, res : Response) =>{
   res.render('pay' , {login : false});
 })

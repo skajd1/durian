@@ -13,7 +13,8 @@ const connection = mysql.createConnection({
     host : 'localhost',
     user : 'admin',
     password : 'admin',
-    database : 'moviedb'
+    database : 'moviedb',
+    multipleStatements: true
 });
 const session = require('express-session');
 const mysqlStore = require('express-mysql-session')(session);
@@ -35,20 +36,21 @@ router.use(session({
 // movielist를 인자로 전달하여 html 내에서 영화 포스터 이미지 리스트로 출력
 router.get("/", (req : Request, res : Response) =>{
     // res.sendFile(__dirname + '/html/home.html');
-    let sql :string = 'select * from moviedetail'
+    let sql :string = "select * from moviedetail; ";
+    let sql_places : string = "select * from places;";
     let login : boolean = false
     let admin : boolean = false
-    connection.query(sql, (err : any, rows : Array<Movie>) => {
+    connection.query(sql + sql_places, (err : any, rows : Array<any>) => {
         if (err) console.log(err)
         else{
-            movielist = rows;
+            movielist = rows[0];
             if(req.session.isLogined){
                 login = true
             }
             if(req.session.user_id == 'admin'){
                 admin = true;
             }
-            res.render('home', {login : login, admin: admin, movielist : movielist})
+            res.render('home', {login : login, admin: admin, movielist : movielist, places : rows[1]})
 
         }
     })
