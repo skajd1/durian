@@ -55,13 +55,14 @@
                         <input type="search"
                         id="keyword"
                         name = 'q'
-                        class="block mr-4 w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                        placeholder="Search"
+                        class="block mr-2 w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        placeholder="ID 검색"
+                        onkeyup="if(window.event.keyCode==13){search(document.getElementById('keyword').value)}"
                         required>
                         <button type="button"
                         onclick = "search(document.getElementById('keyword').value)"
-                        class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-2 focus:outline-none focus:ring-yellow-700 font-medium rounded-lg text-sm px-4 py-2 ">
-                            Search
+                        class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-2 focus:outline-none focus:ring-yellow-700 font-medium rounded-lg text-sm px-2">
+                        <svg aria-hidden="true" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                         </button>
                     </div>
 
@@ -130,7 +131,10 @@
             })
             
             user_on_page = result
-
+            if(!user_on_page.length){
+                alert("검색 결과가 존재하지 않습니다.")
+                return
+            }
             
             showPage(1)
             for (let i = 1; i <= 4; i ++){
