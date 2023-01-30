@@ -15,10 +15,92 @@
     <% } %>
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
-            <div id="edit-box" class="w-full h-[600px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
-                userdb 수정 미구현
+            <div id="user-list" class="w-2/3 mx-auto h-[600px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
+  
+                <div class = "w-1/2 flex flex-col mx-auto rounded border-2 border-gray-400 px-2 py-2 ">
+                    <span class = "text-lg mx-auto"> 유저DB</span>
+                    <div class = "mx-auto w-full flex flex-col">
+                        <div class="flex">
+                            <div class ="w-1/6 px-2 py-1 border-r border-b border-gray-300 text-center"> # </div>
+                            <div class = "w-full py-1 border-b border-gray-300 text-center"> 유저 ID</div>
+                        </div> 
+                        <% for(let i =1; i <= 10 ; i ++) {%>
+                            
+                            <div id = "col<%=i%>" class = "flex">
+                                <div id = "index<%=i%>" class = "w-1/6 px-2 py-2 border-r  border-gray-300 text-center"> <%=i%> </div>
+                                <a class = "w-full py-2 px-2 text-center hover:bg-gray-300" id = "user<%=i%>" href="#">
+                                </a>
+                            </div>
+                            
+                        <% } %>
+                    </div>
+
+                    <div class = "mx-auto">
+                        <div class="grid grid-cols-4 space-x-2 rounded-xl bg-gray-200 p-2 mt-4 " x-data="app">
+                            <% for(let i = 0; i < 1+ parseInt((userid.length - 1) / 10); i++ ) { %>
+                            <div class="" >
+                              <% if(i == 0) { %>
+                              <input type="radio" name="option" id="<%=i+1%>" onclick = "showPage(1)" class="peer hidden" checked />
+                              <%} else { %>
+                              <input type="radio" name="option" id="<%=i+1%>" onclick = "showPage('<%=i+1%>')" class="peer hidden"/>
+                              <% } %>
+                              <label for="<%=i+1%>"
+                                class="block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-yellow-500 peer-checked:font-bold peer-checked:text-white"><%=i+1%></label>
+                            </div>
+                            <%}%>
+                            
+                          </div>
+                    </div>
+                </div>
+
+
+
+
+
             </div>
         </div>
     </section>
+
+    <script>
+        let userIdArray = []
+        "<% for (let user of userid){ %>"
+        userIdArray.push("<%=user.userid%>")
+        "<% } %>"
+// 각 페이지 당 유저 변수 => user_on_page[n] : n+1 번 페이지에 올릴 유저 리스트
+        let user_on_page = []
+        let cnt = 0 ;
+        let tmp = []
+        for (let i = 0 ; i < userIdArray.length; i++){
+            tmp.push(userIdArray[i])
+            cnt++;
+            if (cnt == 10 || i == (userIdArray.length - 1)) {
+                cnt = 0
+                user_on_page.push(tmp)
+                tmp = []
+            }
+        }
+        let page = 1;
+        function showPage(p){
+            for(let i = 0; i < 10; i ++)
+            {   
+                if(user_on_page[p-1][i])
+                {
+                    document.getElementById('col' + (i+1)).className = "flex"
+                    document.getElementById('user' + (i+1)).textContent = user_on_page[p-1][i]
+                    document.getElementById('user' + (i+1)).href = "/admin/userdb/edit?userid=" + user_on_page[p-1][i]
+                    document.getElementById('index' + (i+1)).textContent = i+1 +  (p-1) * 10
+                }
+                else{
+                    document.getElementById('col' + (i+1)).className = "hidden"
+                }
+            }
+        }
+        showPage(1);
+
+
+
+
+
+    </script>
 </body>
 </html>

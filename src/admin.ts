@@ -76,7 +76,40 @@ router.get("/userdb", (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
         res.send(err_msg)
     }
-    else res.render('user_db', {login : true});
+    let sql_userdb = "select userid from userdb;"
+    connection.query(sql_userdb, (err : any, rows : Array<any>)=> {
+
+        if(err) console.log(err)
+        else {
+            res.render('user_db', {login : true, userid : rows});
+        }
+    })
+
+})
+
+// 사이트 내에서 userdb검색
+router.get("/userdb/search/:q", (req : Request, res : Response) => {
+
+
+
+
+})
+
+//리스트에서 유저를 선택하여 정보 조회 및 수정
+router.get("/userdb/edit", (req : Request, res : Response) =>{
+    if(req.session.user_id !== 'admin' ){
+        res.send(err_msg)
+    }
+    let uid : string = req.query.userid as string
+    let sql_userdb : string = "select * from userdb where userid = ?";
+    let params = [uid]
+    connection.query(sql_userdb, params, (err : any, rows : any)=>{
+        if (err) console.log(err)
+        else{
+            res.render('user_edit_page', {login : true, userdata : rows[0]})
+        }
+    })
+
 })
 
 // 영화 DB 리스트 출력
