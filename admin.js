@@ -186,6 +186,9 @@ router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => {
 });
 //delete 메소드로 요청받아서 해당 영화 삭제
 router.delete('/moviedb/edit/:id', (req, res) => {
+    if (req.session.user_id !== 'admin') {
+        res.send(err_msg);
+    }
     let sql = "delete from moviedetail where movieid = ?";
     let params = [req.body.id];
     connection.query(sql, params, (err) => {
@@ -347,6 +350,9 @@ router.post('/posttable', (req, res) => {
 // movieentity 삭제
 // TODO
 router.delete('/posttable', (req, res) => {
+    if (req.session.user_id !== 'admin') {
+        res.send(err_msg);
+    }
     let time = req.body.time;
     let placeid = Number(req.query['select-place']);
     let date = req.query['select-date'];
