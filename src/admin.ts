@@ -87,13 +87,6 @@ router.get("/userdb", (req : Request, res : Response) =>{
 
 })
 
-// 사이트 내에서 userdb검색
-router.get("/userdb/search/:q", (req : Request, res : Response) => {
-
-
-
-
-})
 
 //리스트에서 유저를 선택하여 정보 조회 및 수정
 router.get("/userdb/edit", (req : Request, res : Response) =>{
@@ -109,6 +102,36 @@ router.get("/userdb/edit", (req : Request, res : Response) =>{
             res.render('user_edit_page', {login : true, userdata : rows[0]})
         }
     })
+    
+})
+// 유저 db 수정 post요청
+router.post('/userdb/edit', (req: Request, res : Response) =>{
+    if(req.session.user_id !== 'admin' ){
+        res.send(err_msg)
+    }
+    // 공백 검사 
+    for (let key of Object.keys(req.body))
+    {
+        if(!(check.checkExist(req.body[key])))
+        {
+            return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>")
+        }
+    }
+    let uid : string = req.body.id
+    let pw : string = req.body.password;
+    let birth : string = req.body.year+'/' +req.body.month + '/' + req.body.day;
+    let point : Number = req.body.point;
+    let sql_userdb : string = "update userdb set password = ?, birth = STR_TO_DATE(?, '%Y/%m/%d') , point = ? where userid = ?;"
+    let params : any = [pw, birth, point, uid];
+
+    console.log(params)
+    connection.query(sql_userdb,params, (err:any)=>{
+        if(err) console.log(err);
+        else{
+            res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/userdb'</script>")
+        }
+    })
+
 
 })
 
