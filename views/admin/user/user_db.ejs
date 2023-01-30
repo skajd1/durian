@@ -15,7 +15,7 @@
     <% } %>
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
-            <div id="user-list" class="w-2/3 mx-auto h-[600px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
+            <div id="user-list" class="w-2/3 mx-auto h-[650px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
   
                 <div class = "w-1/2 flex flex-col mx-auto rounded border-2 border-gray-400 px-2 py-2 ">
                     <span class = "text-lg mx-auto"> 유저DB</span>
@@ -45,12 +45,27 @@
                               <input type="radio" name="option" id="<%=i+1%>" onclick = "showPage('<%=i+1%>')" class="peer hidden"/>
                               <% } %>
                               <label for="<%=i+1%>"
+                                id = "page<%=i+1%>"
                                 class="block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-yellow-500 peer-checked:font-bold peer-checked:text-white"><%=i+1%></label>
                             </div>
                             <%}%>
-                            
-                          </div>
+                        </div>
                     </div>
+                    <div class = "mx-auto flex">
+                        <input type="search"
+                        id="keyword"
+                        name = 'q'
+                        class="block mr-4 w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        placeholder="Search"
+                        required>
+                        <button type="button"
+                        onclick = "search(document.getElementById('keyword').value)"
+                        class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-2 focus:outline-none focus:ring-yellow-700 font-medium rounded-lg text-sm px-4 py-2 ">
+                            Search
+                        </button>
+                    </div>
+
+
                 </div>
 
 
@@ -96,6 +111,42 @@
             }
         }
         showPage(1);
+
+
+        function search(keyword) {
+            let result = []
+            let tmp = []
+            userIdArray.forEach((id, i) => {
+                if (id.includes(keyword)){
+                    tmp.push(id)
+                }
+                if(i % 10 == 9 || i == userIdArray.length -1 ){
+                    if(tmp.length)
+                    {
+                        result.push(tmp)
+                    }
+                    tmp = []
+                }
+            })
+            
+            user_on_page = result
+
+            
+            showPage(1)
+            for (let i = 1; i <= 4; i ++){
+                if(document.getElementById(i))
+                {
+                    if (i > user_on_page.length)
+                    {
+                        document.getElementById("page"+i).className = 'hidden'
+                    }
+                    else
+                    {
+                        document.getElementById("page" + i).className = "block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-yellow-500 peer-checked:font-bold peer-checked:text-white"
+                    }
+                }
+            }
+        }
 
 
 
