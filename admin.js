@@ -105,13 +105,21 @@ router.post('/userdb/edit', (req, res) => {
     let point = req.body.point;
     let sql_userdb = "update userdb set password = ?, birth = STR_TO_DATE(?, '%Y/%m/%d') , point = ? where userid = ?;";
     let params = [pw, birth, point, uid];
-    console.log(params);
     connection.query(sql_userdb, params, (err) => {
         if (err)
             console.log(err);
         else {
             res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/userdb'</script>");
         }
+    });
+});
+router.delete('/userdb/edit', (req, res) => {
+    let uid = req.body.id;
+    let sql_userdb_delete = "delete from userdb where userid = ?";
+    let params = [uid];
+    connection.query(sql_userdb_delete, params, (err) => {
+        if (err)
+            console.log(err);
     });
 });
 // 영화 DB 리스트 출력
