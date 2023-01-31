@@ -36,11 +36,12 @@ router.use(bodyParser.urlencoded({extended : false}))
 // home 모달 윈도우에서 get요청
 router.get('/', async (req : Request, res : Response)=>{
     if(!req.session.isLogined){
-        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
     }
     else {
         let movielist : Array<Movie>
         let placelist : Array<string>
+
         let placeid = req.query['select-place']
         let date = req.query['select-date']
         let movieid = req.query['movie-id']
@@ -66,6 +67,7 @@ router.get('/', async (req : Request, res : Response)=>{
         }
        
     }
+    console.log(123)
 })
 
 

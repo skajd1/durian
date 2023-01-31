@@ -63,7 +63,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 //유저 DB 리스트 출력
 router.get("/userdb", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     let sql_userdb = "select userid from userdb;";
     let conn = yield pool.getConnection();
@@ -80,7 +80,7 @@ router.get("/userdb", (req, res) => __awaiter(void 0, void 0, void 0, function* 
 //리스트에서 유저를 선택하여 정보 조회 및 수정
 router.get("/userdb/edit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     let uid = req.query.userid;
     let sql_userdb = "select * from userdb where userid = ?";
@@ -97,9 +97,8 @@ router.get("/userdb/edit", (req, res) => __awaiter(void 0, void 0, void 0, funct
 }));
 // 유저 db 수정 post요청
 router.post('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     // 공백 검사 
     for (let key of Object.keys(req.body)) {
@@ -107,6 +106,7 @@ router.post('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, func
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>");
         }
     }
+    let conn = yield pool.getConnection();
     let uid = req.body.id;
     let pw = req.body.password;
     let birth = req.body.year + '/' + req.body.month + '/' + req.body.day;
@@ -124,6 +124,9 @@ router.post('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 }));
 router.delete('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.session.user_id !== 'admin') {
+        return res.send(err_msg);
+    }
     let conn = yield pool.getConnection();
     let uid = req.body.id;
     let sql_userdb_delete = "delete from userdb where userid = ?";
@@ -139,11 +142,11 @@ router.delete('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, fu
 }));
 // 영화 DB 리스트 출력
 router.get("/moviedb", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     else {
+        let conn = yield pool.getConnection();
         let sql = "select movieid,title from moviedetail";
         try {
             let [rows] = yield conn.query(sql);
@@ -158,11 +161,11 @@ router.get("/moviedb", (req, res) => __awaiter(void 0, void 0, void 0, function*
 }));
 //영화 DB 수정 페이지 레이아웃
 router.get("/moviedb/edit/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     else {
+        let conn = yield pool.getConnection();
         let sql = "select * from moviedetail where movieid=?";
         let params = [req.params.id];
         try {
@@ -178,9 +181,8 @@ router.get("/moviedb/edit/:id", (req, res) => __awaiter(void 0, void 0, void 0, 
 }));
 //영화 DB수정 서버사이드 TODO
 router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     else {
         for (let key of Object.keys(req.body)) {
@@ -197,6 +199,7 @@ router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => __awaiter
         // update로 변경
         let sql = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where movieid = ?";
         let params = [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute) / 60, '/static_image/' + req.file.filename, req.body.id];
+        let conn = yield pool.getConnection();
         try {
             let [result] = yield conn.query(sql, params);
             conn.release();
@@ -210,10 +213,10 @@ router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => __awaiter
 }));
 //delete 메소드로 요청받아서 해당 영화 삭제
 router.delete('/moviedb/edit/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
+    let conn = yield pool.getConnection();
     let sql = "delete from moviedetail where movieid = ?";
     let params = [req.body.id];
     try {
@@ -229,7 +232,7 @@ router.delete('/moviedb/edit/:id', (req, res) => __awaiter(void 0, void 0, void 
 // 영화 DB 리스트 
 router.get("/moviedb/post", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     else
         res.render('post_movie', { login: true });
@@ -237,9 +240,8 @@ router.get("/moviedb/post", (req, res) => __awaiter(void 0, void 0, void 0, func
 // 영화 DB 최초 등록
 // DB 등록 시 넘어오는 파라미터 정보 유효성 검증 및 쿼리
 router.post('/moviedb/post', upload.single('image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     for (let key of Object.keys(req.body)) {
         if (!(check.checkExist(req.body[key]))) {
@@ -252,6 +254,7 @@ router.post('/moviedb/post', upload.single('image'), (req, res) => __awaiter(voi
     if (Number(req.body.hour) + Number(req.body.minute) / 60 > 4) {
         return res.send("<script>alert('최대 상영시간은 4시간 입니다.');document.location.href='/admin/moviedb/post'</script>");
     }
+    let conn = yield pool.getConnection();
     let sql = "insert into moviedetail (title, content, age, runningTime, poster_src) values(?,?,?,?,?)";
     let params = [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute) / 60, '/static_image/' + req.file.filename];
     try {
@@ -266,12 +269,12 @@ router.post('/moviedb/post', upload.single('image'), (req, res) => __awaiter(voi
 }));
 // 타임테이블을 확인할 극장 목록 sql로 전송
 router.get('/selectdate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
-    let sql_places = "select * from places;";
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     else {
+        let conn = yield pool.getConnection();
+        let sql_places = "select * from places;";
         try {
             let [rows] = yield conn.query(sql_places);
             conn.release();
@@ -285,15 +288,15 @@ router.get('/selectdate', (req, res) => __awaiter(void 0, void 0, void 0, functi
 }));
 // 날짜와 극장 ID 받아서 select 후 없으면 타임테이블 생성
 router.get('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     for (let key of Object.keys(req.query)) {
         if (!(check.checkExist(req.query[key]))) {
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/selectdate'</script>");
         }
     }
+    let conn = yield pool.getConnection();
     let sql_timetable = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); ";
     let sql_moviedetail = "select movieid,title from moviedetail;"; // 수정
     let placeid = req.query['select-place'], date = req.query['select-date'];
@@ -302,6 +305,7 @@ router.get('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functio
     let params_places = [placeid];
     let place;
     let moviedetail = {};
+    console.log(123);
     // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 
     try {
         let [placename] = yield conn.query(sql_places, params_places);
@@ -329,15 +333,15 @@ router.get('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functio
 }));
 // movieentity 및 timetable 등록, 
 router.post('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
     for (let key of Object.keys(req.body)) {
         if (!(check.checkExist(req.body[key]))) {
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>");
         }
     }
+    let conn = yield pool.getConnection();
     let date = req.body['select-date'];
     let movieId = req.body['select-movie'];
     let placeId = req.body['select-place'];
@@ -379,10 +383,10 @@ router.post('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functi
 // movieentity 삭제
 // TODO
 router.delete('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
     if (req.session.user_id !== 'admin') {
-        res.send(err_msg);
+        return res.send(err_msg);
     }
+    let conn = yield pool.getConnection();
     let time = req.body.time;
     let placeid = Number(req.query['select-place']);
     let date = req.query['select-date'];

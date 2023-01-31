@@ -37,7 +37,7 @@ router.use(bodyParser.urlencoded({ extended: false }));
 // home 모달 윈도우에서 get요청
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.session.isLogined) {
-        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
     }
     else {
         let movielist;
@@ -63,5 +63,6 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             conn.release();
         }
     }
+    console.log(123);
 }));
 module.exports = router;
