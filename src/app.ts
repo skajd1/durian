@@ -5,6 +5,7 @@ const port = 8080;
 const userRouter = require('./user')
 const homeRouter = require('./home')
 const adminRouter = require('./admin')
+const payRouter = require('./pay')
 app.set('view engine', 'ejs');
 app.set('views', ['./views','./views/admin/movie', './views/admin/user', './views/admin/entity','./views/css']);
 
@@ -17,10 +18,8 @@ app.use('/', homeRouter);
 app.use('/home', homeRouter);
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
+app.use('/pay', payRouter);
 
-app.get('/pay', (req : Request, res : Response) =>{
-  res.render('pay' , {login : false});
-})
 
 
 

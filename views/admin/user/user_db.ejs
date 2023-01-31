@@ -121,7 +121,7 @@
                 if (id.includes(keyword)){
                     tmp.push(id)
                 }
-                if(i % 10 == 9 || i == userIdArray.length -1 ){
+                if(tmp.length % 10 == 9 || i == userIdArray.length -1 ){
                     if(tmp.length)
                     {
                         result.push(tmp)

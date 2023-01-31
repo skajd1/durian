@@ -14,12 +14,85 @@
     <%- include ("header_logout.ejs") %>
     <% } %>
     
-    <div class="md:w-3/5 h-[800px] bg-gray-100 rounded-lg p-8 flex flex-col md:ml-80 w-full mt-10 md:mt-5">
-        <div> 좌석 선택 및 예매 페이지</div>
-        <div> 인원 선택</div>
-        <div> 극장 및 관, 상영 시간, 가격 표시</div>
-        <div> 결제 버튼</div>
-        
+    <div class = 'flex flex-col'> 
+        <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
+            <div class = "select-container flex flex-row mx-auto w-full h-[450px] ml-4">
+                <div class = 'select-movie w-1/4 mr-1 flex flex-col'>
+                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                        영화
+                    </div>
+                    <div class= "pr-2 p-4 border border-gray-400 h-full">
+                        <div class = "overflow-y-auto h-96">
+                            <% for(let i = 0; i < movielist.length; i++) {%>
+                                <div class = 'my-3 whitespace-nowrap overflow-hidden text-ellipsis hover:bg-gray-300'><%=movielist[i].title %></div>
+                            <%}%>
+
+                        </div>
+                    </div>
+                </div>
+                <div class = 'select-place w-1/4 mr-1 flex flex-col'>
+                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                        극장
+                    </div>
+                    <div class= "pr-2 p-4 border border-gray-400 h-full">
+                        <div class = "overflow-y-auto h-96">
+                            <% for(let i = 0; i < placelist.length; i++) {%>
+                                <div class = 'my-3 whitespace-nowrap overflow-hidden text-ellipsis hover:bg-gray-300'><%=placelist[i].placename %></div>
+                            <%}%>
+
+                        </div>
+                    </div>
+                </div>
+                <div class = 'select-date w-1/5 mr-1 flex flex-col'>
+                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                        날짜
+                    </div>
+                    <div class= "border border-gray-400 h-full">
+                        현재 날짜 ~ 1주 정도 뒤 까지 출력
+                    </div>
+                </div>
+                <div class = 'select-time w-1/4 flex flex-col'>
+                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                        시간
+                    </div>
+                    <div class= "border border-gray-400 h-full">
+                        가능 시간대 출력
+                    </div>
+                </div>
+            </div>  
+        </div>
+        <div class = 'md:w-3/5 h-[250px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
+            <div class = 'w-1/5 border-2 mr-4 ml-2 border-gray-400'>
+                이미지 포스터
+            </div>
+            <div class = 'w-1/4 border-2 mx-2 border-gray-400 flex flex-col'>
+                <div>
+                    영화이름
+                </div>
+                <div>
+                    상영시간
+                </div>
+                <div>
+                    나이
+                </div>
+            </div>
+            <div class = 'w-1/4 border-2 mx-2 border-gray-400 flex flex-col'>
+                <div>
+                    극장
+                </div>
+                <div>
+                    일시
+                </div>
+            </div>
+            <div class = 'w-1/5 ml-8 flex flex-col'>
+                <button type = "submit" class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                    <div class = 'text-lg font-bold'>좌석 선택</div>
+                    <div> 화살표 이미지</div>
+                </button>
+            </div>
+            
+        </div>
+
     </div>
 </body>
 </html>
