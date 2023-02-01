@@ -15,7 +15,7 @@
     <% } %>
     <section class="text-gray-600 body-font">
         <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
-            <div id="user-list" class="w-2/3 mx-auto h-[650px] bg-gray-200 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
+            <div id="user-list" class="w-2/3 mx-auto h-[650px] bg-gray-100 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
   
                 <div class = "w-1/2 flex flex-col mx-auto rounded border-2 border-gray-400 px-2 py-2 ">
                     <span class = "text-lg mx-auto"> 유저DB</span>
@@ -51,7 +51,7 @@
                             <%}%>
                         </div>
                     </div>
-                    <div class = "mx-auto flex">
+                    <div class = "mt-2 mx-auto flex">
                         <input type="search"
                         id="keyword"
                         name = 'q'
@@ -121,7 +121,7 @@
                 if (id.includes(keyword)){
                     tmp.push(id)
                 }
-                if(i % 10 == 9 || i == userIdArray.length -1 ){
+                if(tmp.length % 10 == 9 || i == userIdArray.length -1 ){
                     if(tmp.length)
                     {
                         result.push(tmp)

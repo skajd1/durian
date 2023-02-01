@@ -23,15 +23,8 @@ const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
 const router = express.Router();
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'admin',
-    password : 'admin',
-    database : 'moviedb',
-    multipleStatements : true
+const pool = require('./mysql');
 
-});
 const multer = require('multer');
 
 const seat : Array<Array<Number>> = [];
@@ -72,42 +65,49 @@ router.use(bodyParser.json())
 router.use(bodyParser.urlencoded({extended : false}))
 
 //유저 DB 리스트 출력
-router.get("/userdb", (req : Request, res : Response) =>{
+router.get("/userdb", async (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     let sql_userdb = "select userid from userdb;"
-    connection.query(sql_userdb, (err : any, rows : Array<any>)=> {
+    let conn = await pool.getConnection();
+    try{
+        let [rows] = await conn.query(sql_userdb);
+        conn.release();
+        return res.render('user_db', {login : true, userid : rows});
 
-        if(err) console.log(err)
-        else {
-            res.render('user_db', {login : true, userid : rows});
-        }
-    })
+    } catch(err) {
+        console.error(err)
+        conn.release();
+    }
 
 })
 
 
 //리스트에서 유저를 선택하여 정보 조회 및 수정
-router.get("/userdb/edit", (req : Request, res : Response) =>{
+router.get("/userdb/edit", async(req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     let uid : string = req.query.userid as string
     let sql_userdb : string = "select * from userdb where userid = ?";
     let params = [uid]
-    connection.query(sql_userdb, params, (err : any, rows : any)=>{
-        if (err) console.log(err)
-        else{
-            res.render('user_edit_page', {login : true, userdata : rows[0]})
-        }
-    })
+    let conn = await pool.getConnection();
+    try {
+        let [rows] = await conn.query(sql_userdb, params)
+        conn.release();
+        return res.render('user_edit_page', {login : true, userdata : rows[0]})
+    } catch(err) {
+        console.error(err)
+    }
+
+    
     
 })
 // 유저 db 수정 post요청
-router.post('/userdb/edit', (req: Request, res : Response) =>{
+router.post('/userdb/edit', async (req: Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     // 공백 검사 
     for (let key of Object.keys(req.body))
@@ -117,68 +117,93 @@ router.post('/userdb/edit', (req: Request, res : Response) =>{
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>")
         }
     }
+    let conn = await pool.getConnection();
     let uid : string = req.body.id
     let pw : string = req.body.password;
     let birth : string = req.body.year+'/' +req.body.month + '/' + req.body.day;
     let point : Number = req.body.point;
     let sql_userdb : string = "update userdb set password = ?, birth = STR_TO_DATE(?, '%Y/%m/%d') , point = ? where userid = ?;"
     let params : any = [pw, birth, point, uid];
-    connection.query(sql_userdb,params, (err:any)=>{
-        if(err) console.log(err);
-        else{
-            res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/userdb'</script>")
-        }
-    })
+    try {
+        let [result] = await conn.query(sql_userdb,params)
+        conn.release();
+        return res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/userdb'</script>")
+
+    } catch(err)
+    {
+        console.error(err)
+        conn.release();
+    }    
 })
-router.delete('/userdb/edit', (req: Request, res : Response) =>{
+router.delete('/userdb/edit', async (req: Request, res : Response) =>{
+    if(req.session.user_id !== 'admin' ){
+        return res.send(err_msg)
+    }
+    let conn = await pool.getConnection();
     let uid : string = req.body.id;
     let sql_userdb_delete : string = "delete from userdb where userid = ?";
     let params = [uid]
-    connection.query(sql_userdb_delete, params, (err : any)=>{
-        if(err) console.log(err);
-    })
+
+    try {
+        conn.query(sql_userdb_delete, params)
+        conn.release();
+    } catch(err)
+    {
+        console.error(err)
+        conn.release();
+    }
 
 })
 
 // 영화 DB 리스트 출력
-router.get("/moviedb", (req : Request, res : Response) =>{
+router.get("/moviedb", async (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     else{
+        let conn = await pool.getConnection();
         let sql : string = "select movieid,title from moviedetail";
-        connection.query(sql, (err : any, rows : Array<Movie>) =>{
-            if (err) console.log(err);
-            else {
+        
+        try {
+            let [rows] = await conn.query(sql)
+            conn.release();
+            return res.render('movie_db', {login : true, rows : rows});
 
-                res.render('movie_db', {login : true, rows : rows});
-            }
-        })
+        } catch(err)
+        {
+            console.error(err)
+            conn.release();
+        }
 
     }      
         
 })
 //영화 DB 수정 페이지 레이아웃
-router.get("/moviedb/edit/:id", (req : Request, res : Response) => {
+router.get("/moviedb/edit/:id", async (req : Request, res : Response) => {
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     else {
+        let conn = await pool.getConnection();
         let sql = "select * from moviedetail where movieid=?"
         let params = [req.params.id];
-        connection.query(sql,params, (err: any, rows: Array<Movie>)=>{
-            if(err) console.log(err)
-            else{
-                res.render('movie_edit_page', {login : true, rows: rows})
-            }
-        })
+
+        try {
+            let [rows] : Array<Movie> = await conn.query(sql,params);
+            conn.release();
+            return res.render('movie_edit_page', {login : true, rows: rows})
+        } catch(err)
+        {
+            console.error(err)
+            conn.release();
+        }
     }
 })
 
 //영화 DB수정 서버사이드 TODO
-router.post("/moviedb/edit/:id",upload.single('image'), (req : Request, res : Response) =>{
+router.post("/moviedb/edit/:id",upload.single('image'), async (req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     else{
         for (let key of Object.keys(req.body))
@@ -195,34 +220,46 @@ router.post("/moviedb/edit/:id",upload.single('image'), (req : Request, res : Re
             return res.send("<script>alert('최대 상영시간은 4시간 입니다.');document.location.href=document.referrer</script>")      
         }
     // update로 변경
-        let sql :string = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where movieid = ?";
-        let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename, req.body.id];
-        connection.query(sql, params, (err : any) =>{
-            if (err) throw err;
-            else{
-                res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
-            }
-        })
+    let sql :string = "update moviedetail set title = ?, content = ?, age = ?, runningTime = ?, poster_src = ? where movieid = ?";
+    let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename, req.body.id];
+    let conn = await pool.getConnection();
+    
+        try {
+            let [result] = await conn.query(sql,params);
+            conn.release();
+            return res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
+        } catch(err)
+        {
+            console.error(err)
+            conn.release();
+        }
     }
 })
 //delete 메소드로 요청받아서 해당 영화 삭제
-router.delete('/moviedb/edit/:id', (req : Request, res: Response) =>{
+router.delete('/moviedb/edit/:id', async (req : Request, res: Response) =>{
+    if(req.session.user_id !== 'admin' ){
+        return res.send(err_msg)
+    }
+    let conn = await pool.getConnection();
     let sql = "delete from moviedetail where movieid = ?"
     let params = [req.body.id]
-    connection.query(sql,params, (err : any) => {
-        if(err) console.log(err)
-        else
-        {
-            res.send("<script>alert('삭제가 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
-        }
-    })
-    
+
+    try {
+        let [result]= await conn.query(sql,params)
+        conn.release();
+        return  res.send("<script>alert('삭제가 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
+    } catch(err)
+    {
+        console.error(err)
+        conn.release();
+    }    
 })
 
 // 영화 DB 리스트 
-router.get("/moviedb/post", (req : Request, res : Response) =>{
+router.get("/moviedb/post", async (req : Request, res : Response) =>{
+    
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     else res.render('post_movie', {login : true});
 })
@@ -231,9 +268,9 @@ router.get("/moviedb/post", (req : Request, res : Response) =>{
 
 // 영화 DB 최초 등록
 // DB 등록 시 넘어오는 파라미터 정보 유효성 검증 및 쿼리
-router.post('/moviedb/post', upload.single('image'), (req : Request, res : Response) =>{
+router.post('/moviedb/post', upload.single('image'), async(req : Request, res : Response) =>{
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     
     for (let key of Object.keys(req.body))
@@ -249,41 +286,46 @@ router.post('/moviedb/post', upload.single('image'), (req : Request, res : Respo
     if(Number(req.body.hour) + Number(req.body.minute)/60 > 4){
         return res.send("<script>alert('최대 상영시간은 4시간 입니다.');document.location.href='/admin/moviedb/post'</script>")      
     }
+    let conn = await pool.getConnection();
     let sql :string = "insert into moviedetail (title, content, age, runningTime, poster_src) values(?,?,?,?,?)";
     let params :Array<any>= [req.body.title, req.body.content, req.body.age, Number(req.body.hour) + Number(req.body.minute)/60 ,'/static_image/'+req.file.filename];
-    connection.query(sql, params, (err : any) =>{
-        if (err) throw err;
-        else{
-            res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
-        }
-    })
+
+    try {
+        let [result] = await conn.query(sql, params);
+        conn.release();
+        return res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/moviedb'</script>")
+    } catch(err)
+    {
+        console.error(err)
+        conn.release();
+    }
 })
 
 // 타임테이블을 확인할 극장 목록 sql로 전송
-router.get('/selectdate', (req : Request, res : Response) => {
-
-    let sql_places : string = "select * from places;";
-    
+router.get('/selectdate', async(req : Request, res : Response) => {
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     else {
-        connection.query(sql_places,(err:any, rows : Array<any>) =>{
-            if (err) console.log(err);
-            else {
-                res.render('select_date', {login : true, places : rows})
-            }
-        })
-   
+        let conn = await pool.getConnection();
+        let sql_places : string = "select * from places;";
+        try {
+            let [rows] = await conn.query(sql_places)
+            conn.release();
+            return res.render('select_date', {login : true, places : rows})
+        } catch(err)
+        {
+            console.error(err)
+            conn.release();
+        }   
     }
 })
 
 
 // 날짜와 극장 ID 받아서 select 후 없으면 타임테이블 생성
-router.get('/posttable', (req : Request, res : Response) => {
-
+router.get('/posttable', async(req : Request, res : Response) => {
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)   
+        return res.send(err_msg)   
     }
     for (let key of Object.keys(req.query))
     {   
@@ -292,6 +334,7 @@ router.get('/posttable', (req : Request, res : Response) => {
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/selectdate'</script>")
         }
     }
+    let conn = await pool.getConnection();
     let sql_timetable : string = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); " ;
     let sql_moviedetail : string = "select movieid,title from moviedetail;"; // 수정
     let placeid :any=req.query['select-place'],
@@ -299,43 +342,43 @@ router.get('/posttable', (req : Request, res : Response) => {
     let params :Array<string> = [placeid,date];
     let sql_places : string = "select placename from places where placeid = ?"
     let params_places : Array<string> = [placeid]
-
     let place : string
-    connection.query(sql_places, params_places,(err:any, placename : Array<any>) =>{
-        if(err) console.log(err)
-        place = placename[0]['placename']
-
-    })
+    let moviedetail : any = {}
+    res.setHeader('Cache-Control', 'no-store')
     // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 
-    connection.query(sql_timetable + sql_moviedetail,params, (err:any, rows : Array<any>) =>{
-        let moviedetail : any = {}
+    try {
+        let [placename] = await conn.query(sql_places, params_places);
+        let [rows] = await conn.query(sql_timetable + sql_moviedetail,params);
+        
+        place = placename[0]['placename']
         for (let i = 0; i< rows[1].length; i ++){
             moviedetail[rows[1][i]['movieid']] = rows[1][i]['title']    
         }
-        if (err) console.log(err);
-        else {
-            if(!rows[0].length)
-            {   
-                rows[0] = [{time1 : 0, time2:0, time3:0, time4:0, time5:0}]
-                let sql : string = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%d/%m/%Y'));"
-                connection.query(sql, params, (err:any) =>{
-                    if(err) console.log(err)
-                    else{
-                        res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date})
-                    }     
-                })      
-            }
-            res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date})
+        
+        if(!rows[0].length)
+        {   
+            rows[0] = [{time1 : 0, time2:0, time3:0, time4:0, time5:0}]
+            let sql : string = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%d/%m/%Y'));"
+            let [result] = await conn.query(sql, params)
+            conn.release();
+            return res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date})      
         }
-    })
+        else{
+            conn.release();
+            return res.render('post_entity', {login : true, timetable : rows[0],movielist: rows[1] ,moviedetail : moviedetail, placeid : placeid, selected_place : place, selected_date : date})
+        }
+    } catch(err) {
+        console.error(err)
+        conn.release();
+    }
 })
 
 
 
 // movieentity 및 timetable 등록, 
-router.post('/posttable', (req : Request, res : Response) => {
+router.post('/posttable', async(req : Request, res : Response) => {
     if(req.session.user_id !== 'admin' ){
-        res.send(err_msg)
+        return res.send(err_msg)
     }
     for (let key of Object.keys(req.body))
     {   
@@ -344,8 +387,8 @@ router.post('/posttable', (req : Request, res : Response) => {
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href=document.referrer</script>")
         }
     }
-
-
+    
+    let conn = await pool.getConnection();
     let date : string = req.body['select-date']
     let movieId :string = req.body['select-movie']
     let placeId :string = req.body['select-place']
@@ -355,19 +398,16 @@ router.post('/posttable', (req : Request, res : Response) => {
     let sql_movieentity : string = "insert into movieentity (start_time,placeid,movieid,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));"
     let params_movieentity : Array<any> = [time, placeId, movieId, JSON.stringify(seat), date]
     
-    
-    connection.query(sql_timetable, params_timetable, (err:any)=>{
-        if(err) console.log(err)
-        else{
-            connection.query(sql_movieentity, params_movieentity, (err:any)=>{
-                if(err) console.log(err)
-                else{
-                    res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/selectdate'</script>")
-                }  
-            })
-            
-        }
-    })
+    try {
+        let [result] = await conn.query(sql_timetable, params_timetable)
+        let [result2] = await conn.query(sql_movieentity, params_movieentity)
+        conn.release();
+        return res.send("<script>alert('등록이 완료되었습니다.');document.location.href='/admin/selectdate'</script>")
+    } catch(err)
+    {
+        console.error(err)
+        conn.release();
+    }
     
     // movieentity 등록 -> 타임테이블을 등록할 때 movieID가 아닌 entityId를 넣어준다
     // let entityId : Number ;
@@ -394,8 +434,11 @@ router.post('/posttable', (req : Request, res : Response) => {
 // movieentity 삭제
 // TODO
 
-router.delete('/posttable', (req : Request, res: Response) =>{
-
+router.delete('/posttable',async (req : Request, res: Response) =>{
+    if(req.session.user_id !== 'admin' ){
+        return res.send(err_msg)
+    }
+    let conn = await pool.getConnection();
     
     let time : Number = req.body.time
     let placeid : Number = Number(req.query['select-place'])
@@ -406,15 +449,18 @@ router.delete('/posttable', (req : Request, res: Response) =>{
     let sql_deleteEntity = "delete from movieentity where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ) and start_time = ? ";
     let params_timetable = [placeid, date];
     let params_entity = [placeid, date, time];
-    connection.query(sql_setTimeTable , params_timetable, (err:any)=>{
-        if(err) console.log(err)
-        else{
-            connection.query(sql_deleteEntity , params_entity, (err:any)=>{
-                if(err) console.log(err)
-            })
-        }
-    })
-   
+    try {
+        
+        let [result] = await conn.query(sql_setTimeTable , params_timetable);
+        let [result2] = await conn.query(sql_deleteEntity , params_entity);
+        conn.release();
+        
+        return;
+    } catch(err)
+    {
+        console.error(err)
+        conn.release();
+    }  
     
 })
 

@@ -1,11 +1,3 @@
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'admin',
-    password : 'admin',
-    database : 'moviedb'
-});
-
 type UserID = {
     id : string
 }
@@ -15,6 +7,8 @@ type User = {
     birth : string,
     point : number,
 }
+
+const pool = require('./mysql');
 
 //데이터 존재 여부 확인
 function checkExist(data : any) : boolean
@@ -37,20 +31,15 @@ function checkPw(pw : string) : boolean
     else return true;
 }
 //DB 쿼리 중복 검사 TODO FIX
-function checkDup(id : string)
+async function checkDup(id : string)
 {
-    return new Promise((resolve, reject) =>{
-        let sql : string = 'select userid from userdb where userid = ?'
-        let params : Array<string>= [id]
-        connection.query(sql,params,(err:any, rows:UserID[] ) =>{
-            if(err) console.log(err);
-            else
-            {
-                resolve(!(rows.length))
-            }       
-        })
-
-    })
+    let sql : string = 'select userid from userdb where userid = ?'
+    let params : Array<string>= [id]
+    let conn = await pool.getConnection();
+    let [rows] = await conn.query(sql,params)
+    conn.release();
+    console.log(!rows.length)
+    return (!(rows.length))     
     
 }
 //생년월일 유효성 검사

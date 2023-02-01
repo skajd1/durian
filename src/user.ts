@@ -20,13 +20,8 @@ const sessionStore = new mysqlStore(options);
 const router = express.Router();
 const bodyParser = require('body-parser');
 const check = require('./check');
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host : 'localhost',
-    user : 'admin',
-    password : 'admin',
-    database : 'moviedb'
-});
+const pool = require('./mysql');
+
 router.use(session({
     secret : "keykey",
     resave : false,
@@ -51,26 +46,29 @@ router.get("/login", (req : Request, res : Response) =>{
 router.get("/signin", (req : Request, res : Response) =>{
     res.render('signin', {login : false})
 })
-router.get('/mypage', (req : Request, res : Response) =>{
+router.get('/mypage', async (req : Request, res : Response) =>{
     if(req.session.isLogined){
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid :string = req.session.user_id;
         let sql : string = 'select * from userdb where userid = ?';
         let params : Array<string> = [uid];
-        connection.query(sql, params, (err : any, rows : Array<User>, fields : any) => {
-            if (err) console.log(err);
-            else
-            {
-                res.render('mypage', { login : true, uid : uid, birth : rows[0].birth, point : rows[0].point});
-            }
-        })
+        let conn = await pool.getConnection()
+        try {
+            let [rows] = await conn.query(sql, params)
+            conn.release();
+            return res.render('mypage', { login : true, uid : uid, birth : rows[0].birth, point : rows[0].point});
 
+        } catch(err){
+            conn.release();
+            console.error(err)
+        }
     }
     else{
         res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>")
     }
-    
+
 })
+
 // 로그아웃 시 세션 초기화
 router.get('/logout', (req : Request, res : Response) =>{
     if(req.session.isLogined){
@@ -85,7 +83,7 @@ router.get('/logout', (req : Request, res : Response) =>{
 
 
 // 가입버튼 눌렀을 때 유효성 검사 + DB에 유저데이터 등록
-router.post('/register', (req: Request, res : Response) =>{
+router.post('/register', async (req: Request, res : Response) =>{
     for (let key of Object.keys(req.body))
     {
         if(!(check.checkExist(req.body[key])))
@@ -109,56 +107,83 @@ router.post('/register', (req: Request, res : Response) =>{
     {
         return res.send("<script>alert('올바른 생년월일을 입력하세요.');document.location.href='/user/signin'</script>");
     }
-
+    else if(!(await check.checkDup(req.body['id'])))
+    {
+        return res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
+    }
     else{
+        
+
         let sql : string = 'insert into userdb (userid, password, birth, point) values (?,?,?,?)';
         let params : Array<User> = [req.body['id'], req.body['password'], (req.body['year']+'-'+req.body['month']+'-' +req.body['day']),100000];
-        async function cd(id : string)  {
-            let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처리
-            if (!result) res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
-            else{
-                connection.query(sql,params, (err : any) =>{
-                    if (err) console.log(err);
-                    else res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
-                })
-            }
+        let conn = await pool.getConnection();
+        try{
+            let [result] = await conn.query(sql,params)
+            conn.release();
+            return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
+        } catch (err){
+            console.error(err)
+            conn.release();
         }
-        cd(req.body['id']);
-    }   
+    }
+
+    // else{
+    //     async function cd(id : string)  {
+    //         let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처리
+    //         if (!result) res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
+    //         else{
+    //             connection.query(sql,params, (err : any) =>{
+    //                 if (err) console.log(err);
+    //                 else res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
+    //             })
+    //         }
+    //     }
+    //     cd(req.body['id']);
+    // }   
 
 })
 
-router.post('/authentication', (req : Request, res : Response) => {
+router.post('/authentication', async(req : Request, res : Response) => {
     if(!req.body['id'] || !req.body['password'])
     {
         return res.send("<script>alert('아이디와 비밀번호를 입력하세요.');document.location.href='/user/login'</script>");
     }
     let sql :string= "select * from userdb where userid = ?";
     let params : Array<string> = [req.body['id']]
-    connection.query(sql, params, (err : any, rows : Array<User>, fields : any) =>{
-        if(err) throw err;
-        else{
-            if(!rows[0])
-            {
-                return res.send("<script>alert('등록된 아이디가 존재하지 않습니다.');document.location.href='/user/login'</script>");
-            }
-            else if (rows[0].password !== req.body['password'])
-            {
-                return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>"); 
-            }
-            else {
-                req.session.user_id = req.body['id'];
-                req.session.isLogined = true;
-                req.session.save( ()=> {
-                    res.redirect('/')
-                })
-            }
+    let conn = await pool.getConnection();
+    
+    try{
+        let [rows] = await conn.query(sql, params)
+        if(!rows[0])
+        {
+            conn.release();
+            return res.send("<script>alert('등록된 아이디가 존재하지 않습니다.');document.location.href='/user/login'</script>");
         }
-    })
+        else if (rows[0].password !== req.body['password'])
+        {
+            conn.release();
+            return res.send("<script>alert('잘못된 비밀번호 입니다.');document.location.href='/user/login'</script>"); 
+        }
+        else {
+            conn.release();
+            req.session.user_id = req.body['id'];
+            req.session.isLogined = true;
+            req.session.save( ()=> {
+                res.redirect('/')
+            })
+        }
+
+    }catch(err) {
+        console.error(err)
+        conn.release();
+    }
 })
-router.post('/edit', (req : Request, res: Response) => {
+router.post('/edit', async(req : Request, res: Response) => {
     let sql : string = "select password from userdb where userid = ?"
     let params : Array<string> = [req.session.user_id]
+    let conn = pool.getConnection();
+
+
     if(!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv'])
     {
         return res.send("<script>alert('입력되지 않은 사항이 있습니다.');document.location.href='/user/mypage'</script>");
@@ -171,28 +196,27 @@ router.post('/edit', (req : Request, res: Response) => {
     {
         return res.send("<script>alert('올바른 비밀번호 형식을 사용하세요. ');document.location.href='/user/mypage'</script>");
     }
-    connection.query(sql, params, (err:any, rows : Array<User>, fields : any) =>{
-        if (err) throw err;
-        else{
+    else {
+        try {
+            let [rows] = await conn.query(sql, params)
             if (rows[0].password !== req.body['ppassword'])
             {
-
+                conn.release();
                 return res.send("<script>alert('현재 비밀번호와 일치하지 않습니다.');document.location.href='/user/mypage'</script>"); 
             }
             else
             {
                 let sql : string = "update userdb set password = ? where userid = ?";
                 let params : Array<string> = [req.body['npassword'], req.session.user_id];
-                connection.query(sql, params, (err:any)=>{
-                    if (err) throw err;
-                    else{
-                        res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/user/mypage'</script>");
-                    }
-                })
+                let [result] = await conn.query(sql, params)
+                conn.release();
+                return res.send("<script>alert('수정이 완료되었습니다.');document.location.href='/user/mypage'</script>");
             }
+        } catch(err) {
+            console.error(err)
+            conn.release();
         }
-    })
-
+    }
 })
 
 

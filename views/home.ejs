@@ -20,7 +20,7 @@
     <div class="container px-5 py-12 mx-auto">
 
       <div class="flex flex-col text-center w-full mb-10">
-        <h2 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">사이트 설명</h2>
+        <h2 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">두리안 시네마</h2>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-base">지금 가입하면 100,000 포인트 지급..! </p>
       </div>
       
@@ -89,24 +89,25 @@
 
 
     <div id="modal" class="modal-overlay">
-      <div class="modal-window">
-          <div class="title">
-              <h2>극장 및 날짜 선택</h2>
+      <div class="modal-window mt-40">
+          <div class="title text-2xl">
+             극장 및 날짜 선택
           </div>
           <div class="close-area">X</div>
           <div class="content">
               <form method = 'GET' action = "/pay">
-                  <div class= "w-2/3 mx-auto flex flex-row">
-                        <div class="mx-auto w-1/2">
-                            <div class="my-4">
+                  <div class= "w-2/3 mx-auto">
+                        <div class="mx-auto w-2/3 flex flex-col">
+                            <div class="mt-16 mb-2">
                                 <div class ='w-2/3'>
-                                    <label for="select-place" class="leading-7 text-sm text-gray-600">
+                                    <label for="select-place" class="leading-7 text-md text-white">
                                         극장 선택
                                     </label>
                                 </div>
                                 <select
                                 id="select-place"
                                 name = "select-place"
+                                required
                                 class="w-full h-[42px] bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                     <option value='' selected>선택</option>
                                 <% for(let i = 0; i < places.length; i++) { %>
@@ -117,14 +118,14 @@
 
                             <div class = "mb-4">
                                 <div class="flex">
-                                    <div class="datepicker relative form-floating mb-3 w-full" data-mdb-toggle-button="false">
-                                    <span class = "leading-7 text-sm text-gray-600">날짜 선택</span>
-                                    <input type="text"
+                                    <div class="datepicker relative form-floating mb-3 w-full">
+                                    <span class = "leading-7 text-md text-white">날짜 선택</span>
+                                    <input type="date"
                                         name = "select-date"
                                         id = "select-data"
-                                        class="mt-2 w-full form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"
-                                        placeholder="날짜 선택" data-mdb-toggle="datepicker" />
-                                    <label for="floatingInput" class="mt-8 text-gray-700">날짜 선택</label>
+                                        required
+                                        class="mt-2 w-full form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"/>
+                                    
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +136,7 @@
                         시간표 확인
                         </button>
                     </div>
-                    <input type = "hidden" name = 'movie-id' value = "">
+                    <input type = "hidden" name = 'movie-id' id ='movie-id' value = "">
 
               </form>
           </div>
@@ -145,6 +146,8 @@
 
 
   <script>
+    
+    
     var startPage = 1;
     let num_of_movie = Number('<%= movielist.length%>');
     let pages = Math.ceil(num_of_movie / 3)
@@ -157,11 +160,14 @@
       poster_src : "<%=movielist[i].poster_src%>",
       time : "<%=movielist[i].runningTime%>",
       age : "<%=movielist[i].age%>",
-      id : "<%=movielist[i].userid%>"
+      id : "<%=movielist[i].movieid%>"
       
     })
     "<% } %>"
-
+    for(let i = 0; i < 3; i ++){
+      document.getElementById("resv"+i).addEventListener('click', setValue(i))
+    }
+    
     function pagemove(dir ,Page){
       Page += dir;
       
@@ -183,7 +189,7 @@
           document.getElementById('age'+i).textContent = movie[i+page_now*3-3].age +'세 이용가';
           document.getElementById('time'+i).textContent = Math.floor(movie[i+page_now*3-3].time) + '시간 ' +  Math.round(60*(movie[i+page_now*3-3].time - Math.floor(movie[i+page_now*3-3].time))) + '분';
           document.getElementById('image'+i).src = movie[i+page_now*3-3].poster_src;
-          document.getElementById('resv'+i).href = '#'
+          document.getElementById('resv'+i).addEventListener('click', setValue(i+page_now*3-3))
           document.getElementById('post'+i).className = "flex relative h-[500px]"
         }
         else{
@@ -208,8 +214,12 @@
         modal.style.display = "none"
     })
   
+    function setValue(index){
+      document.getElementById('movie-id').value = movie[index].id
+    }
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.js"></script>
+  
 </body>
 </html>
