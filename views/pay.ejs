@@ -148,8 +148,8 @@
     let today = new Date();
     for(let i = 0; i < 11; i ++){
         let month = today.getMonth() + 1
-        today.setDate(today.getDate() + 1)
         document.getElementById('datelable'+i).textContent = month +"월 " + today.getDate() + "일 "
+        today.setDate(today.getDate() + 1)
     }
     
     let movielist = []
