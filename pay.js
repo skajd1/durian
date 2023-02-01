@@ -56,7 +56,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             movielist = rows[0];
             placelist = rows[1];
             conn.release();
-            return res.render('pay', { login: true, movielist: movielist, placelist: placelist });
+            return res.render('pay', { login: true, movielist: movielist, placelist: placelist, placeid: placeid, movieid: movieid, date: date });
         }
         catch (err) {
             console.error(err);

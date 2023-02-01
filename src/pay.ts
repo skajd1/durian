@@ -57,9 +57,9 @@ router.get('/', async (req : Request, res : Response)=>{
         try{
             let [rows] = await conn.query(sql_moviedetail + sql_places)
             movielist = rows[0]
-            placelist = rows[1]        
+            placelist = rows[1]
             conn.release();
-            return res.render('pay', {login : true, movielist : movielist, placelist : placelist });
+            return res.render('pay', {login : true, movielist : movielist, placelist : placelist, placeid : placeid, movieid : movieid, date : date});
 
         } catch(err) {
             console.error(err)
