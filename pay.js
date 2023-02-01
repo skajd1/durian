@@ -48,7 +48,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let sql_moviedetail = "select * from moviedetail; ";
         // let sql_selected_movie : string = "select title,age, runningTime, poster_src from moviedetail where movieid = ?; "
         // let params_detail : Array<any> = [movieid]
-        let sql_places = "select placename from places";
+        let sql_places = "select * from places";
         // let params_place : Array<any> = [placeid]
         let conn = yield pool.getConnection();
         try {
@@ -63,6 +63,5 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             conn.release();
         }
     }
-    console.log(123);
 }));
 module.exports = router;

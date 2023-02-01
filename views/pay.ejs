@@ -21,10 +21,16 @@
                     <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
                         영화
                     </div>
-                    <div class= "pr-2 p-4 border border-gray-400 h-full">
-                        <div class = "overflow-y-auto h-96">
+                    <div class= "pr-1 p-3 border border-gray-400 h-full">
+                        <div class = "flex flex-col overflow-x-hidden max-h-96">
                             <% for(let i = 0; i < movielist.length; i++) {%>
-                                <div class = 'my-3 whitespace-nowrap overflow-hidden text-ellipsis hover:bg-gray-300'><%=movielist[i].title %></div>
+                                
+                                <input id = "movie<%=i%>" name = 'select-movie' type = 'radio' class="peer/movie<%=i%> hidden">
+                                <label for="movie<%=i%>"
+                                class=" cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/movie<%=i%>:bg-gray-300">
+                                <%=movielist[i].title %>
+                                </label> 
+                                
                             <%}%>
 
                         </div>
@@ -34,10 +40,16 @@
                     <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
                         극장
                     </div>
-                    <div class= "pr-2 p-4 border border-gray-400 h-full">
-                        <div class = "overflow-y-auto h-96">
+                    <div class= "pr-1 p-3 border border-gray-400 h-full">
+                       
+                        <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
                             <% for(let i = 0; i < placelist.length; i++) {%>
-                                <div class = 'my-3 whitespace-nowrap overflow-hidden text-ellipsis hover:bg-gray-300'><%=placelist[i].placename %></div>
+                                <input id = "place<%=i%>" name = 'select-place' type = 'radio' class="peer/place<%=i%> hidden">
+                                <label for="place<%=i%>" id = "placelable<%=i%>"
+                                class="cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/place<%=i%>:bg-gray-300">
+                                <%=placelist[i].placename %>
+                                </label> 
+
                             <%}%>
 
                         </div>
@@ -47,8 +59,19 @@
                     <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
                         날짜
                     </div>
-                    <div class= "border border-gray-400 h-full">
-                        현재 날짜 ~ 1주 정도 뒤 까지 출력
+                    <div class= "p-3 pr-0.5 border border-gray-400 h-full">
+                        <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
+                            <% for(let i = 0; i < 11; i++) {%>
+                                <input id = "date<%=i%>" name = 'select-date' type = 'radio' class="peer/date<%=i%> hidden">
+                                <label for="date<%=i%>" id = "datelable<%=i%>"
+                                class="cursor-pointer text-center text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/date<%=i%>:bg-gray-300 ">
+                                <%=i%>
+                                </label> 
+
+                            <%}%>
+
+                        </div>
+                        
                     </div>
                 </div>
                 <div class = 'select-time w-1/4 flex flex-col'>
@@ -56,7 +79,15 @@
                         시간
                     </div>
                     <div class= "border border-gray-400 h-full">
-                        가능 시간대 출력
+                        <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
+                            <% for(let i = 0; i<5; i++) { %>
+                                <input id = "time<%=i%>" name = 'select-time' type = 'radio' class="peer/time<%=i%> hidden">
+                                <label for="time<%=i%>" id = "timelable<%=i%>"
+                                class="cursor-pointer text-center text-xl my-6 w-[90%] hover:bg-gray-200 peer-checked/time<%=i%>:bg-gray-300 ">
+                                <%= 6 + i*4 + ' : 00' %>
+                                </label> 
+                            <%}%>
+                        </div>
                     </div>
                 </div>
             </div>  
@@ -97,5 +128,16 @@
         </div>
 
     </div>
+
+
+<script>
+    let today = new Date();
+    for(let i = 0; i < 11; i ++){
+        let month = today.getMonth() + 1
+        today.setDate(today.getDate() + 1)
+        document.getElementById('datelable'+i).textContent = month +"월 " + today.getDate() + "일 "
+    }
+
+</script>
 </body>
 </html>

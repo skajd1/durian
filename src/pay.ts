@@ -51,7 +51,7 @@ router.get('/', async (req : Request, res : Response)=>{
         // let sql_selected_movie : string = "select title,age, runningTime, poster_src from moviedetail where movieid = ?; "
         // let params_detail : Array<any> = [movieid]
         
-        let sql_places : string = "select placename from places"
+        let sql_places : string = "select * from places"
         // let params_place : Array<any> = [placeid]
         let conn = await pool.getConnection();
         try{
@@ -65,9 +65,9 @@ router.get('/', async (req : Request, res : Response)=>{
             console.error(err)
             conn.release();
         }
+        
        
     }
-    console.log(123)
 })
 
 
