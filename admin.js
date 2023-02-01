@@ -305,7 +305,7 @@ router.get('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functio
     let params_places = [placeid];
     let place;
     let moviedetail = {};
-    console.log(123);
+    res.setHeader('Cache-Control', 'no-store');
     // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 
     try {
         let [placename] = yield conn.query(sql_places, params_places);

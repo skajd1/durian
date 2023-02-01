@@ -344,7 +344,7 @@ router.get('/posttable', async(req : Request, res : Response) => {
     let params_places : Array<string> = [placeid]
     let place : string
     let moviedetail : any = {}
-    console.log(123)
+    res.setHeader('Cache-Control', 'no-store')
     // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 
     try {
         let [placename] = await conn.query(sql_places, params_places);
@@ -450,15 +450,18 @@ router.delete('/posttable',async (req : Request, res: Response) =>{
     let params_timetable = [placeid, date];
     let params_entity = [placeid, date, time];
     try {
+        
         let [result] = await conn.query(sql_setTimeTable , params_timetable);
         let [result2] = await conn.query(sql_deleteEntity , params_entity);
         conn.release();
+        
         return;
     } catch(err)
     {
         console.error(err)
         conn.release();
     }  
+    
 })
 
 
