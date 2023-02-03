@@ -94,7 +94,7 @@
                         <div class= "p-3 border border-gray-400 h-full">
                             <div id = 'box-select-time' class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
                                 <% for(let i = 0; i<5; i++) { %>
-                                    <input id = "time<%=i%>" name = 'select-time' type = 'radio' class="peer/time<%=i%> hidden">
+                                    <input id = "time<%=i%>" name = 'select-time' type = 'radio' value = "time<%=i%>" class="peer/time<%=i%> hidden">
                                     <label for="time<%=i%>" id = "time<%=i%>lable"
                                     onclick = ''
                                     class="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]">
@@ -182,7 +182,7 @@
                             }
                             else{
                                 document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
-                                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%] peer-checked/time" +i +":bg-gray-300"
+                                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
                             }
                         }
                     }
@@ -207,18 +207,23 @@
             document.getElementById('date'+i+'lable').textContent = month +"월 " + today.getDate() + "일  (" + day[today.getDay()] + ")"
             today.setDate(today.getDate() + 1)
         }
-    
+        //todo //
+        //이미 날짜가 선택되어 있을 때, 영화 혹은 극장을 바꾸려 하면 select를 초기화 하는 함수
+        function init_select(){
+            
+        }
 
         function disable_time(){
             for(i = 0; i < 5; i ++){   
                 document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
-                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%] peer/checked:time" +i +":bg-gray-300"
+                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
             }  
         }
         function movieSelect(id){
             document.getElementById('img-poster').src = movielist[id].poster_src
             document.getElementById('title').textContent = movielist[id].title
             document.getElementById('runningtime').textContent = '상영시간 : ' + movielist[id].time
+            
         }
         function placeSelect(event){
             
@@ -264,31 +269,7 @@
         if (err) checkerr(err)
         
 
-        
-
-        
-
-
-    
 
     </script>
 </body>
 </html>
-<!-- let movie;
-    let place;
-    let date;
-    let time;
-    function select(){
-        movie = document.querySelector('input[name="select-movie"]:checked');
-        place = document.querySelector('input[name="select-place"]:checked');
-        date = document.querySelector('input[name="select-date"]:checked');
-        time =  document.querySelector('input[name="select-time"]:checked');
-
-        if(!movie || !place || !date){
-            document.getElementById('box-select-time').className='hidden'
-        }
-        else{
-            document.getElementById('box-select-time').className='flex flex-col overflow-y-auto overflow-x-hidden h-96'
-        }
-        
-    } -->

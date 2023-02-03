@@ -73,11 +73,10 @@ router.get('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, functi
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
     }
     else {
-        console.log(req.query);
         let conn = yield pool.getConnection();
         try {
             conn.release();
-            return res.send("좌석선택페이지임~~");
+            return res.send(req.query);
         }
         catch (err) {
             console.error(err);
