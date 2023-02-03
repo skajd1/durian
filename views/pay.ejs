@@ -94,9 +94,9 @@
                         <div id = 'box-select-time' class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
                             <% for(let i = 0; i<5; i++) { %>
                                 <input id = "time<%=i%>" name = 'select-time' type = 'radio' class="peer/time<%=i%> hidden">
-                                <label for="time<%=i%>" id = "timelable<%=i%>"
-                                onclick = 'timeSelect(event)'
-                                class="cursor-pointer text-center text-xl font-medium my-2 w-[90%] hover:bg-gray-200 peer-checked/time<%=i%>:bg-gray-300 disabled:text-gray-300">
+                                <label for="time<%=i%>" id = "time<%=i%>lable"
+                                onclick = ''
+                                class="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]">
                                 <div class = "h-[60px] pt-3"><%= 6 + i*4 + ' : 00' %></div>
                                 </label> 
                             <%}%>
@@ -166,12 +166,32 @@
                contentType: "application/json; charset=utf-8",
                dataType: "json",
                success: (data)=> {
-                console.log(data[0])
-
-
-
-               }
-             });
+                    document.getElementById('place').textContent = '극장  ' + document.querySelector('input[name="select-place"]:checked').nextElementSibling.innerText
+                    document.getElementById('date').textContent = '일시  ' + document.querySelector('input[name="select-date"]:checked').nextElementSibling.innerText
+                    let movieid = Number(document.querySelector('input[name="select-movie"]:checked').value)
+                    if(data[0]){
+                        let v = Object.values(data[0])
+                        
+                        for(i = 0; i < 5; i ++)
+                        {
+                            if (movieid == v[i]){
+                                document.getElementById('time'+i+'lable').addEventListener('click', (i)=>timeSelect(i))
+                                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl font-medium my-2 w-[90%] hover:bg-gray-200 peer-checked/time" +i +":bg-gray-300"
+                            }
+                            else{
+                                document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
+                                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%] peer-checked/time" +i +":bg-gray-300"
+                            }
+                        }
+                    }
+                    else{
+                        for(i = 0; i < 5; i ++){   
+                            document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
+                            document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%] peer/checked:time" +i +":bg-gray-300"
+                        }   
+                    }
+                }
+          });
 
         }
 
@@ -207,10 +227,11 @@
             document.getElementById('date').textContent = '일시  ' + document.getElementById(event.target.id).textContent
             getTimeAjax(movieid,placeid,date)
             
-
         }
-        function timeSelect(event){        
+
+        function timeSelect(event){
             document.getElementById('time').textContent = event.target.textContent
+           
         }
 
         let scroll_movie = document.getElementById('movie-scroll')
