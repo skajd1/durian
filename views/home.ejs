@@ -189,8 +189,9 @@
           document.getElementById('age'+i).textContent = movie[i+page_now*3-3].age +'세 이용가';
           document.getElementById('time'+i).textContent = Math.floor(movie[i+page_now*3-3].time) + '시간 ' +  Math.round(60*(movie[i+page_now*3-3].time - Math.floor(movie[i+page_now*3-3].time))) + '분';
           document.getElementById('image'+i).src = movie[i+page_now*3-3].poster_src;
-          document.getElementById('resv'+i).addEventListener('click', setValue(i+page_now*3-3))
+          document.getElementById('resv'+i).addEventListener('click', ()=>setValue(i+page_now*3-3))
           document.getElementById('post'+i).className = "flex relative h-[500px]"
+          console.log(i+page_now*3-3)
         }
         else{
           
@@ -200,6 +201,7 @@
       }
 
     }
+    showPage(1)
 
     const modal = document.getElementById("modal")
     for (let i = 0; i <3 ; i ++)

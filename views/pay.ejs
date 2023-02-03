@@ -22,7 +22,7 @@
                         영화
                     </div>
                     <div class= "pr-1 p-3 border border-gray-400 h-full">
-                        <div class = "flex flex-col overflow-x-hidden max-h-96">
+                        <div class = "flex flex-col overflow-x-hidden max-h-96" id = 'movie-scroll'>
                             <% for(let i = 0; i < movielist.length; i++) {%>
                                 <% if(movielist[i].movieid == movieid) {%>
                                     <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden" checked>
@@ -30,6 +30,7 @@
                                     <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden">
                                 <% } %>
                                 <label for="movie<%=i%>"
+                                id = 'movie<%=i%>lable'
                                 onclick = 'movieSelect("<%=i%>")'
                                 class=" cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/movie<%=i%>:bg-gray-300">
                                 <%=movielist[i].title %>
@@ -120,11 +121,11 @@
             </div>
             <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
                 <div class = 'mt-16 ml-4 flex'>
-                    극장 
+                    
                     <div id = 'place' class = 'ml-6'></div>
                 </div>
                 <div class = 'mt-10 ml-4  flex'>
-                    일시 
+                     
                     <div id = 'date' class = 'ml-6'> </div>
                     <div id = 'time' class = 'ml-2'> </div>
                 </div>
@@ -145,10 +146,11 @@
 
 
 <script>
+    let day = ['일','월','화','수','목','금','토']
     let today = new Date();
+    let month = today.getMonth() + 1
     for(let i = 0; i < 11; i ++){
-        let month = today.getMonth() + 1
-        document.getElementById('datelable'+i).textContent = month +"월 " + today.getDate() + "일 "
+        document.getElementById('datelable'+i).textContent = month +"월 " + today.getDate() + "일  (" + day[today.getDay()] + ")"
         today.setDate(today.getDate() + 1)
     }
     
@@ -194,16 +196,19 @@
     }
     function placeSelect(event){
         
-        document.getElementById('place').textContent = document.getElementById(event.target.id).textContent
+        document.getElementById('place').textContent = '극장  ' + document.getElementById(event.target.id).textContent
     }
     function dateSelect(event){
         
-        document.getElementById('date').textContent = document.getElementById(event.target.id).textContent
+        document.getElementById('date').textContent = '일시  ' + document.getElementById(event.target.id).textContent
 
     }
     function timeSelect(event){        
         document.getElementById('time').textContent = event.target.textContent
     }
+    let scroll = document.getElementById('movie-scroll')
+    let loc = document.getElementById(document.querySelector('input[name="select-movie"]:checked').id +'lable').offsetTop
+    scroll.scrollTo({top : loc - 157 })
     
 
 
