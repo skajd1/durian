@@ -15,133 +15,135 @@
     <%- include ("header_logout.ejs") %>
     <% } %>
     
-    <div class = 'flex flex-col'> 
-        <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
-            <div class = "select-container flex flex-row mx-auto w-full h-[450px] ml-4">
-                <div class = 'select-movie w-1/4 mr-1 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        영화
-                    </div>
-                    <div class= "pr-1 p-3 border border-gray-400 h-full">
-                        <div class = "flex flex-col overflow-x-hidden max-h-96" id = 'movie-scroll'>
-                            <% for(let i = 0; i < movielist.length; i++) {%>
-                                <% if(movielist[i].movieid == movieid) {%>
-                                    <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden" checked>
-                                <% } else { %>
-                                    <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden">
-                                <% } %>
-                                <label for="movie<%=i%>"
-                                id = 'movie<%=i%>lable'
-                                onclick = 'movieSelect("<%=i%>")'
-                                class=" cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/movie<%=i%>:bg-gray-300">
-                                <%=movielist[i].title %>
-                                </label>
-                                
-                                
-                            <%}%>
-
+    <div class = 'flex flex-col'>
+        <form method="GET" action = "/pay/selectseat">
+            <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
+                <div class = "select-container flex flex-row mx-auto w-full h-[450px] ml-4">
+                    <div class = 'select-movie w-1/4 mr-1 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            영화
+                        </div>
+                        <div class= "pr-1 p-3 border border-gray-400 h-full">
+                            <div class = "flex flex-col overflow-x-hidden max-h-96" id = 'movie-scroll'>
+                                <% for(let i = 0; i < movielist.length; i++) {%>
+                                    <% if(movielist[i].movieid == movieid) {%>
+                                        <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden" checked>
+                                    <% } else { %>
+                                        <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden">
+                                    <% } %>
+                                    <label for="movie<%=i%>"
+                                    id = 'movie<%=i%>lable'
+                                    onclick = 'movieSelect("<%=i%>")'
+                                    class=" cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/movie<%=i%>:bg-gray-300">
+                                    <%=movielist[i].title %>
+                                    </label>
+                                    
+                                    
+                                <%}%>
+    
+                            </div>
                         </div>
                     </div>
+                    <div class = 'select-place w-1/4 mr-1 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            극장
+                        </div>
+                        <div class= "pr-1 p-3 border border-gray-400 h-full">
+                           
+                            <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
+                                <% for(let i = 0; i < placelist.length; i++) {%>
+                                    <% if(placelist[i].placeid == placeid) {%>
+                                        <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden" checked>
+                                    <% } else { %>
+                                        <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden">
+                                    <% } %>
+                                    <label for="place<%=i%>" id = "place<%=i%>lable"
+                                    onclick = 'placeSelect(event)'
+                                    class="cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/place<%=i%>:bg-gray-300">
+                                    <%=placelist[i].placename %>
+                                    </label> 
+    
+                                <%}%>
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class = 'select-date w-1/5 mr-1 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            날짜
+                        </div>
+                        <div class= "p-3 pr-0.5 border border-gray-400 h-full">
+                            <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96" id = 'date-scroll'>
+                                <% for(let i = 0; i < 11; i++) {%>
+                                    <input id = "date<%=i%>" name = 'select-date' type = 'radio' class="peer/date<%=i%> hidden">
+                                    <label for="date<%=i%>" id = "date<%=i%>lable"
+                                    onclick = 'dateSelect(event)'
+                                    class="cursor-pointer text-center text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/date<%=i%>:bg-gray-300 ">
+                                    </label> 
+    
+                                <%}%>
+    
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class = 'select-time w-1/4 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            시간
+                        </div>
+                        <div class= "p-3 border border-gray-400 h-full">
+                            <div id = 'box-select-time' class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
+                                <% for(let i = 0; i<5; i++) { %>
+                                    <input id = "time<%=i%>" name = 'select-time' type = 'radio' class="peer/time<%=i%> hidden">
+                                    <label for="time<%=i%>" id = "time<%=i%>lable"
+                                    onclick = ''
+                                    class="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]">
+                                    <div class = "h-[60px] pt-3"><%= 6 + i*4 + ' : 00' %></div>
+                                    </label> 
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
+                <div class = 'w-1/5 mr-4 ml-2'>
+                    <img id = 'img-poster' class = 'w-full h-full '>
                 </div>
-                <div class = 'select-place w-1/4 mr-1 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        극장
+                <div class = 'w-1/4 ml-4 mx-2 flex flex-col font-bold'>
+                    <div class ='flex mt-16'>
+                        <div id = 'title'></div>
                     </div>
-                    <div class= "pr-1 p-3 border border-gray-400 h-full">
-                       
-                        <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
-                            <% for(let i = 0; i < placelist.length; i++) {%>
-                                <% if(placelist[i].placeid == placeid) {%>
-                                    <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden" checked>
-                                <% } else { %>
-                                    <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden">
-                                <% } %>
-                                <label for="place<%=i%>" id = "place<%=i%>lable"
-                                onclick = 'placeSelect(event)'
-                                class="cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/place<%=i%>:bg-gray-300">
-                                <%=placelist[i].placename %>
-                                </label> 
-
-                            <%}%>
-
-                        </div>
+                    <div class = 'flex relative top-10'>
+                        <div id = 'runningtime'> </div>
                     </div>
+                    <!-- <div>
+                        나이
+                    </div> -->
                 </div>
-                <div class = 'select-date w-1/5 mr-1 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        날짜
-                    </div>
-                    <div class= "p-3 pr-0.5 border border-gray-400 h-full">
-                        <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96" id = 'date-scroll'>
-                            <% for(let i = 0; i < 11; i++) {%>
-                                <input id = "date<%=i%>" name = 'select-date' type = 'radio' class="peer/date<%=i%> hidden">
-                                <label for="date<%=i%>" id = "date<%=i%>lable"
-                                onclick = 'dateSelect(event)'
-                                class="cursor-pointer text-center text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/date<%=i%>:bg-gray-300 ">
-                                </label> 
-
-                            <%}%>
-
-                        </div>
+                <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
+                    <div class = 'mt-16 ml-4 flex'>
                         
+                        <div id = 'place' class = 'ml-6'></div>
+                    </div>
+                    <div class = 'mt-10 ml-4  flex'>
+                         
+                        <div id = 'date' class = 'ml-6'> </div>
+                        <div id = 'time' class = 'ml-2'> </div>
                     </div>
                 </div>
-                <div class = 'select-time w-1/4 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        시간
-                    </div>
-                    <div class= "p-3 border border-gray-400 h-full">
-                        <div id = 'box-select-time' class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
-                            <% for(let i = 0; i<5; i++) { %>
-                                <input id = "time<%=i%>" name = 'select-time' type = 'radio' class="peer/time<%=i%> hidden">
-                                <label for="time<%=i%>" id = "time<%=i%>lable"
-                                onclick = ''
-                                class="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]">
-                                <div class = "h-[60px] pt-3"><%= 6 + i*4 + ' : 00' %></div>
-                                </label> 
-                            <%}%>
-                        </div>
-                    </div>
+                <div class = 'w-1/5 ml-8 flex flex-col'>
+                    <button type = "submit" class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                        <div class = 'text-lg font-bold'>좌석 선택</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+                        </svg>
+                    </button>
                 </div>
-            </div>  
-        </div>
-        <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
-            <div class = 'w-1/5 mr-4 ml-2'>
-                <img id = 'img-poster' class = 'w-full h-full '>
+                
             </div>
-            <div class = 'w-1/4 ml-4 mx-2 flex flex-col font-bold'>
-                <div class ='flex mt-16'>
-                    <div id = 'title'></div>
-                </div>
-                <div class = 'flex relative top-10'>
-                    <div id = 'runningtime'> </div>
-                </div>
-                <!-- <div>
-                    나이
-                </div> -->
-            </div>
-            <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
-                <div class = 'mt-16 ml-4 flex'>
-                    
-                    <div id = 'place' class = 'ml-6'></div>
-                </div>
-                <div class = 'mt-10 ml-4  flex'>
-                     
-                    <div id = 'date' class = 'ml-6'> </div>
-                    <div id = 'time' class = 'ml-2'> </div>
-                </div>
-            </div>
-            <div class = 'w-1/5 ml-8 flex flex-col'>
-                <button type = "submit" class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
-                    <div class = 'text-lg font-bold'>좌석 선택</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
-                    </svg>
-                </button>
-            </div>
-            
-        </div>
+        </form>
 
     </div>
 
@@ -185,10 +187,7 @@
                         }
                     }
                     else{
-                        for(i = 0; i < 5; i ++){   
-                            document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
-                            document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%] peer/checked:time" +i +":bg-gray-300"
-                        }   
+                         disable_time()
                     }
                 }
           });
@@ -210,7 +209,12 @@
         }
     
 
-  
+        function disable_time(){
+            for(i = 0; i < 5; i ++){   
+                document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
+                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%] peer/checked:time" +i +":bg-gray-300"
+            }  
+        }
         function movieSelect(id){
             document.getElementById('img-poster').src = movielist[id].poster_src
             document.getElementById('title').textContent = movielist[id].title

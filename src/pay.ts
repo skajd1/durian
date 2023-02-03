@@ -78,26 +78,29 @@ router.get('/', async (req : Request, res : Response)=>{
        
     }
 })
-// router.post('/', async (req: Request, res: Response) =>{
-//     if(!req.session.isLogined){
-//         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
-//     }
-//     else{
-//         console.log(req.body)
+router.get('/selectseat', async (req: Request, res: Response) =>{
+    if(!req.session.isLogined){
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
+    }
+    else{
+        console.log(req.query)
 
-//         let conn = await pool.getConnection();
+        let conn = await pool.getConnection();
 
-//         try{
+        try{
+            
+            
 
+            conn.release();
 
-//             conn.release();
-//         } catch(err) {
+            return res.send("좌석선택페이지임~~")
+        } catch(err) {
 
-//             console.error(err)
-//             conn.release();
-//         }
-//     }
-// })
+            console.error(err)
+            conn.release();
+        }
+    }
+})
 router.post('/', async (req: Request, res: Response) =>{
     if(!req.session.isLogined){
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
