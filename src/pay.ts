@@ -1,3 +1,4 @@
+import { time } from 'console';
 import express, { Express, Request, Response } from 'express';
 type Movie={
     movieid : number,
@@ -42,24 +43,32 @@ router.get('/', async (req : Request, res : Response)=>{
         let movielist : Array<Movie>
         let placelist : Array<string>
 
-        let placeid = req.query['select-place']
-        let date = req.query['select-date']
-        let movieid = req.query['movie-id']
+        let placeid : string = req.query['select-place'] as string
+        let date :string = req.query['select-date'] as string
+        let movieid :string = req.query['movie-id'] as string
 
         let sql_moviedetail : string = "select * from moviedetail; "
-
-        // let sql_selected_movie : string = "select title,age, runningTime, poster_src from moviedetail where movieid = ?; "
-        // let params_detail : Array<any> = [movieid]
-        
         let sql_places : string = "select * from places"
-        // let params_place : Array<any> = [placeid]
+
+        let sql_table : string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d'); "
+        let params_table : Array<string|string>  = [placeid, date]
+        
+        
         let conn = await pool.getConnection();
         try{
+            let err
             let [rows] = await conn.query(sql_moviedetail + sql_places)
             movielist = rows[0]
             placelist = rows[1]
+
+            let [time] = await conn.query(sql_table,params_table)
+            
+            if(!time.length){ 
+                err = "선택한 극장 / 날짜에 상영중인 영화가 없습니다. 다른 극장 / 날짜를 선택해주세요."
+            }
+
             conn.release();
-            return res.render('pay', {login : true, movielist : movielist, placelist : placelist, placeid : placeid, movieid : movieid, date : date});
+            return res.render('pay', {login : true, movielist : movielist, placelist : placelist, placeid : placeid, movieid : movieid, date : date, err:err});
 
         } catch(err) {
             console.error(err)
@@ -67,6 +76,50 @@ router.get('/', async (req : Request, res : Response)=>{
         }
         
        
+    }
+})
+router.get('/selectseat', async (req: Request, res: Response) =>{
+    if(!req.session.isLogined){
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
+    }
+    else{
+        let conn = await pool.getConnection();
+
+        try{
+
+            conn.release();
+            return res.send(req.query)
+        } catch(err) {
+
+            console.error(err)
+            conn.release();
+        }
+    }
+})
+router.post('/', async (req: Request, res: Response) =>{
+    if(!req.session.isLogined){
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
+    }
+    else{
+        let data = req.body
+        let movieid :string = data.movieid
+        let placeid :string = data.placeid
+        let date :string = data.date
+        
+        let conn = await pool.getConnection();
+
+        try{
+            let sql_table :string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');"
+            let params_table : Array<string> = [placeid,date]
+            let [times] : any = await conn.query(sql_table,params_table)
+            conn.release();
+            return res.send(times)
+
+        } catch(err) {
+
+            console.error(err)
+            conn.release();
+        }
     }
 })
 

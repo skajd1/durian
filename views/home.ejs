@@ -122,7 +122,7 @@
                                     <span class = "leading-7 text-md text-white">날짜 선택</span>
                                     <input type="date"
                                         name = "select-date"
-                                        id = "select-data"
+                                        id = "select-date"
                                         required
                                         class="mt-2 w-full form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"/>
                                     
@@ -189,8 +189,9 @@
           document.getElementById('age'+i).textContent = movie[i+page_now*3-3].age +'세 이용가';
           document.getElementById('time'+i).textContent = Math.floor(movie[i+page_now*3-3].time) + '시간 ' +  Math.round(60*(movie[i+page_now*3-3].time - Math.floor(movie[i+page_now*3-3].time))) + '분';
           document.getElementById('image'+i).src = movie[i+page_now*3-3].poster_src;
-          document.getElementById('resv'+i).addEventListener('click', setValue(i+page_now*3-3))
+          document.getElementById('resv'+i).addEventListener('click', ()=>setValue(i+page_now*3-3))
           document.getElementById('post'+i).className = "flex relative h-[500px]"
+          
         }
         else{
           
@@ -200,6 +201,7 @@
       }
 
     }
+    showPage(1)
 
     const modal = document.getElementById("modal")
     for (let i = 0; i <3 ; i ++)
@@ -217,6 +219,31 @@
     function setValue(index){
       document.getElementById('movie-id').value = movie[index].id
     }
+
+    let today = new Date()
+    let year = today.getFullYear()
+    let month = today.getMonth() +1
+    let date = today.getDate();
+    today.setDate(date+10)
+    let nyear = today.getFullYear()
+    let nmonth = today.getMonth() +1
+    let ndate = today.getDate();
+    let min = `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`
+    let max = `${nyear}-${nmonth >= 10 ? nmonth : '0' + nmonth}-${ndate >= 10 ? ndate : '0' +ndate}`
+
+    document.getElementById('select-date').min = min;
+    document.getElementById('select-date').max = max;
+
+    
+
+
+
+
+
+
+
+
+
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.2/flowbite.min.js"></script>

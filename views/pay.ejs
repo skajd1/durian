@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Document</title>
 </head>
@@ -14,202 +15,261 @@
     <%- include ("header_logout.ejs") %>
     <% } %>
     
-    <div class = 'flex flex-col'> 
-        <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
-            <div class = "select-container flex flex-row mx-auto w-full h-[450px] ml-4">
-                <div class = 'select-movie w-1/4 mr-1 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        영화
-                    </div>
-                    <div class= "pr-1 p-3 border border-gray-400 h-full">
-                        <div class = "flex flex-col overflow-x-hidden max-h-96">
-                            <% for(let i = 0; i < movielist.length; i++) {%>
-                                <% if(movielist[i].movieid == movieid) {%>
-                                    <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden" checked>
-                                <% } else { %>
-                                    <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden">
-                                <% } %>
-                                <label for="movie<%=i%>"
-                                onclick = 'movieSelect("<%=i%>")'
-                                class=" cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/movie<%=i%>:bg-gray-300">
-                                <%=movielist[i].title %>
-                                </label>
-                                
-                                
-                            <%}%>
-
+    <div class = 'flex flex-col'>
+        <form method="GET" action = "/pay/selectseat">
+            <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
+                <div class = "select-container flex flex-row mx-auto w-full h-[450px] ml-4">
+                    <div class = 'select-movie w-1/4 mr-1 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            영화
+                        </div>
+                        <div class= "pr-1 p-3 border border-gray-400 h-full">
+                            <div class = "flex flex-col overflow-x-hidden max-h-96" id = 'movie-scroll'>
+                                <% for(let i = 0; i < movielist.length; i++) {%>
+                                    <% if(movielist[i].movieid == movieid) {%>
+                                        <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden" checked>
+                                    <% } else { %>
+                                        <input id = "movie<%=i%>" name = 'select-movie' value = '<%=movielist[i].movieid%>' type = 'radio' class="peer/movie<%=i%> hidden">
+                                    <% } %>
+                                    <label for="movie<%=i%>"
+                                    id = 'movie<%=i%>lable'
+                                    onclick = 'movieSelect("<%=i%>")'
+                                    class=" cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/movie<%=i%>:bg-gray-300">
+                                    <%=movielist[i].title %>
+                                    </label>
+                                    
+                                    
+                                <%}%>
+    
+                            </div>
                         </div>
                     </div>
+                    <div class = 'select-place w-1/4 mr-1 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            극장
+                        </div>
+                        <div class= "pr-1 p-3 border border-gray-400 h-full">
+                           
+                            <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
+                                <% for(let i = 0; i < placelist.length; i++) {%>
+                                    <% if(placelist[i].placeid == placeid) {%>
+                                        <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden" checked>
+                                    <% } else { %>
+                                        <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden">
+                                    <% } %>
+                                    <label for="place<%=i%>" id = "place<%=i%>lable"
+                                    onclick = 'placeSelect(event)'
+                                    class="cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/place<%=i%>:bg-gray-300">
+                                    <%=placelist[i].placename %>
+                                    </label> 
+    
+                                <%}%>
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class = 'select-date w-1/5 mr-1 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            날짜
+                        </div>
+                        <div class= "p-3 pr-0.5 border border-gray-400 h-full">
+                            <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96" id = 'date-scroll'>
+                                <% for(let i = 0; i < 11; i++) {%>
+                                    <input id = "date<%=i%>" name = 'select-date' type = 'radio' class="peer/date<%=i%> hidden">
+                                    <label for="date<%=i%>" id = "date<%=i%>lable"
+                                    onclick = 'dateSelect(event)'
+                                    class="cursor-pointer text-center text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/date<%=i%>:bg-gray-300 ">
+                                    </label> 
+    
+                                <%}%>
+    
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class = 'select-time w-1/4 flex flex-col'>
+                        <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
+                            시간
+                        </div>
+                        <div class= "p-3 border border-gray-400 h-full">
+                            <div id = 'box-select-time' class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
+                                <% for(let i = 0; i<5; i++) { %>
+                                    <input id = "time<%=i%>" name = 'select-time' type = 'radio' value = "time<%=i%>" class="peer/time<%=i%> hidden">
+                                    <label for="time<%=i%>" id = "time<%=i%>lable"
+                                    onclick = ''
+                                    class="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]">
+                                    <div class = "h-[60px] pt-3"><%= 6 + i*4 + ' : 00' %></div>
+                                    </label> 
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
+                <div class = 'w-1/5 mr-4 ml-2'>
+                    <img id = 'img-poster' class = 'w-full h-full '>
                 </div>
-                <div class = 'select-place w-1/4 mr-1 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        극장
+                <div class = 'w-1/4 ml-4 mx-2 flex flex-col font-bold'>
+                    <div class ='flex mt-16'>
+                        <div id = 'title'></div>
                     </div>
-                    <div class= "pr-1 p-3 border border-gray-400 h-full">
-                       
-                        <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
-                            <% for(let i = 0; i < placelist.length; i++) {%>
-                                <% if(placelist[i].placeid == placeid) {%>
-                                    <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden" checked>
-                                <% } else { %>
-                                    <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden">
-                                <% } %>
-                                <label for="place<%=i%>" id = "placelable<%=i%>"
-                                onclick = 'placeSelect(event)'
-                                class="cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/place<%=i%>:bg-gray-300">
-                                <%=placelist[i].placename %>
-                                </label> 
-
-                            <%}%>
-
-                        </div>
+                    <div class = 'flex relative top-10'>
+                        <div id = 'runningtime'> </div>
                     </div>
+                    <!-- <div>
+                        나이
+                    </div> -->
                 </div>
-                <div class = 'select-date w-1/5 mr-1 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        날짜
-                    </div>
-                    <div class= "p-3 pr-0.5 border border-gray-400 h-full">
-                        <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
-                            <% for(let i = 0; i < 11; i++) {%>
-                                <input id = "date<%=i%>" name = 'select-date' type = 'radio' class="peer/date<%=i%> hidden">
-                                <label for="date<%=i%>" id = "datelable<%=i%>"
-                                onclick = 'dateSelect(event)'
-                                class="cursor-pointer text-center text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/date<%=i%>:bg-gray-300 ">
-                                </label> 
-
-                            <%}%>
-
-                        </div>
+                <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
+                    <div class = 'mt-16 ml-4 flex'>
                         
+                        <div id = 'place' class = 'ml-6'></div>
+                    </div>
+                    <div class = 'mt-10 ml-4  flex'>
+                         
+                        <div id = 'date' class = 'ml-6'> </div>
+                        <div id = 'time' class = 'ml-2'> </div>
                     </div>
                 </div>
-                <div class = 'select-time w-1/4 flex flex-col'>
-                    <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
-                        시간
-                    </div>
-                    <div class= "p-3 border border-gray-400 h-full">
-                        <div id = 'box-select-time' class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
-                            <% for(let i = 0; i<5; i++) { %>
-                                <input id = "time<%=i%>" name = 'select-time' type = 'radio' class="peer/time<%=i%> hidden">
-                                <label for="time<%=i%>" id = "timelable<%=i%>"
-                                onclick = 'timeSelect(event)'
-                                class="cursor-pointer text-center text-xl font-medium my-2 w-[90%] hover:bg-gray-200 peer-checked/time<%=i%>:bg-gray-300 disabled:text-gray-300">
-                                <div class = "h-[60px] pt-3"><%= 6 + i*4 + ' : 00' %></div>
-                                </label> 
-                            <%}%>
-                        </div>
-                    </div>
+                <div class = 'w-1/5 ml-8 flex flex-col'>
+                    <button type = "submit" class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                        <div class = 'text-lg font-bold'>좌석 선택</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+                        </svg>
+                    </button>
                 </div>
-            </div>  
-        </div>
-        <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
-            <div class = 'w-1/5 mr-4 ml-2'>
-                <img id = 'img-poster' class = 'w-full h-full '>
+                
             </div>
-            <div class = 'w-1/4 ml-4 mx-2 flex flex-col font-bold'>
-                <div class ='flex mt-16'>
-                    <div id = 'title'></div>
-                </div>
-                <div class = 'flex relative top-10'>
-                    <div id = 'runningtime'> </div>
-                </div>
-                <!-- <div>
-                    나이
-                </div> -->
-            </div>
-            <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
-                <div class = 'mt-16 ml-4 flex'>
-                    극장 
-                    <div id = 'place' class = 'ml-6'></div>
-                </div>
-                <div class = 'mt-10 ml-4  flex'>
-                    일시 
-                    <div id = 'date' class = 'ml-6'> </div>
-                    <div id = 'time' class = 'ml-2'> </div>
-                </div>
-            </div>
-            <div class = 'w-1/5 ml-8 flex flex-col'>
-                <button type = "submit" class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
-                    <div class = 'text-lg font-bold'>좌석 선택</div>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                        <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
-                    </svg>
-                </button>
-            </div>
-            
-        </div>
+        </form>
 
     </div>
 
 
-<script>
-    let today = new Date();
-    for(let i = 0; i < 11; i ++){
+    <script>
+        let movielist = []
+        "<% for(let i = 0 ; i < movielist.length; i ++ ) {%>"
+        movielist.push({
+          title : "<%=movielist[i].title%>",
+          content : "<%=movielist[i].content%>",
+          poster_src : "<%=movielist[i].poster_src%>",
+          time : "<%=Math.floor(movielist[i].runningTime)%>" + "시간 " + "<%=Math.round(60*(movielist[i].runningTime - Math.floor(movielist[i].runningTime))) %>" + "분",
+          age : "<%=movielist[i].age%>",
+          id : "<%=movielist[i].movieid%>"
+        })
+        "<%}%>"
+        function getTimeAjax(mi,pi,d){
+            $.ajax({
+               type: "POST",
+               url: "/pay",
+               data: JSON.stringify({ movieid : mi, placeid : pi, date : d }),
+               contentType: "application/json; charset=utf-8",
+               dataType: "json",
+               success: (data)=> {
+                    document.getElementById('place').textContent = '극장  ' + document.querySelector('input[name="select-place"]:checked').nextElementSibling.innerText
+                    document.getElementById('date').textContent = '일시  ' + document.querySelector('input[name="select-date"]:checked').nextElementSibling.innerText
+                    let movieid = Number(document.querySelector('input[name="select-movie"]:checked').value)
+                    if(data[0]){
+                        let v = Object.values(data[0])
+                        
+                        for(i = 0; i < 5; i ++)
+                        {
+                            if (movieid == v[i]){
+                                document.getElementById('time'+i+'lable').addEventListener('click', (i)=>timeSelect(i))
+                                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl font-medium my-2 w-[90%] hover:bg-gray-200 peer-checked/time" +i +":bg-gray-300"
+                            }
+                            else{
+                                document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
+                                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
+                            }
+                        }
+                    }
+                    else{
+                         disable_time()
+                    }
+                }
+          });
+
+        }
+
+        let day = ['일','월','화','수','목','금','토']
+        let today = new Date();
         let month = today.getMonth() + 1
-        today.setDate(today.getDate() + 1)
-        document.getElementById('datelable'+i).textContent = month +"월 " + today.getDate() + "일 "
-    }
-    
-    let movielist = []
-    
-    "<% for(let i = 0 ; i < movielist.length; i ++ ) {%>"
-    movielist.push({
-      title : "<%=movielist[i].title%>",
-      content : "<%=movielist[i].content%>",
-      poster_src : "<%=movielist[i].poster_src%>",
-      time : "<%=Math.floor(movielist[i].runningTime)%>" + "시간 " + "<%=Math.round(60*(movielist[i].runningTime - Math.floor(movielist[i].runningTime))) %>" + "분",
-      age : "<%=movielist[i].age%>",
-      id : "<%=movielist[i].movieid%>"
-    })
-    "<%}%>"
-
-
-
-    let movie;
-    let place;
-    let date;
-    let time;
-    function select(){
-        movie = document.querySelector('input[name="select-movie"]:checked');
-        place = document.querySelector('input[name="select-place"]:checked');
-        date = document.querySelector('input[name="select-date"]:checked');
-        time =  document.querySelector('input[name="select-time"]:checked');
-
-        if(!movie || !place || !date){
-            document.getElementById('box-select-time').className='hidden'
+        let selectedDate = new Date("<%=date%>")
+        for(let i = 0; i < 11; i ++){
+            if(selectedDate.getMonth() +1 == month && selectedDate.getDate() == today.getDate())
+            {
+                document.getElementById('date'+i).checked = true
+            }
+            document.getElementById('date'+i).value = '2023-'+month +'-'+today.getDate()
+            document.getElementById('date'+i+'lable').textContent = month +"월 " + today.getDate() + "일  (" + day[today.getDay()] + ")"
+            today.setDate(today.getDate() + 1)
         }
-        else{
-            document.getElementById('box-select-time').className='flex flex-col overflow-y-auto overflow-x-hidden h-96'
+        //todo //
+        //이미 날짜가 선택되어 있을 때, 영화 혹은 극장을 바꾸려 하면 select를 초기화 하는 함수
+        function init_select(){
+            
+        }
+
+        function disable_time(){
+            for(i = 0; i < 5; i ++){   
+                document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
+                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
+            }  
+        }
+        function movieSelect(id){
+            document.getElementById('img-poster').src = movielist[id].poster_src
+            document.getElementById('title').textContent = movielist[id].title
+            document.getElementById('runningtime').textContent = '상영시간 : ' + movielist[id].time
+            
+        }
+        function placeSelect(event){
+            
+            document.getElementById('place').textContent = '극장  ' + document.getElementById(event.target.id).textContent
+        }
+        function dateSelect(event){
+            let movieid = document.querySelector('input[name="select-movie"]:checked').value
+            let placeid = document.querySelector('input[name="select-place"]:checked').value
+            let date = event.target.previousSibling.previousSibling.value
+            document.getElementById('date').textContent = '일시  ' + document.getElementById(event.target.id).textContent
+            getTimeAjax(movieid,placeid,date)
+            
+        }
+
+        function timeSelect(event){
+            document.getElementById('time').textContent = event.target.textContent
+           
+        }
+
+        let scroll_movie = document.getElementById('movie-scroll')
+        let scroll_date = document.getElementById('date-scroll')
+        let loc_movie = document.getElementById(document.querySelector('input[name="select-movie"]:checked').id +'lable').offsetTop
+        let loc_date = document.getElementById(document.querySelector('input[name="select-date"]:checked').id +'lable').offsetTop
+        scroll_movie.scrollTo({top : loc_movie - 157 })
+        scroll_date.scrollTo({top : loc_date - 157 })
+
+        function checkerr(err){
+            
+            if(err){
+                alert(err)
+                document.querySelector('input[name="select-place"]:checked').checked=false
+                document.querySelector('input[name="select-date"]:checked').checked=false
+            }
+            else{
+                document.getElementById('place').textContent = '극장  ' + (document.querySelector('input[name="select-place"]:checked').nextElementSibling.innerText);
+                document.getElementById('date').textContent = '일시  ' + (document.querySelector('input[name="select-date"]:checked').nextElementSibling.innerText)
+            }
         }
         
-    }
-    function movieSelect(id){
-        movie = id
-        document.getElementById('img-poster').src = movielist[id].poster_src
-        document.getElementById('title').textContent = movielist[id].title
-        document.getElementById('runningtime').textContent = '상영시간 : ' + movielist[id].time
-
-    }
-    function placeSelect(event){
+        movieSelect(document.querySelector('input[name="select-movie"]:checked').id.slice(5));        
+        getTimeAjax("<%=movieid%>", "<%=placeid%>", "<%=date%>")
+        let err = "<%=err%>"
+        if (err) checkerr(err)
         
-        document.getElementById('place').textContent = document.getElementById(event.target.id).textContent
-    }
-    function dateSelect(event){
-        
-        document.getElementById('date').textContent = document.getElementById(event.target.id).textContent
-
-    }
-    function timeSelect(event){        
-        document.getElementById('time').textContent = event.target.textContent
-    }
-    
 
 
-
-   
-
-</script>
+    </script>
 </body>
 </html>
