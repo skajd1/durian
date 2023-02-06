@@ -78,6 +78,7 @@
                             <div class = "mx-auto mt-4">
                                 <% for (let i = 0; i < 5; i ++) { %>
                                 <div class = "mt-4 flex flex-row">
+                                    <div class="mr-2 text-xs w-[18px]"><%=String.fromCharCode(i+65)%></div>
                                     <% for (let j = 1; j < 11 ; j ++) { %>                                    
                                         <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=j + i*10%>' class = "peer/seat<%=j + i*10%> hidden">
                                         <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
@@ -133,6 +134,10 @@
                     <div class = 'mt-10 ml-4 flex whitespace-nowrap'>
                         <div id = 'date' class = 'ml-6'>일시  <%=date.split('-')[1] +'월 '+ date.split('-')[2] +'일 ' + dd %> </div>
                         <div id = 'time' class = 'ml-2'><%=6 + time[4]*4 + ' : 00'%> </div>
+                    </div>
+                    <div class = 'mt-10 ml-4 flex whitespace-nowrap'>
+                        <div id = 'seat' class = 'ml-6'></div>
+                        
                     </div>
                 </div>
                 <div class = 'w-1/5 ml-8 flex flex-col'>

@@ -142,7 +142,7 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
         let price = num_adult * 20000 + num_teen * 10000;
         let conn = yield pool.getConnection();
         try {
-            let sql_userdb = 'select point from users where userid = ?';
+            let sql_userdb = 'select point from userdb where userid = ?';
             let params_userdb = [userid];
             let [userdb] = yield conn.query(sql_userdb, params_userdb);
             let sql_movieentity = 'select seatStatus from movieentity where entityid = ?';

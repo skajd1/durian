@@ -161,7 +161,7 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
         let price : number = num_adult * 20000 + num_teen * 10000
         let conn = await pool.getConnection();
         try{
-            let sql_userdb : string = 'select point from users where userid = ?'
+            let sql_userdb : string = 'select point from userdb where userid = ?'
             let params_userdb : Array<string> = [userid]
             let [userdb] : any = await conn.query(sql_userdb,params_userdb)
 
@@ -174,7 +174,7 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
                 return res.send("<script>alert('결제 금액이 부족합니다.');document.location.href='/'</script>")
             }
             // 좌석 확인
-            
+
 
              
             
