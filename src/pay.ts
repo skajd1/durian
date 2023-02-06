@@ -153,7 +153,7 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
         let placeid :number = Number(data.placeid)
         let date :string = data.date
         let time :string = data.time
-        let seat :Array<Array<number>> = data.seat
+        let seat :Array<string> = data['select-seat']
         let entityid : number = Number(data.entityid)
         let userid :string = req.session.user_id
 
@@ -171,17 +171,19 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
             let params_movieentity : Array<number> = [entityid]
             let [movieentity] : any = await conn.query(sql_movieentity,params_movieentity)
 
+            let seat_status = JSON.parse(movieentity[0].seatStatus)
+            //선택한 좌석이 이미 예약되어있는 지
+            for(let s of seat){
+                if(seat_status[s[0]][s[1]])
+                {
+                    return res.send("<script>alert('선택한 좌석이 이미 예약되어있습니다.');document.location.href='/'</script>")
+                }
+            }
             //결제 금액이 충분한 지
             if (price > userdb[0].point){
                 return res.send("<script>alert('결제 금액이 부족합니다.');document.location.href='/'</script>")
             }
-            // 좌석 확인
-            // else if (){
-
-
-            // conn.release();
-            // return res.send("<script>alert('선택한 좌석이 이미 예약되어있습니다.');document.location.href='/'</script>")
-            // }
+            
             else{
 
                 // 1. paylogdb 릴레이션 생성 및 2. movieentity 좌석 현황 업데이트 및 3. userdb 포인트 차감
