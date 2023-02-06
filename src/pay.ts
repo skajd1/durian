@@ -148,29 +148,43 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
     }
     else{
-        // 결제 금액이 충분한 지
-        // 좌석이 이미 예약되어있는지
-        // 좌석이 1개 이상 선택되었는지
-
-
         let data = req.body
-        let movieid :string = data.movieid
-        let placeid :string = data.placeid
+        let movieid :number = Number(data.movieid)
+        let placeid :number = Number(data.placeid)
         let date :string = data.date
         let time :string = data.time
         let seat :string = data.seat
-        let num_adult : number = data.num_audlt
-        let num_teen : number = data.num_teen
+        let entityid : number = Number(data.entityid)
+        let num_adult : number = data['select-adult']
+        let num_teen : number = data['select-teen']
         let userid :string = req.session.user_id
         let price : number = num_adult * 20000 + num_teen * 10000
         let conn = await pool.getConnection();
         try{
-            let sql : string = ''
+            let sql_userdb : string = 'select point from users where userid = ?'
+            let params_userdb : Array<string> = [userid]
+            let [userdb] : any = await conn.query(sql_userdb,params_userdb)
 
-            // user.point
+            let sql_movieentity : string = 'select seatStatus from movieentity where entityid = ?'
+            let params_movieentity : Array<number> = [entityid]
+            let [movieentity] : any = await conn.query(sql_movieentity,params_movieentity)
+
+            //결제 금액이 충분한 지
+            if (price > userdb[0].point){
+                return res.send("<script>alert('결제 금액이 부족합니다.');document.location.href='/'</script>")
+            }
+            // 좌석 확인
+            
+
+             
+            
+            
+
+
+
 
             conn.release();
-            return res.render('',{login : true})
+            return res.send("성공")
         }catch (err) {
             console.error(err)
             conn.release();

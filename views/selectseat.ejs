@@ -15,10 +15,10 @@
     <%- include ("header_logout.ejs") %>
     <% } %>
     <div class = 'flex flex-col'>
-        <form method="GET" action = "/pay/">
+        <form method="POST" action = "/pay/selectseat">
             <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
                 <div class = "select-container flex flex-col mx-auto w-full h-[450px]">
-                    <div class = 'h-[35px] bg-yellow-500 text-center rounded text-white text-lg font-bold pt-1'>인원/좌석 선택</div>
+                    <div class = 'h-[35px] bg-yellow-500 text-center rounded text-white text-lg font-bold pt-1'>인원 / 좌석 선택</div>
                     <div class = "h-1/4 flex flex-row mt-2">
                         <div class = "w-[45%] border-r border-gray-400 flex flex-row justify-center pt-3">
                             <div class = "flex flex-col p-2">
@@ -33,12 +33,12 @@
                                 <div class = "flex flex-row p-2 ">
                                     <% for (let i = 0 ; i < 7 ; i ++) { %>
                                         <% if (i == 0) { %>
-                                            <input type = 'radio' id = 'adult<%=i%>' name = 'select-adult' class = "peer/adult<%=i%> hidden" checked>
+                                            <input type = 'radio' id = 'adult<%=i%>' name = 'select-adult' value = '<%=i%>' class = "peer/adult<%=i%> hidden" checked>
                                             <label for="adult<%=i%>" id = "adult<%=i%>label"
                                             class="cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/adult<%=i%>:bg-yellow-500 peer-checked/adult<%=i%>:text-white peer-checked/adult<%=i%>:font-bold">
                                             <%=i%></label>
                                         <% } else  {%>
-                                            <input type = 'radio' id = 'adult<%=i%>' name = 'select-adult' class = "peer/adult<%=i%> hidden">
+                                            <input type = 'radio' id = 'adult<%=i%>' name = 'select-adult' value = '<%=i%>' class = "peer/adult<%=i%> hidden">
                                             <label for="adult<%=i%>" id = "adult<%=i%>label"
                                             class="cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/adult<%=i%>:bg-yellow-500 peer-checked/adult<%=i%>:text-white peer-checked/adult<%=i%>:font-bold">
                                             <%=i%></label>
@@ -48,12 +48,12 @@
                                 <div class = "flex flex-row p-2 ">
                                     <% for (let i = 0 ; i < 7 ; i ++) { %>
                                         <% if (i == 0) { %>
-                                            <input type = 'radio' id = 'teen<%=i%>' name = 'select-teen' class = "peer/teen<%=i%> hidden" checked>
+                                            <input type = 'radio' id = 'teen<%=i%>' name = 'select-teen' value = '<%=i%>' class = "peer/teen<%=i%> hidden" checked>
                                             <label for="teen<%=i%>" id = "teen<%=i%>label"
                                             class="cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/teen<%=i%>:bg-yellow-500 peer-checked/teen<%=i%>:text-white peer-checked/teen<%=i%>:font-bold">
                                             <%=i%></label>
                                         <% } else  {%>
-                                            <input type = 'radio' id = 'teen<%=i%>' name = 'select-teen' class = "peer/teen<%=i%> hidden">
+                                            <input type = 'radio' id = 'teen<%=i%>' name = 'select-teen' value = '<%=i%>' class = "peer/teen<%=i%> hidden">
                                             <label for="teen<%=i%>" id = "teen<%=i%>label"
                                             class = "cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/teen<%=i%>:bg-yellow-500 peer-checked/teen<%=i%>:text-white peer-checked/teen<%=i%>:font-bold">
                                             <%=i%></label>
@@ -65,17 +65,51 @@
                             
                         </div>
                         <div class = "w-[53%] flex flex-col">
-                            <div id = 'price-detail'></div>
-                            <div id = 'total-price'></div>
+                            <div class = 'ml-4 mt-6' id = 'price-detail'></div>
+                            <div class = 'ml-4' id = 'total-price'></div>
                         </div>
                     </div>
 
-                    <div>
-                        좌석
+                    <div class = "flex flex-row h-2/3">
+                        <div class = "flex flex-col w-5/6 h-full">
+                            <div class="mx-auto mt-4 w-3/4 text-center font-bold bg-repeat-x" style="background-image: url(http://img.cgv.co.kr/CGV_RIA/Ticket/image/reservation/step2/screen_bg.png)">
+                                SCREEN
+                            </div>
+                            <div class = "mx-auto mt-4">
+                                <% for (let i = 0; i < 5; i ++) { %>
+                                <div class = "mt-4 flex flex-row">
+                                    <% for (let j = 1; j < 11 ; j ++) { %>                                    
+                                        <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=j + i*10%>' class = "peer/seat<%=j + i*10%> hidden">
+                                        <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
+                                        class="ml-1 cursor-pointer peer-checked/seat<%=j + i*10%>:bg-yellow-500 peer-checked/seat<%=j + i*10%>:text-white peer-checked/seat<%=j + i*10%>:font-bold">
+                                        <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]"><%=j%></div>
+                                        </label>
+                                    <% } %>
+                                </div>
+                                <% } %>
+
+                            </div>
+
+                        </div>
+                        <div class = "flex flex-col w-1/6 h-full justify-center p-2">
+                            <div class="flex flex-row">
+                                <div class="mr-2 bg-gray-500 w-[10px] h-[10px]"></div>
+                                예매 가능
+                            </div>
+                            <div class="flex flex-row mt-4">
+                                <div class="mr-2 bg-gray-300 w-[10px] h-[10px]"></div>
+                                예매 불가
+                            </div>
+                            <div class="flex flex-row mt-4">
+                                <div class="mr-2 bg-yellow-500 w-[10px] h-[10px]"></div>
+                                선택
+                            </div>
+                        </div>
+                        
                     </div>
 
 
-
+                    
 
                 </div>  
             </div>
@@ -112,10 +146,12 @@
                 </div>
                 
             </div>
+
+            <input type = 'hidden' name = 'entityid' value = '<%=movieentity.entityid%>'>
+            
         </form>
 
     </div>
-
 
 
     <script>
@@ -129,27 +165,41 @@
         {
             document.getElementById('adult'+i).addEventListener('click', function(){
                 num_adult = i;
+
+                if(num_adult + num_teen >6){
+                    alert('최대 6명까지 예매 가능합니다.')
+                    num_adult = 0;
+                    document.getElementById('adult'+i).checked = false;
+                    return;
+                }
+
                 if(!num_teen)
                 {
                     text = '일반 : ' + ' 20,000 원 X ' + num_adult;
                 }
                 else{
-                    text = '일반 : ' + ' 20,000 원 X ' + num_adult + ', 청소년 : ' + ' 10,000 원 X ' + num_teen;
+                    text = '일반 : ' + ' 20,000 원 X ' + num_adult + ' | 청소년 : ' + ' 10,000 원 X ' + num_teen;
                 }
                 document.getElementById('price-detail').textContent = text
-                document.getElementById('total-price').textContent = '총 금액 : ' + (num_adult*adultprice + num_teen*teenprice) + '원';
+                document.getElementById('total-price').textContent = '총 금액 : ' + (num_adult*adultprice + num_teen*teenprice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
             })
             document.getElementById('teen'+i).addEventListener('click', function(){
                 num_teen = i;
+                if(num_adult + num_teen >6){
+                    alert('최대 6명까지 예매 가능합니다.')
+                    num_adult = 0;
+                    document.getElementById('teen'+i).checked = false;
+                    return;
+                }
                 if(!num_adult)
                 {
                     text = '청소년 : ' + ' 10,000 원 X ' + num_teen;
                 }
                 else{
-                    text = '일반 : ' + ' 20,000 원 X ' + num_adult + ', 청소년 : ' + ' 10,000 원 X ' + num_teen;
+                    text = '일반 : ' + ' 20,000 원 X ' + num_adult + ' | 청소년 : ' + ' 10,000 원 X ' + num_teen;
                 }
                 document.getElementById('price-detail').textContent = text
-                document.getElementById('total-price').textContent = '총 금액 : ' + (num_adult*adultprice + num_teen*teenprice) + '원';
+                document.getElementById('total-price').textContent = '총 금액 : ' + (num_adult*adultprice + num_teen*teenprice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
             })
         }
 

@@ -129,25 +129,32 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
     }
     else {
-        // 결제 금액이 충분한 지
-        // 좌석이 이미 예약되어있는지
-        // 좌석이 1개 이상 선택되었는지
         let data = req.body;
-        let movieid = data.movieid;
-        let placeid = data.placeid;
+        let movieid = Number(data.movieid);
+        let placeid = Number(data.placeid);
         let date = data.date;
         let time = data.time;
         let seat = data.seat;
-        let num_adult = data.num_audlt;
-        let num_teen = data.num_teen;
+        let entityid = Number(data.entityid);
+        let num_adult = data['select-adult'];
+        let num_teen = data['select-teen'];
         let userid = req.session.user_id;
         let price = num_adult * 20000 + num_teen * 10000;
         let conn = yield pool.getConnection();
         try {
-            let sql = '';
-            // user.point
+            let sql_userdb = 'select point from users where userid = ?';
+            let params_userdb = [userid];
+            let [userdb] = yield conn.query(sql_userdb, params_userdb);
+            let sql_movieentity = 'select seatStatus from movieentity where entityid = ?';
+            let params_movieentity = [entityid];
+            let [movieentity] = yield conn.query(sql_movieentity, params_movieentity);
+            //결제 금액이 충분한 지
+            if (price > userdb[0].point) {
+                return res.send("<script>alert('결제 금액이 부족합니다.');document.location.href='/'</script>");
+            }
+            // 좌석 확인
             conn.release();
-            return res.render('', { login: true });
+            return res.send("성공");
         }
         catch (err) {
             console.error(err);
