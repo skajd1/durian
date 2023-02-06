@@ -79,12 +79,21 @@
                                 <% for (let i = 0; i < 5; i ++) { %>
                                 <div class = "mt-4 flex flex-row">
                                     <div class="mr-2 text-xs w-[18px]"><%=String.fromCharCode(i+65)%></div>
-                                    <% for (let j = 1; j < 11 ; j ++) { %>                                    
-                                        <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=j + i*10%>' class = "peer/seat<%=j + i*10%> hidden">
-                                        <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
-                                        class="ml-1 cursor-pointer peer-checked/seat<%=j + i*10%>:bg-yellow-500 peer-checked/seat<%=j + i*10%>:text-white peer-checked/seat<%=j + i*10%>:font-bold">
-                                        <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]"><%=j%></div>
-                                        </label>
+                                    <% for (let j = 1; j < 13 ; j ++) { %>
+                                        <% if(seat_status[i][j-1]) { %>
+                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=j + i*10%>' class = "peer/seat<%=j + i*10%> hidden">
+                                            <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
+                                            class="ml-1 bg-gray-500">
+                                            <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]">X</div>
+                                            </label>
+                                        <% } else { %>
+                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=j + i*10%>' class = "peer/seat<%=j + i*10%> hidden">
+                                            <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
+                                            class="ml-1 bg-gray-200 cursor-pointer peer-checked/seat<%=j + i*10%>:bg-yellow-500 peer-checked/seat<%=j + i*10%>:text-white peer-checked/seat<%=j + i*10%>:font-bold">
+                                            <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]"><%=j%></div>
+                                            </label>
+                                        <% } %>
+                                        
                                     <% } %>
                                 </div>
                                 <% } %>
@@ -95,11 +104,11 @@
                         <div class = "flex flex-col w-1/6 h-full justify-center p-2">
                             <div class="flex flex-row">
                                 <div class="mr-2 bg-gray-500 w-[10px] h-[10px]"></div>
-                                예매 가능
+                                예매 불가
                             </div>
                             <div class="flex flex-row mt-4">
                                 <div class="mr-2 bg-gray-300 w-[10px] h-[10px]"></div>
-                                예매 불가
+                                예매 가능
                             </div>
                             <div class="flex flex-row mt-4">
                                 <div class="mr-2 bg-yellow-500 w-[10px] h-[10px]"></div>
