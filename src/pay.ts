@@ -183,7 +183,6 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
             if (price > userdb[0].point){
                 return res.send("<script>alert('결제 금액이 부족합니다.');document.location.href='/'</script>")
             }
-            
             else{
 
                 // 1. paylogdb 릴레이션 생성 및 2. movieentity 좌석 현황 업데이트 및 3. userdb 포인트 차감
