@@ -8,7 +8,7 @@ type Movie={
     runningTime : number,
     poster_src : string
 }
-
+const check = require('./check');
 const router = express.Router();
 const session = require('express-session');
 const options = {
@@ -78,24 +78,6 @@ router.get('/', async (req : Request, res : Response)=>{
        
     }
 })
-router.get('/selectseat', async (req: Request, res: Response) =>{
-    if(!req.session.isLogined){
-        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
-    }
-    else{
-        let conn = await pool.getConnection();
-
-        try{
-
-            conn.release();
-            return res.send(req.query)
-        } catch(err) {
-
-            console.error(err)
-            conn.release();
-        }
-    }
-})
 router.post('/', async (req: Request, res: Response) =>{
     if(!req.session.isLogined){
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
@@ -107,14 +89,53 @@ router.post('/', async (req: Request, res: Response) =>{
         let date :string = data.date
         
         let conn = await pool.getConnection();
-
+        
         try{
             let sql_table :string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');"
             let params_table : Array<string> = [placeid,date]
             let [times] : any = await conn.query(sql_table,params_table)
             conn.release();
             return res.send(times)
+            
+        } catch(err) {
+            
+            console.error(err)
+            conn.release();
+        }
+    }
+})
+router.get('/selectseat', async (req: Request, res: Response) =>{
+    if(!req.session.isLogined){
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
+    }
+    else{
+        let movieid : Number = Number(req.query['select-movie'])
+        let placeid : Number = Number(req.query['select-place'])
+        let date : string = req.query['select-date'] as string
+        let time : string = req.query['select-time'] as string
+        let day : Array<string> = ['(일)','(월)', '(화)', '(수)', '(목)', '(금)', '(토)']
+        let dd :string = day[new Date(date).getDay()]
+        if(!movieid || !placeid || !date || !time){
+            return res.send("<script>alert('선택되지 않은 사항이 있습니다.');document.location.href=document.referrer</script>")
+        }
 
+        let conn = await pool.getConnection();
+
+        try{
+            // 영화 상세 정보 (영화 이름, age, 러닝타임, img소스)
+            // 영화 개체 정보 (좌석 현황)
+            let sql_moviedetail : string = "select * from moviedetail where movieid = ?; "
+            let parmas_moviedetail : Array<any> = [movieid]
+
+            let sql_movieentity : string = "select entityid,seatStatus,placename from places,movieentity where start_time = ? and date = STR_TO_DATE(?,'%Y-%m-%d') and movieentity.placeid = ? and places.placeid = ?"
+            let params_movieentity :Array<any> = [Number(time[4])+1, date, placeid, placeid]
+
+            let [rows] = await conn.query(sql_moviedetail + sql_movieentity, parmas_moviedetail.concat(params_movieentity))
+
+
+
+            conn.release();
+            return res.render('selectseat', {login : true, moviedetail : rows[0][0], movieentity : rows[1][0], date : date, dd:dd, time : time})
         } catch(err) {
 
             console.error(err)
@@ -122,6 +143,41 @@ router.post('/', async (req: Request, res: Response) =>{
         }
     }
 })
+router.post('/selectseat', async (req: Request, res: Response) =>{
+    if(!req.session.isLogined){
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
+    }
+    else{
+        // 결제 금액이 충분한 지
+        // 좌석이 이미 예약되어있는지
+        // 좌석이 1개 이상 선택되었는지
+
+
+        let data = req.body
+        let movieid :string = data.movieid
+        let placeid :string = data.placeid
+        let date :string = data.date
+        let time :string = data.time
+        let seat :string = data.seat
+        let num_adult : number = data.num_audlt
+        let num_teen : number = data.num_teen
+        let userid :string = req.session.user_id
+        let price : number = num_adult * 20000 + num_teen * 10000
+        let conn = await pool.getConnection();
+        try{
+            let sql : string = ''
+
+            // user.point
+
+            conn.release();
+            return res.render('',{login : true})
+        }catch (err) {
+            console.error(err)
+            conn.release();
+        }
+    }
+})
+
 
 
 module.exports = router;

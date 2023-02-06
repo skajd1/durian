@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const check = require('./check');
 const router = express_1.default.Router();
 const session = require('express-session');
 const options = {
@@ -68,22 +69,6 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 }));
-router.get('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.session.isLogined) {
-        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
-    }
-    else {
-        let conn = yield pool.getConnection();
-        try {
-            conn.release();
-            return res.send(req.query);
-        }
-        catch (err) {
-            console.error(err);
-            conn.release();
-        }
-    }
-}));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.session.isLogined) {
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
@@ -100,6 +85,69 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             let [times] = yield conn.query(sql_table, params_table);
             conn.release();
             return res.send(times);
+        }
+        catch (err) {
+            console.error(err);
+            conn.release();
+        }
+    }
+}));
+router.get('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.session.isLogined) {
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
+    }
+    else {
+        let movieid = Number(req.query['select-movie']);
+        let placeid = Number(req.query['select-place']);
+        let date = req.query['select-date'];
+        let time = req.query['select-time'];
+        let day = ['(일)', '(월)', '(화)', '(수)', '(목)', '(금)', '(토)'];
+        let dd = day[new Date(date).getDay()];
+        if (!movieid || !placeid || !date || !time) {
+            return res.send("<script>alert('선택되지 않은 사항이 있습니다.');document.location.href=document.referrer</script>");
+        }
+        let conn = yield pool.getConnection();
+        try {
+            // 영화 상세 정보 (영화 이름, age, 러닝타임, img소스)
+            // 영화 개체 정보 (좌석 현황)
+            let sql_moviedetail = "select * from moviedetail where movieid = ?; ";
+            let parmas_moviedetail = [movieid];
+            let sql_movieentity = "select entityid,seatStatus,placename from places,movieentity where start_time = ? and date = STR_TO_DATE(?,'%Y-%m-%d') and movieentity.placeid = ? and places.placeid = ?";
+            let params_movieentity = [Number(time[4]) + 1, date, placeid, placeid];
+            let [rows] = yield conn.query(sql_moviedetail + sql_movieentity, parmas_moviedetail.concat(params_movieentity));
+            conn.release();
+            return res.render('selectseat', { login: true, moviedetail: rows[0][0], movieentity: rows[1][0], date: date, dd: dd, time: time });
+        }
+        catch (err) {
+            console.error(err);
+            conn.release();
+        }
+    }
+}));
+router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.session.isLogined) {
+        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
+    }
+    else {
+        // 결제 금액이 충분한 지
+        // 좌석이 이미 예약되어있는지
+        // 좌석이 1개 이상 선택되었는지
+        let data = req.body;
+        let movieid = data.movieid;
+        let placeid = data.placeid;
+        let date = data.date;
+        let time = data.time;
+        let seat = data.seat;
+        let num_adult = data.num_audlt;
+        let num_teen = data.num_teen;
+        let userid = req.session.user_id;
+        let price = num_adult * 20000 + num_teen * 10000;
+        let conn = yield pool.getConnection();
+        try {
+            let sql = '';
+            // user.point
+            conn.release();
+            return res.render('', { login: true });
         }
         catch (err) {
             console.error(err);

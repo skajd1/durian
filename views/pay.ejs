@@ -122,12 +122,10 @@
                     </div> -->
                 </div>
                 <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
-                    <div class = 'mt-16 ml-4 flex'>
-                        
+                    <div class = 'mt-16 ml-4 flex whitespace-nowrap'>
                         <div id = 'place' class = 'ml-6'></div>
                     </div>
-                    <div class = 'mt-10 ml-4  flex'>
-                         
+                    <div class = 'mt-10 ml-4  flex whitespace-nowrap'>
                         <div id = 'date' class = 'ml-6'> </div>
                         <div id = 'time' class = 'ml-2'> </div>
                     </div>
@@ -182,7 +180,7 @@
                             }
                             else{
                                 document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
-                                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
+                                document.getElementById('time'+i+'lable').className="text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
                             }
                         }
                     }
@@ -210,24 +208,48 @@
         //todo //
         //이미 날짜가 선택되어 있을 때, 영화 혹은 극장을 바꾸려 하면 select를 초기화 하는 함수
         function init_select(){
-            
+            let selected_place = document.querySelector('input[name="select-place"]:checked')
+            let selected_date = document.querySelector('input[name="select-date"]:checked')
+            let selected_time = document.querySelector('input[name="select-time"]:checked')
+            if (selected_place || selected_date)
+            {   
+                selected_place.checked = false
+                selected_date.checked = false
+                if (selected_time)
+                    selected_time.checked = false
+                document.getElementById('place').textContent = ''
+                document.getElementById('date').textContent = ''
+                document.getElementById('time').textContent = ''
+                disable_time()
+            }
+
         }
 
         function disable_time(){
             for(i = 0; i < 5; i ++){   
                 document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
-                document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
+                document.getElementById('time'+i+'lable').className="text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
             }  
         }
         function movieSelect(id){
+            init_select()
             document.getElementById('img-poster').src = movielist[id].poster_src
             document.getElementById('title').textContent = movielist[id].title
-            document.getElementById('runningtime').textContent = '상영시간 : ' + movielist[id].time
+            document.getElementById('runningtime').textContent = '상영시간 ' + movielist[id].time
             
         }
         function placeSelect(event){
             
-            document.getElementById('place').textContent = '극장  ' + document.getElementById(event.target.id).textContent
+            let selected_date = document.querySelector('input[name="select-date"]:checked')
+            if(selected_date){
+                selected_date.checked = false;
+            }
+            
+            
+            document.getElementById('date').textContent = ''
+            document.getElementById('time').textContent = ''
+            document.getElementById('place').textContent = '극장  ' + document.getElementById(event.target.id).textContent          
+            disable_time()
         }
         function dateSelect(event){
             let movieid = document.querySelector('input[name="select-movie"]:checked').value
@@ -263,7 +285,10 @@
             }
         }
         
-        movieSelect(document.querySelector('input[name="select-movie"]:checked').id.slice(5));        
+        let checked_movieId = document.querySelector('input[name="select-movie"]:checked').id.slice(5)
+        document.getElementById('img-poster').src = movielist[checked_movieId].poster_src
+        document.getElementById('title').textContent = movielist[checked_movieId].title
+        document.getElementById('runningtime').textContent = '상영시간 ' + movielist[checked_movieId].time   
         getTimeAjax("<%=movieid%>", "<%=placeid%>", "<%=date%>")
         let err = "<%=err%>"
         if (err) checkerr(err)
