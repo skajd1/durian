@@ -24,6 +24,7 @@ const sessionStore = new mysqlStore(options);
 const bodyParser = require('body-parser');
 const pool = require('./mysql');
 
+
 router.use(session({
     secret : "keykey",
     resave : false,

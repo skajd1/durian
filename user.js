@@ -21,6 +21,8 @@ const options = {
     password: 'admin',
     database: 'moviedb'
 };
+const fs = require('fs');
+const resvHtml = fs.readFileSync('./views/mypage/reservation.html', 'utf8');
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
 const router = express_1.default.Router();
@@ -62,9 +64,8 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let conn = yield pool.getConnection();
         try {
             let [rows] = yield conn.query(sql + sql_paylogdb, params);
-            console.log(rows[1]);
             conn.release();
-            return res.render('mypage', { login: true, uid: uid, birth: rows[0][0].birth, point: rows[0][0].point, log: rows[1] });
+            return res.render('mypage', { login: true, uid: uid, birth: rows[0][0].birth, point: rows[0][0].point, log: rows[1], resv: resvHtml });
         }
         catch (err) {
             conn.release();

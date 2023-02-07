@@ -1,1 +1,44 @@
-<h1>test</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+    <section class="text-gray-600 body-font">
+        <div class="container px-5 py-24 mx-auto flex items-center md:mx-auto">
+            <div id="user-list" class="w-2/3 mx-auto h-[650px] bg-gray-100 rounded-lg  xs:p-4 p-4 flex mt-10 md:mt-5">
+  
+                <div class = "w-1/2 flex flex-col mx-auto rounded border-2 border-gray-400 px-2 py-2 ">
+                    <span class = "text-lg mx-auto"> 예매 내역 </span>
+                    <div class = "mx-auto w-full flex flex-col">
+                        <div class="flex">
+                            <div class ="w-1/6 px-2 py-1 border-r border-b border-gray-300 text-center"> # </div>
+                            <div class = "w-1/5 py-1 border-b border-gray-300 text-center"> 영화 이름</div>
+                            <div class = "w-1/5 py-1 border-b border-gray-300 text-center"> 결제 일시</div>
+                            <div class = "w-1/5 py-1 border-b border-gray-300 text-center"> 극장 이름</div>
+                            <div class = "w-1/5 py-1 border-b border-gray-300 text-center"> 인원 합?</div>
+                        </div> 
+                        <% for(let i =1; i <= 10 ; i ++) {%>
+                            
+                            <div id = "col<%=i%>" class = "flex">
+                                <div id = "index<%=i%>" class = "w-1/6 px-2 py-2 border-r  border-gray-300 text-center"> <%=i%> </div>
+                                <a class = "w-full py-2 px-2 text-center hover:bg-gray-300" id = "user<%=i%>" href="#">
+                                </a>
+                            </div>
+                            
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    
+    
+</body>
+</html>
