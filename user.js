@@ -168,7 +168,7 @@ router.post('/authentication', (req, res) => __awaiter(void 0, void 0, void 0, f
 router.post('/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let sql = "select password from userdb where userid = ?";
     let params = [req.session.user_id];
-    let conn = pool.getConnection();
+    let conn = yield pool.getConnection();
     if (!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv']) {
         return res.send("<script>alert('입력되지 않은 사항이 있습니다.');document.location.href='/user/mypage'</script>");
     }

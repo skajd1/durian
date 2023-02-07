@@ -181,7 +181,8 @@ router.post('/authentication', async(req : Request, res : Response) => {
 router.post('/edit', async(req : Request, res: Response) => {
     let sql : string = "select password from userdb where userid = ?"
     let params : Array<string> = [req.session.user_id]
-    let conn = pool.getConnection();
+    let conn = await pool.getConnection();
+    
 
 
     if(!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv'])
