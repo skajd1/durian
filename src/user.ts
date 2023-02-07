@@ -15,8 +15,7 @@ const options = {
     password : 'admin',
     database : 'moviedb'
 }
-const fs = require('fs')
-const resvHtml = fs.readFileSync('./views/mypage/reservation.html', 'utf8');
+
 
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
@@ -55,12 +54,13 @@ router.get('/mypage', async (req : Request, res : Response) =>{
         let uid :string = req.session.user_id;
         let sql : string = 'select * from userdb where userid = ?; ';
         let params : Array<string> = [uid,uid];
-        let sql_paylogdb : string = 'select title,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
+        let sql_paylogdb : string = 'select logid, title,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
         let conn = await pool.getConnection()
         try {
             let [rows] = await conn.query(sql + sql_paylogdb, params);
             conn.release();
-            return res.render('mypage', { login : true, uid : uid, birth : rows[0][0].birth, point : rows[0][0].point, log:rows[1], resv : resvHtml});
+            
+            return res.render('mypage', { login : true, uid : uid, birth : rows[0][0].birth, point : rows[0][0].point, log:rows[1]});
 
         } catch(err){
             conn.release();
@@ -70,6 +70,29 @@ router.get('/mypage', async (req : Request, res : Response) =>{
     else{
         res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>")
     }
+
+})
+router.get('/mypage/resvdetail/:logid', async (req : Request, res : Response) =>{
+    if(!req.session.isLogined){
+        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>")
+    }
+    else{
+        let logid : string = req.params.logid;
+        let sql : string = 'select * from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
+        let params : Array<string> = [logid];
+        let conn = await pool.getConnection()
+        try {
+            let [rows] = await conn.query(sql, params);
+            conn.release();
+            return res.render('resvdetail', { login : true, log : rows[0]});
+
+        } catch(err){
+            conn.release();
+            console.error(err)
+        }
+    }
+
+
 
 })
 

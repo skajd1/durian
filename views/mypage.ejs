@@ -20,55 +20,26 @@
 
           <input id="mydata" name="mypage" type="radio" class="peer/mydata hidden" checked>
           <label for="mydata"
-            class="cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/mydata:border-yellow-500 peer-checked/mydata:font-bold peer-checked/mydata:bg-gray-100 peer-checked/mydata:text-yellow-500 rounded-l ">
+            class="whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/mydata:border-yellow-500 peer-checked/mydata:font-bold peer-checked/mydata:bg-gray-100 peer-checked/mydata:text-yellow-500 rounded-l ">
             내 정보
           </label>
     
           <input id="edit" name="mypage" type="radio" class="peer/edit hidden">
           <label for="edit"
-            class="cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/edit:border-yellow-500 peer-checked/edit:font-bold peer-checked/edit:bg-gray-100 peer-checked/edit:text-yellow-500 rounded-l ">
+            class="whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/edit:border-yellow-500 peer-checked/edit:font-bold peer-checked/edit:bg-gray-100 peer-checked/edit:text-yellow-500 rounded-l ">
             비밀번호 변경
           </label>
     
           <input id="reservation" name="mypage" type="radio" class="peer/reservation hidden">
           <label for="reservation"
-            class="cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/reservation:border-yellow-500 peer-checked/reservation:font-bold peer-checked/reservation:bg-gray-100 peer-checked/reservation:text-yellow-500 rounded-l">
+            class="whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/reservation:border-yellow-500 peer-checked/reservation:font-bold peer-checked/reservation:bg-gray-100 peer-checked/reservation:text-yellow-500 rounded-l">
             예매 내역 확인
           </label>
     
         </div>
 
         <div id="edit-box" class="w-2/3 h-[600px] bg-gray-200 rounded-lg p-8 flex flex-col ml-8 mt-10 md:mt-5">
-          <div class="container mx-auto flex items-center md:mx-auto">
-            <div id="paylog" class="w-[90%] mx-auto h-[550px] bg-white rounded-lg flex">
-                <div class = "w-full flex flex-col mx-auto rounded border-2 border-gray-400 ">
-                    <span class = "text-lg font-bold mx-auto py-3 "> 예매 내역 </span>
-                    <div class = "mx-auto w-full flex flex-col">
-                        <div class="flex">
-                            <div class ="w-1/6 py-1 border-b border-gray-300 text-center"> # </div>
-                            <div class = "w-1/4 py-1 border-b border-gray-300 text-center"> 영화 이름</div>
-                            <div class = "w-1/4 py-1 border-b border-gray-300 text-center"> 결제 일시</div>
-                            <div class = "w-1/5 py-1 border-b border-gray-300 text-center"> 극장 이름</div>
-                            <div class = "w-1/6 py-1 border-b border-gray-300 text-center"> 인원</div>
-                        </div> 
-                        <% for(let i =0; i < 5 ; i ++) {%>
-                        <div id = "col<%=i%>" class = "flex">
-                            <div id = "index<%=i%>" class = "w-1/6 border-r p-8 border-gray-300 text-center"> <%=i+1%> </div>
-                            <a class = "w-full items-center text-center hover:bg-gray-300 flex flex-row" id = "user<%=i%>" href="#">
-                              <div id = "title<%=i%>" class = "w-1/4 px-1 text-center"> dd</div>
-                              <div id = "paydate<%=i%>" class = "w-1/3 px-1 text-center"> pd </div>
-                              <div id = "place<%=i%>" class = "w-1/4 px-1 text-center"> pla </div>
-                              <div id = "nop<%=i%>" class = "w-1/6 px-1 text-center"> nop </div>
-                            </a>
-                        </div> 
-                        <% } %>
-                        <div class = "text-xs mx-auto text-gray-400">
-                          *최근 5개의 내역만 표시됩니다.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+          <%- include ('./mypage/mydata.html') %>
         </div>
     
       </div>
@@ -78,7 +49,8 @@
   <script>
     const mydata = "<%- include ('./mypage/mydata.html') %>";
     const edit = "<%- include ('./mypage/edit.html') %>";
-//    const reservation = "";
+    const reservation = "<%- include ('./mypage/reservation.html') %>";
+
     
 
     window.click = function(id) {
@@ -88,7 +60,7 @@
       } else if (id === "edit") {
         box.innerHTML = edit;
       } else if (id === "reservation") {
-        box.textContent = reservation;
+        box.innerHTML = reservation;
       }
     };
 

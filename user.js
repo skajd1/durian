@@ -21,8 +21,6 @@ const options = {
     password: 'admin',
     database: 'moviedb'
 };
-const fs = require('fs');
-const resvHtml = fs.readFileSync('./views/mypage/reservation.html', 'utf8');
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
 const router = express_1.default.Router();
@@ -60,12 +58,12 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let uid = req.session.user_id;
         let sql = 'select * from userdb where userid = ?; ';
         let params = [uid, uid];
-        let sql_paylogdb = 'select title,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
+        let sql_paylogdb = 'select logid, title,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
         let conn = yield pool.getConnection();
         try {
             let [rows] = yield conn.query(sql + sql_paylogdb, params);
             conn.release();
-            return res.render('mypage', { login: true, uid: uid, birth: rows[0][0].birth, point: rows[0][0].point, log: rows[1], resv: resvHtml });
+            return res.render('mypage', { login: true, uid: uid, birth: rows[0][0].birth, point: rows[0][0].point, log: rows[1] });
         }
         catch (err) {
             conn.release();
@@ -74,6 +72,26 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     else {
         res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
+    }
+}));
+router.get('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.session.isLogined) {
+        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
+    }
+    else {
+        let logid = req.params.logid;
+        let sql = 'select * from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
+        let params = [logid];
+        let conn = yield pool.getConnection();
+        try {
+            let [rows] = yield conn.query(sql, params);
+            conn.release();
+            return res.render('resvdetail', { login: true, log: rows[0] });
+        }
+        catch (err) {
+            conn.release();
+            console.error(err);
+        }
     }
 }));
 // 로그아웃 시 세션 초기화
