@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body>
+  <% if (login == false){ %>
+    <%- include ("header.ejs") %>
+    <% }else{ %>
+    <%- include ("header_logout.ejs") %>
+    <% } %>
+    <div class = 'flex flex-col'>
+        <form method="POST" action = "/pay/selectseat">
+            <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
+                <div class = "select-container flex flex-col mx-auto w-full h-[450px]">
+                    <div class = 'h-[35px] bg-yellow-500 text-center rounded text-white text-lg font-bold pt-1'>인원 / 좌석 선택</div>
+                    <div class = "h-1/4 flex flex-row mt-2">
+                        <div class = "w-[45%] border-r border-gray-400 flex flex-row justify-center pt-3">
+                            <div class = "flex flex-col p-2">
+                                <div>
+                                    일반
+                                </div>
+                                <div class = "mt-4">
+                                    청소년
+                                </div>
+                            </div>
+                            <div class = "ml-4">
+                                <div class = "flex flex-row p-2 ">
+                                    <% for (let i = 0 ; i < 7 ; i ++) { %>
+                                        <% if (i == 0) { %>
+                                            <input type = 'radio' id = 'adult<%=i%>' name = 'select-adult' value = '<%=i%>' class = "peer/adult<%=i%> hidden" checked>
+                                            <label for="adult<%=i%>" id = "adult<%=i%>label"
+                                            class="cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/adult<%=i%>:bg-yellow-500 peer-checked/adult<%=i%>:text-white peer-checked/adult<%=i%>:font-bold">
+                                            <%=i%></label>
+                                        <% } else  {%>
+                                            <input type = 'radio' id = 'adult<%=i%>' name = 'select-adult' value = '<%=i%>' class = "peer/adult<%=i%> hidden">
+                                            <label for="adult<%=i%>" id = "adult<%=i%>label"
+                                            class="cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/adult<%=i%>:bg-yellow-500 peer-checked/adult<%=i%>:text-white peer-checked/adult<%=i%>:font-bold">
+                                            <%=i%></label>
+                                        <% } %>
+                                    <% } %>
+                                </div>
+                                <div class = "flex flex-row p-2 ">
+                                    <% for (let i = 0 ; i < 7 ; i ++) { %>
+                                        <% if (i == 0) { %>
+                                            <input type = 'radio' id = 'teen<%=i%>' name = 'select-teen' value = '<%=i%>' class = "peer/teen<%=i%> hidden" checked>
+                                            <label for="teen<%=i%>" id = "teen<%=i%>label"
+                                            class="cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/teen<%=i%>:bg-yellow-500 peer-checked/teen<%=i%>:text-white peer-checked/teen<%=i%>:font-bold">
+                                            <%=i%></label>
+                                        <% } else  {%>
+                                            <input type = 'radio' id = 'teen<%=i%>' name = 'select-teen' value = '<%=i%>' class = "peer/teen<%=i%> hidden">
+                                            <label for="teen<%=i%>" id = "teen<%=i%>label"
+                                            class = "cursor-pointer mx-1 border border-black text-center text-sm w-[20px] peer-checked/teen<%=i%>:bg-yellow-500 peer-checked/teen<%=i%>:text-white peer-checked/teen<%=i%>:font-bold">
+                                            <%=i%></label>
+                                        
+                                        <%}%>
+                                    <% } %>                                    
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class = "w-[53%] flex flex-col">
+                            <div class = 'ml-4 mt-6' id = 'price-detail'></div>
+                            <div class = 'ml-4' id = 'total-price'></div>
+                        </div>
+                    </div>
+
+                    <div class = "flex flex-row h-2/3">
+                        <div class = "flex flex-col w-5/6 h-full">
+                            <div class="mx-auto mt-4 w-3/4 text-center font-bold bg-repeat-x" style="background-image: url(http://img.cgv.co.kr/CGV_RIA/Ticket/image/reservation/step2/screen_bg.png)">
+                                SCREEN
+                            </div>
+                            <div class = "mx-auto mt-4">
+                                <% for (let i = 0; i < 5; i ++) { %>
+                                <div class = "mt-4 flex flex-row">
+                                    <div class="mr-2 text-xs w-[18px]"><%=String.fromCharCode(i+65)%></div>
+                                    <% for (let j = 1; j < 13 ; j ++) { %>
+                                        <% if(seat_status[i][j-1]) { %>
+                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' disabled name = 'select-seat' value = '0' class = "peer/seat<%=j + i*10%> hidden">
+                                            <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
+                                            class="ml-1 bg-gray-500">
+                                            <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]">X</div>
+                                            </label>
+                                        <% } else { %>
+                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=[i,j-1]%>' class = "peer/seat<%=j + i*10%> hidden">
+                                            <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
+                                            class="ml-1 bg-gray-200 cursor-pointer hover:bg-yellow-400 peer-checked/seat<%=j + i*10%>:bg-yellow-500 peer-checked/seat<%=j + i*10%>:text-white peer-checked/seat<%=j + i*10%>:font-bold">
+                                            <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]"><%=j%></div>
+                                            </label>
+                                        <% } %>
+                                        
+                                    <% } %>
+                                </div>
+                                <% } %>
+
+                            </div>
+
+                        </div>
+                        <div class = "flex flex-col w-1/6 h-full justify-center p-2">
+                            <div class="flex flex-row">
+                                <div class="mr-2 bg-gray-500 w-[14px] h-[14px] text-center text-xs">x</div>
+                                예매 불가
+                            </div>
+                            <div class="flex flex-row mt-4">
+                                <div class="mr-2 bg-gray-300 w-[14px] h-[14px]"></div>
+                                예매 가능
+                            </div>
+                            <div class="flex flex-row mt-4">
+                                <div class="mr-2 bg-yellow-500 w-[14px] h-[14px]"></div>
+                                선택
+                            </div>
+                        </div>
+                        
+                    </div>
+
+
+                    
+
+                </div>  
+            </div>
+
+            <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
+                <div class = 'w-1/5 mr-4 ml-2'>
+                    <img id = 'img-poster' class = 'w-full h-full ' src = '<%=moviedetail.poster_src%>'>
+                </div>
+                <div class = 'w-1/4 ml-4 mx-2 flex flex-col font-bold'>
+                    <div class ='flex mt-16'>
+                        <div id = 'title'><%=moviedetail.title%></div>
+                    </div>
+                    <div class = 'flex relative top-10'>
+                        <div id = 'runningtime'>상영시간 <%=Math.floor(moviedetail.runningTime)%>시간 <%=Math.round(60*(moviedetail.runningTime - Math.floor(moviedetail.runningTime))) %>분</div>
+                    </div>
+                </div>
+                <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
+                    <div class = 'mt-16 ml-4 flex whitespace-nowrap'>
+                        <div id = 'place' class = 'ml-6'>극장 <%=movieentity.placename%></div>
+                    </div>
+                    <div class = 'mt-10 ml-4 flex whitespace-nowrap'>
+                        <div id = 'date' class = 'ml-6'>일시  <%=date.split('-')[1] +'월 '+ date.split('-')[2] +'일 ' + dd %> </div>
+                        <div id = 'time' class = 'ml-2'><%=6 + time[4]*4 + ' : 00'%> </div>
+                    </div>
+                    <div class = 'mt-10 ml-4 flex whitespace-nowrap'>
+                        <div id = 'seat' class = 'ml-6'></div>
+                        
+                    </div>
+                </div>
+                <div class = 'w-1/5 ml-8 flex flex-col'>
+                    <button type = "submit" id = 'submit'
+                    class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                        <div class = 'text-lg font-bold'>결제 하기</div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+                        </svg>
+                    </button>
+                </div>
+                
+            </div>
+
+            <input type = 'hidden' name = 'entityid' value = '<%=movieentity.entityid%>'>
+            
+        </form>
+
+    </div>
+
+
+    <script>
+        let num_adult = 0
+        let num_teen = 0
+        let adultprice = 20000;
+        let teenprice = 10000;
+        let totalprice = num_adult*adultprice + num_teen*teenprice;
+        let nop = 0;
+        let seat = [];
+
+        for(let i = 0; i < 7; i++)
+        {
+            document.getElementById('adult'+i).addEventListener('click', function(){
+                num_adult = i;
+
+                if(num_adult + num_teen >6){
+                    alert('최대 6명까지 예매 가능합니다.')
+                    num_adult = 0;
+                    document.getElementById('adult'+i).checked = false;
+                    return;
+                }
+
+                if(!num_teen)
+                {
+                    text = '일반 : ' + ' 20,000 원 X ' + num_adult;
+                }
+                else{
+                    text = '일반 : ' + ' 20,000 원 X ' + num_adult + ' | 청소년 : ' + ' 10,000 원 X ' + num_teen;
+                }
+                document.getElementById('price-detail').textContent = text
+                document.getElementById('total-price').textContent = '총 금액 : ' + (num_adult*adultprice + num_teen*teenprice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
+            })
+            document.getElementById('teen'+i).addEventListener('click', function(){
+                num_teen = i;
+                if(num_adult + num_teen >6){
+                    alert('최대 6명까지 예매 가능합니다.')
+                    num_adult = 0;
+                    document.getElementById('teen'+i).checked = false;
+                    return;
+                }
+                if(!num_adult)
+                {
+                    text = '청소년 : ' + ' 10,000 원 X ' + num_teen;
+                }
+                else{
+                    text = '일반 : ' + ' 20,000 원 X ' + num_adult + ' | 청소년 : ' + ' 10,000 원 X ' + num_teen;
+                }
+                document.getElementById('price-detail').textContent = text
+                document.getElementById('total-price').textContent = '총 금액 : ' + (num_adult*adultprice + num_teen*teenprice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
+            })
+        }
+        for(let i = 0; i < 5; i++)
+        {
+            for(let j = 1 ; j < 13; j ++)
+            {   
+                
+                document.getElementById('seat'+ (i*10 + j)).addEventListener('click', function(){
+                    let input = document.getElementById('seat'+(i*10+j))
+                    if(input.value !=='0'){
+                        if(input.checked)
+                        {
+                            nop +=1
+                            if(nop > num_adult + num_teen)
+                            {
+                                alert('이미 선택한 좌석 수보다 많습니다.')
+                                input.checked = false
+                                nop -=1
+                            }
+                            else{
+                                seat.push(String.fromCharCode(i+65) + j +'')
+                            }
+                        }
+                        else{
+                            nop -=1
+                            for(let k = 0; k < seat.length; k++)
+                            {
+                                if(seat[k] == String.fromCharCode(i+65) + j)
+                                {
+                                    seat.splice(k,1)
+                                }
+                            }  
+                        }       
+                        seat.sort()
+                        document.getElementById('seat').textContent = '좌석 : ' + seat 
+
+                    }
+                }) 
+            }   
+            
+        }
+        
+            
+        
+
+
+
+    </script>
+
+</body>
+</html>
