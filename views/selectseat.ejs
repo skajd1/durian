@@ -81,7 +81,7 @@
                                     <div class="mr-2 text-xs w-[18px]"><%=String.fromCharCode(i+65)%></div>
                                     <% for (let j = 1; j < 13 ; j ++) { %>
                                         <% if(seat_status[i][j-1]) { %>
-                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=[i,j-1]%>' class = "peer/seat<%=j + i*10%> hidden">
+                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' disabled name = 'select-seat' value = '0' class = "peer/seat<%=j + i*10%> hidden">
                                             <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
                                             class="ml-1 bg-gray-500">
                                             <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]">X</div>
@@ -150,7 +150,8 @@
                     </div>
                 </div>
                 <div class = 'w-1/5 ml-8 flex flex-col'>
-                    <button type = "submit" class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                    <button type = "submit" id = 'submit'
+                    class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
                         <div class = 'text-lg font-bold'>결제 하기</div>
                         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -218,55 +219,46 @@
                 document.getElementById('total-price').textContent = '총 금액 : ' + (num_adult*adultprice + num_teen*teenprice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '원';
             })
         }
-        //function checkNum(event){
-        //    let input = event.target.parentNode.previousSibling.previousSibling
-        //    console.log(input)
-        //    if(nop >= num_adult + num_teen)
-        //    {
-        //        alert('이미 선택한 좌석 수보다 많습니다.')
-        //        input.checked = false
-        //    }
-        //    else{
-        //        nop +=1
-        //    }
-        //}
         for(let i = 0; i < 5; i++)
         {
             for(let j = 1 ; j < 13; j ++)
-            {        
+            {   
+                
                 document.getElementById('seat'+ (i*10 + j)).addEventListener('click', function(){
                     let input = document.getElementById('seat'+(i*10+j))
-                    
-                    if(input.checked)
-                    {
-                        nop +=1
-                        if(nop > num_adult + num_teen)
+                    if(input.value !=='0'){
+                        if(input.checked)
                         {
-                            alert('이미 선택한 좌석 수보다 많습니다.')
-                            input.checked = false
-                            nop -=1
+                            nop +=1
+                            if(nop > num_adult + num_teen)
+                            {
+                                alert('이미 선택한 좌석 수보다 많습니다.')
+                                input.checked = false
+                                nop -=1
+                            }
+                            else{
+                                seat.push(String.fromCharCode(i+65) + j +'')
+                            }
                         }
                         else{
-                            seat.push(String.fromCharCode(i+65) + j +'')
-                        }
-                    }
-                    else{
-                        nop -=1
-                        for(let k = 0; k < seat.length; k++)
-                        {
-                            if(seat[k] == String.fromCharCode(i+65) + j)
+                            nop -=1
+                            for(let k = 0; k < seat.length; k++)
                             {
-                                seat.splice(k,1)
-                            }
-                        }  
-                    }       
-                    seat.sort()
-                    document.getElementById('seat').textContent = '좌석 : ' + seat 
-                
+                                if(seat[k] == String.fromCharCode(i+65) + j)
+                                {
+                                    seat.splice(k,1)
+                                }
+                            }  
+                        }       
+                        seat.sort()
+                        document.getElementById('seat').textContent = '좌석 : ' + seat 
+
+                    }
                 }) 
             }   
             
         }
+        
             
         
 
