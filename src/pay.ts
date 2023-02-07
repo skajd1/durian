@@ -149,18 +149,30 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
     }
     else{
         let data = req.body
+        console.log(data)
         let movieid :number = Number(data.movieid)
         let placeid :number = Number(data.placeid)
         let date :string = data.date
         let time :string = data.time
-        let seat :Array<string> = data['select-seat']
+        let seat :Array<string> = data['select-seat'] ? data['select-seat'] : []
         let entityid : number = Number(data.entityid)
         let userid :string = req.session.user_id
-
-        let num_adult : number = data['select-adult']
-        let num_teen : number = data['select-teen']
+        
+        let num_adult : number = Number(data['select-adult'])
+        let num_teen : number =  Number(data['select-teen'])
         let price : number = num_adult * 20000 + num_teen * 10000
         
+        // 인원 선택 안했을 때
+        if(num_adult == 0 && num_teen == 0){
+            return res.send("<script>alert('인원을 선택해주세요.');document.location.href=document.referrer</script>")  
+        }
+        // 좌석 선택 안했을 때
+        if(seat.length != num_adult + num_teen){
+            return res.send("<script>alert('관람 인원과 선택 좌석 수가 일치하지 않습니다.');document.location.href=document.referrer</script>")
+        }
+
+            
+
         let conn = await pool.getConnection();
         try{
             let sql_userdb : string = 'select point from userdb where userid = ?'
