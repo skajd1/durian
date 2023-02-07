@@ -56,13 +56,15 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     if (req.session.isLogined) {
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid = req.session.user_id;
-        let sql = 'select * from userdb where userid = ?';
-        let params = [uid];
+        let sql = 'select * from userdb where userid = ?; ';
+        let params = [uid, uid];
+        let sql_paylogdb = 'select title,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
         let conn = yield pool.getConnection();
         try {
-            let [rows] = yield conn.query(sql, params);
+            let [rows] = yield conn.query(sql + sql_paylogdb, params);
+            console.log(rows[1]);
             conn.release();
-            return res.render('mypage', { login: true, uid: uid, birth: rows[0].birth, point: rows[0].point });
+            return res.render('mypage', { login: true, uid: uid, birth: rows[0][0].birth, point: rows[0][0].point, log: rows[1] });
         }
         catch (err) {
             conn.release();

@@ -162,6 +162,7 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
             //선택한 좌석이 이미 예약되어있는 지 (나보다 먼저 동일한 좌석에 예매하려 할 때)
             for (let s of seat) {
                 if (seat_status[s.split(',')[0]][s.split(',')[1]]) {
+                    conn.release();
                     return res.send("<script>alert('선택한 좌석이 이미 예약되어있습니다.');document.location.href='/'</script>");
                 }
                 else {
@@ -170,6 +171,7 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
             }
             //결제 금액이 충분한 지
             if (price > userdb[0].point) {
+                conn.release();
                 return res.send("<script>alert('결제 금액이 부족합니다.');document.location.href='/'</script>");
             }
             else {
