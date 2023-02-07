@@ -131,12 +131,12 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
     else {
         let data = req.body;
-        console.log(data);
         let movieid = Number(data.movieid);
         let placeid = Number(data.placeid);
         let date = data.date;
         let time = data.time;
         let seat = data['select-seat'] ? data['select-seat'] : [];
+        seat = seat.isArray ? seat : [seat];
         let entityid = Number(data.entityid);
         let userid = req.session.user_id;
         let num_adult = Number(data['select-adult']);
@@ -152,13 +152,13 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         let conn = yield pool.getConnection();
         try {
-            let sql_userdb = 'select point from userdb where userid = ?';
-            let params_userdb = [userid];
-            let [userdb] = yield conn.query(sql_userdb, params_userdb);
             let sql_movieentity = 'select seatStatus from movieentity where entityid = ?';
             let params_movieentity = [entityid];
             let [movieentity] = yield conn.query(sql_movieentity, params_movieentity);
             let seat_status = JSON.parse(movieentity[0].seatStatus);
+            let sql_userdb = 'select point from userdb where userid = ?';
+            let params_userdb = [userid];
+            let [userdb] = yield conn.query(sql_userdb, params_userdb);
             //선택한 좌석이 이미 예약되어있는 지
             for (let s of seat) {
                 if (seat_status[s[0]][s[1]]) {
@@ -171,20 +171,17 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
             }
             else {
                 // 1. paylogdb 릴레이션 생성 및 2. movieentity 좌석 현황 업데이트 및 3. userdb 포인트 차감
-                // nop : Array [num_adult,num_teen]
-                // payment : price
-                // seat : seat
-                // userid : userid
-                // entityid : entityid
-                // let sql_paylogdb : string = "insert into paylogdb (nop,payment,seat,userid,entityid) values (?,?,?,?,?)"
-                // let params_paylogdb : Array<any> = [[num_adult,num_teen],price,seat,userid,entityid]
-                // let sql_movieentity : string = "update movieentity set seatStatus = ? where entityid = ?"
-                // let params_movieentity : Array<any> = [JSON.stringify(seat),entityid]
-                // let sql_userdb : string = "update userdb set point = point - ? where userid = ?"
-                // let params_userdb : Array<any> = [price,userid]
+                let sql_paylogdb = "insert into paylogdb (num_adult,num_teen,payment,seat,userid,entityid) values (?,?,?,?,?,?)";
+                let params_paylogdb = [num_adult, num_teen, price, seat, userid, entityid];
+                // console.log(seat[0])
+                // console.log(params_paylogdb)
+                let sql_movieentity = "update movieentity set seatStatus = ? where entityid = ?";
+                let params_movieentity = [JSON.stringify(seat), entityid];
+                let sql_userdb = "update userdb set point = point - ? where userid = ?";
+                let params_userdb = [price, userid];
                 // await conn.query(sql_paylogdb + sql_movieentity + sql_userdb, params_paylogdb.concat(params_movieentity).concat(params_userdb))
                 conn.release();
-                return res.send("성공");
+                return res.send("<script>alert('결제가 완료되었습니다.');document.location.href='/'</script>");
             }
         }
         catch (err) {

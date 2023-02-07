@@ -149,12 +149,12 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
     }
     else{
         let data = req.body
-        console.log(data)
         let movieid :number = Number(data.movieid)
         let placeid :number = Number(data.placeid)
         let date :string = data.date
         let time :string = data.time
-        let seat :Array<string> = data['select-seat'] ? data['select-seat'] : []
+        let seat :any = data['select-seat'] ? data['select-seat'] : []
+        seat = seat.isArray ? seat : [seat]
         let entityid : number = Number(data.entityid)
         let userid :string = req.session.user_id
         
@@ -168,22 +168,21 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
         }
         // 좌석 선택 안했을 때
         if(seat.length != num_adult + num_teen){
+            
             return res.send("<script>alert('관람 인원과 선택 좌석 수가 일치하지 않습니다.');document.location.href=document.referrer</script>")
         }
 
-            
-
         let conn = await pool.getConnection();
         try{
-            let sql_userdb : string = 'select point from userdb where userid = ?'
-            let params_userdb : Array<string> = [userid]
-            let [userdb] : any = await conn.query(sql_userdb,params_userdb)
-
+            
             let sql_movieentity : string = 'select seatStatus from movieentity where entityid = ?'
             let params_movieentity : Array<number> = [entityid]
             let [movieentity] : any = await conn.query(sql_movieentity,params_movieentity)
-
             let seat_status = JSON.parse(movieentity[0].seatStatus)
+            
+            let sql_userdb : string = 'select point from userdb where userid = ?'
+            let params_userdb : Array<string> = [userid]
+            let [userdb] : any = await conn.query(sql_userdb,params_userdb)
             //선택한 좌석이 이미 예약되어있는 지
             for(let s of seat){
                 if(seat_status[s[0]][s[1]])
@@ -198,24 +197,24 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
             else{
 
                 // 1. paylogdb 릴레이션 생성 및 2. movieentity 좌석 현황 업데이트 및 3. userdb 포인트 차감
-                // nop : Array [num_adult,num_teen]
-                // payment : price
-                // seat : seat
-                // userid : userid
-                // entityid : entityid
-                // let sql_paylogdb : string = "insert into paylogdb (nop,payment,seat,userid,entityid) values (?,?,?,?,?)"
-                // let params_paylogdb : Array<any> = [[num_adult,num_teen],price,seat,userid,entityid]
+                
+            
+                let sql_paylogdb : string = "insert into paylogdb (num_adult,num_teen,payment,seat,userid,entityid) values (?,?,?,?,?,?)"
 
-                // let sql_movieentity : string = "update movieentity set seatStatus = ? where entityid = ?"
-                // let params_movieentity : Array<any> = [JSON.stringify(seat),entityid]
+                let params_paylogdb : Array<any> = [num_adult,num_teen,price,seat,userid,entityid]
+                // console.log(seat[0])
+                // console.log(params_paylogdb)
 
-                // let sql_userdb : string = "update userdb set point = point - ? where userid = ?"
-                // let params_userdb : Array<any> = [price,userid]
+                let sql_movieentity : string = "update movieentity set seatStatus = ? where entityid = ?"
+                let params_movieentity : Array<any> = [JSON.stringify(seat),entityid]
+
+                let sql_userdb : string = "update userdb set point = point - ? where userid = ?"
+                let params_userdb : Array<any> = [price,userid]
 
                 // await conn.query(sql_paylogdb + sql_movieentity + sql_userdb, params_paylogdb.concat(params_movieentity).concat(params_userdb))
 
                 conn.release();
-                return res.send("성공")
+                return res.send("<script>alert('결제가 완료되었습니다.');document.location.href='/'</script>")
             }
             
 
