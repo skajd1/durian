@@ -81,11 +81,18 @@ router.get('/mypage/resvdetail/:logid', async (req : Request, res : Response) =>
         let sql : string = 'select * from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
         let params : Array<string> = [logid];
         let conn = await pool.getConnection()
+        let cancel = true;
         try {
             let [rows] = await conn.query(sql, params);
+            let dd = rows[0].date;
+            let date = dd.getFullYear() + '-' + (dd.getMonth()+1) + '-' + dd.getDate() + ' ' + (6+(rows[0].start_time-1) * 4) +':00'
             
+            if (new Date(date) < new Date())
+            {
+                cancel = false;
+            }
             conn.release();
-            return res.render('resvdetail', { login : true, log : rows[0]});
+            return res.render('resvdetail', { login : true, log : rows[0], cancel : cancel});
 
         } catch(err){
             conn.release();

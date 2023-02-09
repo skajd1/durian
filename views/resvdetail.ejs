@@ -20,34 +20,56 @@
                 <div class = 'w-full border-2 border-gray-400 bg-white mx-auto flex flex-col justify-center'>
                     <div class = 'p-4 text-[25px] font-bold text-center border-b border-gray-400'> 예매 내역 상세 조회</div>
                     <div class = 'flex flex-row'>
-                        <div class = 'flex flex-col p-4 leading-8 border-r border-gray-400'>
-                            <div> 예매번호 : <%= log.logid %></div>
-                            <div> 영화제목 : <%= log.title %></div>
+                        <div class = 'w-1/2 justify-center flex flex-col p-4 leading-8 border-r border-gray-400'>
+                            <div class = "mx-auto flex flex-row">
+                                <div class = 'flex flex-col mr-4 text-center font-bold text-[18px]'>
+                                    <div> 예매번호 : </div>
+                                    <div> 영화제목 : </div>
+                                    <div> 결제일시 : </div>
+                                    <div> 결제금액 : </div>
+                                    <div> 극장 : </div>
+                                    <div> 상영일시 : </div>
+                                    <div> 상영시간 : </div>
+                                    <div> 좌석 : </div>
+                                    <div> 인원 : </div>
+                                </div>
+                                <div class = 'flex flex-col text-[18px]'>
+                                    <div><%= log.logid %></div>
+                                    <div><%= log.title %></div>
+                                    <% let pdate = new Date(log.paydate); %>
+                                    <div><%= pdate.getFullYear().toString() + '-' + ('0' + (pdate.getMonth() + 1)).slice(-2) + '-' + ('0' + pdate.getDate()).slice(-2)%> <%= ('0' + pdate.getHours()).slice(-2) + ' : ' + ('0' + pdate.getMinutes()).slice(-2) %></div>
 
-                            <div> 결제일 : <%= log.paydate %></div>
-                            <div> 결제금액 : <%= log.payment %>원</div>
-
-                            <div> 상영관 : <%= log.placename %></div>
-                            <div> 상영일시 : <%= log.date %>, <%=log.start_time -1 %></div>
-                            <div> 상영시간 : <%=log.runningTime %> 시간 분 </div>
-                
-                            <div> 좌석 : <%= log.seat %></div>
-                            <div> 일반 : <%= log.num_adult %>명 청소년 : <%= log.num_teen%>명</div>
+                                    <div> <%= log.payment %>원</div>
+                                    <div><%= log.placename %></div>
+                                    <% let date = new Date(log.date); %>
+                                    <div> <%=date.getFullYear() + '-'+ ('0' + (date.getMonth() + 1)).slice(-2) +'-'+ ('0'+date.getDate()).slice(-2) %> <%=(6+(log.start_time-1)*4) + ' : 00' %></div>
+                                    <div><%=Math.floor(log.runningTime)%>시간 <%= Math.round(60*(log.runningTime - Math.floor(log.runningTime)))%>분 </div>
+                                    <div><%= log.seat %></div>
+                                    <div>일반 <%= log.num_adult %>명 청소년 <%= log.num_teen%>명</div>
+                                </div>
+                                 
+                            </div>
                         </div>
-                        <div class = 'flex flex-col p-4 '>
-                            <img class = "w-1/2 mx-auto" src = "<%=log.poster_src%>">
+                        <div class = 'w-1/2 flex flex-col p-4 '>
+                            <img class = "w-2/3 mx-auto" src = "<%=log.poster_src%>">
                             <div class = 'mt-8 flex flex-row'>
                                 <div class = "mx-auto">
                                     <button class = "bg-yellow-500 rounded p-4 text-white font-bold hover:bg-yellow-600">
                                         티켓 출력
                                     </button>
+                                    
                                 </div>
+                                <% if(cancel){ %>
                                 <div class = "mx-auto">
                                     <button class = "bg-red-500 rounded p-4 text-white font-bold hover:bg-red-600">
                                         예매 취소
                                     </button>
-
                                 </div>
+                                <% } %>
+                               
+                            </div>
+                            <div class = "text-sm text-gray-400 mt-1 mx-auto">
+                                * 상영 시간이 지난 영화는 예매 취소가 불가능합니다
                             </div>
                         </div>
 
