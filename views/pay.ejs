@@ -160,9 +160,9 @@
         "<%}%>"
         function getTimeAjax(mi,pi,d){
             $.ajax({
-               type: "POST",
-               url: "/pay",
-               data: JSON.stringify({ movieid : mi, placeid : pi, date : d }),
+               type: "GET",
+               url: "/pay/gettime",
+               data: {movieid: mi, placeid: pi, date: d},
                contentType: "application/json; charset=utf-8",
                dataType: "json",
                success: (data)=> {

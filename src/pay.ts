@@ -79,15 +79,16 @@ router.get('/', async (req : Request, res : Response)=>{
        
     }
 })
-router.post('/', async (req: Request, res: Response) =>{
+router.get('/gettime', async (req: Request, res: Response) =>{
     if(!req.session.isLogined){
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
     }
     else{
-        let data = req.body
+        let data = req.query
         let movieid :string = data.movieid
         let placeid :string = data.placeid
         let date :string = data.date
+        console.log(data)
         
         let conn = await pool.getConnection();
         

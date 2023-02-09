@@ -83,6 +83,7 @@ router.get('/mypage/resvdetail/:logid', async (req : Request, res : Response) =>
         let conn = await pool.getConnection()
         try {
             let [rows] = await conn.query(sql, params);
+            
             conn.release();
             return res.render('resvdetail', { login : true, log : rows[0]});
 
