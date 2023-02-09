@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from 'express';
+require('dotenv').config();
 //user 객체 타입 지정
 type User = {
     id : string,
@@ -9,12 +10,14 @@ type User = {
 }
 const session = require('express-session');
 const options = {
-    host : 'localhost',
+    host : process.env.DB_HOST,
     port : 3306,
-    user : 'admin',
-    password : 'admin',
-    database : 'moviedb'
+    user : process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DB_NAME,
 }
+
+
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
 const router = express.Router();
@@ -23,7 +26,7 @@ const check = require('./check');
 const pool = require('./mysql');
 
 router.use(session({
-    secret : "keykey",
+    secret : process.env.SESSION_KEY,
     resave : false,
     saveUnitialized : true,
     store : sessionStore
@@ -50,13 +53,15 @@ router.get('/mypage', async (req : Request, res : Response) =>{
     if(req.session.isLogined){
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid :string = req.session.user_id;
-        let sql : string = 'select * from userdb where userid = ?';
-        let params : Array<string> = [uid];
+        let sql : string = 'select * from userdb where userid = ?; ';
+        let params : Array<string> = [uid,uid];
+        let sql_paylogdb : string = 'select logid, title,poster_src,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
         let conn = await pool.getConnection()
         try {
-            let [rows] = await conn.query(sql, params)
+            let [rows] = await conn.query(sql + sql_paylogdb, params);
             conn.release();
-            return res.render('mypage', { login : true, uid : uid, birth : rows[0].birth, point : rows[0].point});
+            
+            return res.render('mypage', { login : true, uid : uid, birth : rows[0][0].birth, point : rows[0][0].point, log:rows[1]});
 
         } catch(err){
             conn.release();
@@ -66,6 +71,37 @@ router.get('/mypage', async (req : Request, res : Response) =>{
     else{
         res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>")
     }
+
+})
+router.get('/mypage/resvdetail/:logid', async (req : Request, res : Response) =>{
+    if(!req.session.isLogined){
+        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>")
+    }
+    else{
+        let logid : string = req.params.logid;
+        let sql : string = 'select * from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
+        let params : Array<string> = [logid];
+        let conn = await pool.getConnection()
+        let cancel = true;
+        try {
+            let [rows] = await conn.query(sql, params);
+            let dd = rows[0].date;
+            let date = dd.getFullYear() + '-' + (dd.getMonth()+1) + '-' + dd.getDate() + ' ' + (6+(rows[0].start_time-1) * 4) +':00'
+            
+            if (new Date(date) < new Date())
+            {
+                cancel = false;
+            }
+            conn.release();
+            return res.render('resvdetail', { login : true, log : rows[0], cancel : cancel});
+
+        } catch(err){
+            conn.release();
+            console.error(err)
+        }
+    }
+
+
 
 })
 
@@ -127,20 +163,6 @@ router.post('/register', async (req: Request, res : Response) =>{
         }
     }
 
-    // else{
-    //     async function cd(id : string)  {
-    //         let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처리
-    //         if (!result) res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
-    //         else{
-    //             connection.query(sql,params, (err : any) =>{
-    //                 if (err) console.log(err);
-    //                 else res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
-    //             })
-    //         }
-    //     }
-    //     cd(req.body['id']);
-    // }   
-
 })
 
 router.post('/authentication', async(req : Request, res : Response) => {
@@ -181,7 +203,8 @@ router.post('/authentication', async(req : Request, res : Response) => {
 router.post('/edit', async(req : Request, res: Response) => {
     let sql : string = "select password from userdb where userid = ?"
     let params : Array<string> = [req.session.user_id]
-    let conn = pool.getConnection();
+    let conn = await pool.getConnection();
+    
 
 
     if(!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv'])

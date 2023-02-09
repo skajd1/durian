@@ -1,5 +1,5 @@
-import { time } from 'console';
 import express, { Express, Request, Response } from 'express';
+require('dotenv').config();
 type Movie={
     movieid : number,
     title : string,
@@ -8,24 +8,24 @@ type Movie={
     runningTime : number,
     poster_src : string
 }
-const check = require('./check');
 const router = express.Router();
 const session = require('express-session');
 const options = {
-    host : 'localhost',
+    host : process.env.DB_HOST,
     port : 3306,
-    user : 'admin',
-    password : 'admin',
-    database : 'moviedb',
-
+    user : process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DB_NAME,
 }
+
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
 const bodyParser = require('body-parser');
 const pool = require('./mysql');
 
+
 router.use(session({
-    secret : "keykey",
+    secret : process.env.SESSION_KEY,
     resave : false,
     saveUnitialized : true,
     store : sessionStore
@@ -78,27 +78,22 @@ router.get('/', async (req : Request, res : Response)=>{
        
     }
 })
-router.post('/', async (req: Request, res: Response) =>{
+router.get('/gettime', async (req: Request, res: Response) =>{
     if(!req.session.isLogined){
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
     }
     else{
-        let data = req.body
-        let movieid :string = data.movieid
-        let placeid :string = data.placeid
-        let date :string = data.date
-        
+        let data = req.query
+        let placeid :string = data.placeid as string
+        let date :string = data.date as string
         let conn = await pool.getConnection();
-        
         try{
             let sql_table :string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');"
             let params_table : Array<string> = [placeid,date]
             let [times] : any = await conn.query(sql_table,params_table)
             conn.release();
-            return res.send(times)
-            
-        } catch(err) {
-            
+            return res.send(times) 
+        } catch(err) { 
             console.error(err)
             conn.release();
         }
@@ -184,10 +179,12 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
             let params_userdb : Array<string> = [userid]
             let [userdb] : any = await conn.query(sql_userdb,params_userdb)
 
+            
             //선택한 좌석이 이미 예약되어있는 지 (나보다 먼저 동일한 좌석에 예매하려 할 때)
             for(let s of seat){
                 if(seat_status[s.split(',')[0]][s.split(',')[1]])
                 {
+                    conn.release();
                     return res.send("<script>alert('선택한 좌석이 이미 예약되어있습니다.');document.location.href='/'</script>")
                 }
                 else{
@@ -196,6 +193,7 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
             }
             //결제 금액이 충분한 지
             if (price > userdb[0].point){
+                conn.release();
                 return res.send("<script>alert('결제 금액이 부족합니다.');document.location.href='/'</script>")
             }
             else{

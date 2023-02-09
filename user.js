@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+require('dotenv').config();
 const session = require('express-session');
 const options = {
-    host: 'localhost',
+    host: process.env.DB_HOST,
     port: 3306,
-    user: 'admin',
-    password: 'admin',
-    database: 'moviedb'
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 };
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
@@ -28,7 +29,7 @@ const bodyParser = require('body-parser');
 const check = require('./check');
 const pool = require('./mysql');
 router.use(session({
-    secret: "keykey",
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUnitialized: true,
     store: sessionStore
@@ -56,13 +57,14 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     if (req.session.isLogined) {
         //세션에 접속중인 유저 데이터 쿼리로 불러오기
         let uid = req.session.user_id;
-        let sql = 'select * from userdb where userid = ?';
-        let params = [uid];
+        let sql = 'select * from userdb where userid = ?; ';
+        let params = [uid, uid];
+        let sql_paylogdb = 'select logid, title,poster_src,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
         let conn = yield pool.getConnection();
         try {
-            let [rows] = yield conn.query(sql, params);
+            let [rows] = yield conn.query(sql + sql_paylogdb, params);
             conn.release();
-            return res.render('mypage', { login: true, uid: uid, birth: rows[0].birth, point: rows[0].point });
+            return res.render('mypage', { login: true, uid: uid, birth: rows[0][0].birth, point: rows[0][0].point, log: rows[1] });
         }
         catch (err) {
             conn.release();
@@ -71,6 +73,32 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     else {
         res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
+    }
+}));
+router.get('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.session.isLogined) {
+        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
+    }
+    else {
+        let logid = req.params.logid;
+        let sql = 'select * from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
+        let params = [logid];
+        let conn = yield pool.getConnection();
+        let cancel = true;
+        try {
+            let [rows] = yield conn.query(sql, params);
+            let dd = rows[0].date;
+            let date = dd.getFullYear() + '-' + (dd.getMonth() + 1) + '-' + dd.getDate() + ' ' + (6 + (rows[0].start_time - 1) * 4) + ':00';
+            if (new Date(date) < new Date()) {
+                cancel = false;
+            }
+            conn.release();
+            return res.render('resvdetail', { login: true, log: rows[0], cancel: cancel });
+        }
+        catch (err) {
+            conn.release();
+            console.error(err);
+        }
     }
 }));
 // 로그아웃 시 세션 초기화
@@ -120,19 +148,6 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
             conn.release();
         }
     }
-    // else{
-    //     async function cd(id : string)  {
-    //         let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처리
-    //         if (!result) res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
-    //         else{
-    //             connection.query(sql,params, (err : any) =>{
-    //                 if (err) console.log(err);
-    //                 else res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
-    //             })
-    //         }
-    //     }
-    //     cd(req.body['id']);
-    // }   
 }));
 router.post('/authentication', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body['id'] || !req.body['password']) {
@@ -168,7 +183,7 @@ router.post('/authentication', (req, res) => __awaiter(void 0, void 0, void 0, f
 router.post('/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let sql = "select password from userdb where userid = ?";
     let params = [req.session.user_id];
-    let conn = pool.getConnection();
+    let conn = yield pool.getConnection();
     if (!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv']) {
         return res.send("<script>alert('입력되지 않은 사항이 있습니다.');document.location.href='/user/mypage'</script>");
     }

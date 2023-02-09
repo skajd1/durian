@@ -13,13 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+require('dotenv').config();
 const session = require('express-session');
 const options = {
-    host: 'localhost',
+    host: process.env.DB_HOST,
     port: 3306,
-    user: 'admin',
-    password: 'admin',
-    database: 'moviedb',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 };
 const check = require('./check');
 const mysqlStore = require('express-mysql-session')(session);
@@ -53,7 +54,7 @@ const upload = multer({
     storage: storage
 });
 router.use(session({
-    secret: "keykey",
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUnitialized: true,
     store: sessionStore
