@@ -75,10 +75,8 @@ router.get('/gettime', (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
     else {
         let data = req.query;
-        let movieid = data.movieid;
         let placeid = data.placeid;
         let date = data.date;
-        console.log(data);
         let conn = yield pool.getConnection();
         try {
             let sql_table = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');";

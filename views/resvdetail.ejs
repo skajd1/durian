@@ -14,24 +14,49 @@
     <% }else{ %>
     <%- include ("header_logout.ejs") %>
     <% } %>
-    <section class='text-gray-600 body-font bg-white'>
-        <div class='w-2/3 container px-5 my-40 mx-auto items-center'>
-            <div class='flex items-center lg:w-3/5 mx-auto border-b pb-10 mb-10 border-gray-200 sm:flex-row flex-col'>
-                <div class='flex-grow sm:text-left text-center mt-6 sm:mt-0'>
-                    <h2 class='text-gray-900 text-lg text-center title-font font-medium mb-2'>사용자 아이디 : </h2>
-                    
+    <section class='text-gray-600 body-font'>
+        <div class = 'container mx-auto mt-36 flex flex-col'>
+            <div class = 'w-2/3 mx-auto flex flex-col bg-gray-200 p-4 rounded-lg'>            
+                <div class = 'w-full border-2 border-gray-400 bg-white mx-auto flex flex-col justify-center'>
+                    <div class = 'p-4 text-[25px] font-bold text-center border-b border-gray-400'> 예매 내역 상세 조회</div>
+                    <div class = 'flex flex-row'>
+                        <div class = 'flex flex-col p-4 leading-8 border-r border-gray-400'>
+                            <div> 예매번호 : <%= log.logid %></div>
+                            <div> 영화제목 : <%= log.title %></div>
+
+                            <div> 결제일 : <%= log.paydate %></div>
+                            <div> 결제금액 : <%= log.payment %>원</div>
+
+                            <div> 상영관 : <%= log.placename %></div>
+                            <div> 상영일시 : <%= log.date %>, <%=log.start_time -1 %></div>
+                            <div> 상영시간 : <%=log.runningTime %> 시간 분 </div>
+                
+                            <div> 좌석 : <%= log.seat %></div>
+                            <div> 일반 : <%= log.num_adult %>명 청소년 : <%= log.num_teen%>명</div>
+                        </div>
+                        <div class = 'flex flex-col p-4 '>
+                            <img class = "w-1/2 mx-auto" src = "<%=log.poster_src%>">
+                            <div class = 'mt-8 flex flex-row'>
+                                <div class = "mx-auto">
+                                    <button class = "bg-yellow-500 rounded p-4 text-white font-bold hover:bg-yellow-600">
+                                        티켓 출력
+                                    </button>
+                                </div>
+                                <div class = "mx-auto">
+                                    <button class = "bg-red-500 rounded p-4 text-white font-bold hover:bg-red-600">
+                                        예매 취소
+                                    </button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
-            <div class='flex items-center lg:w-3/5 mx-auto border-b pb-10 mb-10 border-gray-200 sm:flex-row flex-col'>
-                <div class='flex-grow sm:text-left text-center mt-6 sm:mt-0'>
-                    <h2 class='text-gray-900 text-lg text-center title-font font-medium mb-2'>생년월일 : </h2>
-                </div>
-            </div>
-            <div class='flex items-center lg:w-3/5 mx-auto border-b border-gray-200 pb-10 mb-10 sm:flex-row flex-col'>
-                <div class='flex-grow sm:text-left text-center mt-6 sm:mt-0'>
-                    <h2 class='text-gray-900 text-lg text-center title-font font-medium mb-2'>잔여 포인트 : </h2>
-                </div>
-            </div>
+
+
         </div>
     </section>
 

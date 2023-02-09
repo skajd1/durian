@@ -85,22 +85,16 @@ router.get('/gettime', async (req: Request, res: Response) =>{
     }
     else{
         let data = req.query
-        let movieid :string = data.movieid
-        let placeid :string = data.placeid
-        let date :string = data.date
-        console.log(data)
-        
+        let placeid :string = data.placeid as string
+        let date :string = data.date as string
         let conn = await pool.getConnection();
-        
         try{
             let sql_table :string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');"
             let params_table : Array<string> = [placeid,date]
             let [times] : any = await conn.query(sql_table,params_table)
             conn.release();
-            return res.send(times)
-            
-        } catch(err) {
-            
+            return res.send(times) 
+        } catch(err) { 
             console.error(err)
             conn.release();
         }

@@ -24,22 +24,30 @@
             내 정보
           </label>
     
+          
+          <input id="reservation" name="mypage" type="radio" class="peer/reservation hidden">
+          <label for="reservation"
+          class="whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/reservation:border-yellow-500 peer-checked/reservation:font-bold peer-checked/reservation:bg-gray-100 peer-checked/reservation:text-yellow-500 rounded-l">
+          예매 내역 확인
+          </label>
+        
           <input id="edit" name="mypage" type="radio" class="peer/edit hidden">
           <label for="edit"
             class="whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/edit:border-yellow-500 peer-checked/edit:font-bold peer-checked/edit:bg-gray-100 peer-checked/edit:text-yellow-500 rounded-l ">
             비밀번호 변경
           </label>
-    
-          <input id="reservation" name="mypage" type="radio" class="peer/reservation hidden">
-          <label for="reservation"
-            class="whitespace-nowrap overflow-hidden text-ellipsis cursor-pointer px-6 py-8 w-full justify-center justify-start border-r-4 border-y border-l title-font font-medium inline-flex items-center leading-none peer-checked/reservation:border-yellow-500 peer-checked/reservation:font-bold peer-checked/reservation:bg-gray-100 peer-checked/reservation:text-yellow-500 rounded-l">
-            예매 내역 확인
-          </label>
-    
         </div>
 
         <div id="edit-box" class="w-2/3 h-[600px] bg-gray-200 rounded-lg p-8 flex flex-col ml-8 mt-10 md:mt-5">
-          <%- include ('./mypage/mydata.html') %>
+          <div id = 'mydata-box'>
+            <%- include ('./mypage/mydata.html') %>
+          </div>
+          <div id = 'resv-box' class = 'hidden'>
+            <%- include ('./mypage/reservation.html') %>
+          </div>
+          <div id = 'pwch-box' class = 'hidden'>
+            <%- include ('./mypage/edit.html') %>
+          </div>
         </div>
     
       </div>
@@ -47,18 +55,19 @@
 
 
   <script>
-    const mydata = "<%- include ('./mypage/mydata.html') %>";
-    const edit = "<%- include ('./mypage/edit.html') %>";
-    const reservation = "<%- include ('./mypage/reservation.html') %>";
-
     window.click = function(id) {
-      let box = document.getElementById("edit-box");
       if (id === "mydata") {
-        box.innerHTML = mydata;
+        document.getElementById("mydata-box").classList.remove("hidden");
+        document.getElementById("resv-box").classList.add("hidden");
+        document.getElementById("pwch-box").classList.add("hidden");
       } else if (id === "edit") {
-        box.innerHTML = edit;
+        document.getElementById("mydata-box").classList.add("hidden");
+        document.getElementById("resv-box").classList.add("hidden");
+        document.getElementById("pwch-box").classList.remove("hidden");
       } else if (id === "reservation") {
-        box.innerHTML = reservation;
+        document.getElementById("mydata-box").classList.add("hidden");
+        document.getElementById("resv-box").classList.remove("hidden");
+        document.getElementById("pwch-box").classList.add("hidden");
       }
     };
 
@@ -71,6 +80,9 @@
     document.getElementById("reservation").addEventListener("click", function(event) {
         click(event.target.id);
     });
+
+      
+    
 
   </script>
 </body>

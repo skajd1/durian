@@ -58,7 +58,7 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let uid = req.session.user_id;
         let sql = 'select * from userdb where userid = ?; ';
         let params = [uid, uid];
-        let sql_paylogdb = 'select logid, title,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
+        let sql_paylogdb = 'select logid, title,poster_src,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
         let conn = yield pool.getConnection();
         try {
             let [rows] = yield conn.query(sql + sql_paylogdb, params);
@@ -141,19 +141,6 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
             conn.release();
         }
     }
-    // else{
-    //     async function cd(id : string)  {
-    //         let result : boolean = await check.checkDup(id)  // check값이 제대로 넘어오지 않아서 await으로 처리
-    //         if (!result) res.send("<script>alert('중복된 아이디 입니다.');document.location.href='/user/signin'</script>");
-    //         else{
-    //             connection.query(sql,params, (err : any) =>{
-    //                 if (err) console.log(err);
-    //                 else res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
-    //             })
-    //         }
-    //     }
-    //     cd(req.body['id']);
-    // }   
 }));
 router.post('/authentication', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body['id'] || !req.body['password']) {
