@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from 'express';
+require('dotenv').config();
 
 type Movie={
     id : number,
@@ -11,13 +12,13 @@ type Movie={
 
 const session = require('express-session');
 const options = {
-    host : 'localhost',
-    port : 3306,
-    user : 'admin',
-    password : 'admin',
-    database : 'moviedb',
-
+    host : process.env.DB_HOST,
+    port : process.env.DB_PORTNUM,
+    user : process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DB_NAME,
 }
+
 const check = require('./check');
 const mysqlStore = require('express-mysql-session')(session);
 const sessionStore = new mysqlStore(options);
@@ -56,7 +57,7 @@ const upload = multer({
     storage : storage
 })
 router.use(session({
-    secret : "keykey",
+    secret : process.env.SESSION_KEY,
     resave : false,
     saveUnitialized : true,
     store : sessionStore
