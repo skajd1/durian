@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1 , minimun-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>My Page</title>
 </head>
@@ -16,7 +16,7 @@
 
     <section class="text-gray-600 body-font">
       <div class="w-2/3 container px-5 py-24 mx-auto flex items-center md:mx-auto">
-        <div id = 'select-box' class="ml-10 flex flex-col h-[600px] justify-center">
+        <div id = 'select-box' class="ml-10 flex flex-col  justify-center">
 
           <input id="mydata" name="mypage" type="radio" class="peer/mydata hidden" checked>
           <label for="mydata"
@@ -38,7 +38,7 @@
           </label>
         </div>
 
-        <div id="edit-box" class="w-2/3 h-[600px] bg-gray-200 rounded-lg p-8 flex flex-col ml-8 mt-10 md:mt-5">
+        <div id="edit-box" class="w-2/3 h-[600px] min-w-[500px] bg-gray-200 rounded-lg p-8 flex flex-col ml-8 mt-10 md:mt-5">
           <div id = 'mydata-box'>
             <%- include ('./mypage/mydata.html') %>
           </div>
