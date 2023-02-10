@@ -81,15 +81,15 @@
                                     <div class="mr-2 text-xs w-[18px]"><%=String.fromCharCode(i+65)%></div>
                                     <% for (let j = 1; j < 13 ; j ++) { %>
                                         <% if(seat_status[i][j-1]) { %>
-                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' disabled name = 'select-seat' value = '0' class = "peer/seat<%=j + i*10%> hidden">
-                                            <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
+                                            <input type = 'checkbox' id = 'seat<%=String.fromCharCode(i+65) + j%>' disabled name = 'select-seat' value = '0' class = "peer/seat<%=String.fromCharCode(i+65) + j%> hidden">
+                                            <label for="seat<%=j + i*10%>" id = "seat<%=String.fromCharCode(i+65) + j%>label"
                                             class="ml-1 bg-gray-500">
                                             <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]">X</div>
                                             </label>
                                         <% } else { %>
-                                            <input type = 'checkbox' id = 'seat<%=j + i*10%>' name = 'select-seat' value = '<%=[i,j-1]%>' class = "peer/seat<%=j + i*10%> hidden">
-                                            <label for="seat<%=j + i*10%>" id = "seat<%=j + i*10%>label"
-                                            class="ml-1 bg-gray-200 cursor-pointer hover:bg-yellow-400 peer-checked/seat<%=j + i*10%>:bg-yellow-500 peer-checked/seat<%=j + i*10%>:text-white peer-checked/seat<%=j + i*10%>:font-bold">
+                                            <input type = 'checkbox' id = 'seat<%=String.fromCharCode(i+65) + j%>' name = 'select-seat' value = '<%=[i,j-1]%>' class = "peer/seat<%=String.fromCharCode(i+65) + j%> hidden">
+                                            <label for="seat<%=String.fromCharCode(i+65) + j%>" id = "seat<%=String.fromCharCode(i+65) + j%>label"
+                                            class="ml-1 bg-gray-200 cursor-pointer hover:bg-yellow-400 peer-checked/seat<%=String.fromCharCode(i+65) + j%>:bg-yellow-500 peer-checked/seat<%=String.fromCharCode(i+65) + j%>:text-white peer-checked/seat<%=String.fromCharCode(i+65) + j%>:font-bold">
                                             <div class="px-1 py-0.5 h-[18px] w-[18px] border border-black text-[10px]"><%=j%></div>
                                             </label>
                                         <% } %>
@@ -234,8 +234,8 @@
             for(let j = 1 ; j < 13; j ++)
             {   
                 
-                document.getElementById('seat'+ (i*10 + j)).addEventListener('click', function(){
-                    let input = document.getElementById('seat'+(i*10+j))
+                document.getElementById('seat'+String.fromCharCode(i+65) + j).addEventListener('click', function(){
+                    let input = document.getElementById('seat'+String.fromCharCode(i+65) + j)
                     if(input.value !=='0'){
                         if(input.checked)
                         {
@@ -272,9 +272,9 @@
             for(let i = 0; i < 5; i++)
             {
                 for(let j = 1 ; j < 13; j ++){
-                    if(document.getElementById('seat'+(i*10+j)).checked)
+                    if(document.getElementById('seat'+String.fromCharCode(i+65) + j).checked)
                     {
-                        document.getElementById('seat'+(i*10+j)).checked = false
+                        document.getElementById('seat'+String.fromCharCode(i+65) + j).checked = false
                     }
                     
                 }
