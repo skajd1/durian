@@ -31,7 +31,7 @@ router.use(session({
 
 // movielist를 인자로 전달하여 html 내에서 영화 포스터 이미지 리스트로 출력
 router.get("/", async(req : Request, res : Response) =>{
-    let conn = await pool.getConnection();
+    let conn
     // res.sendFile(__dirname + '/html/home.html');
     let sql :string = "select * from moviedetail; ";
     let sql_places : string = "select * from places;";
@@ -39,6 +39,7 @@ router.get("/", async(req : Request, res : Response) =>{
     let admin : boolean = false
 
     try{
+        conn = await pool.getConnection();
         let [rows] = await conn.query(sql + sql_places);
         conn.release();
         

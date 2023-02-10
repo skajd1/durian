@@ -54,8 +54,9 @@ router.get('/', async (req : Request, res : Response)=>{
         let params_table : Array<string|string>  = [placeid, date]
         
         
-        let conn = await pool.getConnection();
+        let conn
         try{
+            conn = await pool.getConnection();
             let err
             let [rows] = await conn.query(sql_moviedetail + sql_places)
             movielist = rows[0]
@@ -86,8 +87,9 @@ router.get('/gettime', async (req: Request, res: Response) =>{
         let data = req.query
         let placeid :string = data.placeid as string
         let date :string = data.date as string
-        let conn = await pool.getConnection();
+        let conn
         try{
+            conn = await pool.getConnection();
             let sql_table :string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');"
             let params_table : Array<string> = [placeid,date]
             let [times] : any = await conn.query(sql_table,params_table)
@@ -104,6 +106,7 @@ router.get('/selectseat', async (req: Request, res: Response) =>{
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
     }
     else{
+        
         let movieid : Number = Number(req.query['select-movie'])
         let placeid : Number = Number(req.query['select-place'])
         let date : string = req.query['select-date'] as string
@@ -114,9 +117,10 @@ router.get('/selectseat', async (req: Request, res: Response) =>{
             return res.send("<script>alert('선택되지 않은 사항이 있습니다.');document.location.href=document.referrer</script>")
         }
 
-        let conn = await pool.getConnection();
+        let conn
 
         try{
+            conn = await pool.getConnection();
             // 영화 상세 정보 (영화 이름, age, 러닝타임, img소스)
             // 영화 개체 정보 (좌석 현황)
             let sql_moviedetail : string = "select * from moviedetail where movieid = ?; "
@@ -167,9 +171,9 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
             return res.send("<script>alert('관람 인원과 선택 좌석 수가 일치하지 않습니다.');document.location.href=document.referrer</script>")
         }
 
-        let conn = await pool.getConnection();
+        let conn;
         try{
-            
+            conn = await pool.getConnection();
             let sql_movieentity : string = 'select seatStatus from movieentity where entityid = ?'
             let params_movieentity : Array<number> = [entityid]
             let [movieentity] : any = await conn.query(sql_movieentity,params_movieentity)
