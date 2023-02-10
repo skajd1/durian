@@ -57,6 +57,7 @@ async function checkDup(id : string)
 //날짜 유효성 검사 TODO
 function checkBirth(year : string) : boolean
 {
+    
     if(year.length != 4 || Number(year) < 1900 || Number(year) >= 2024)
     {
         return false;
