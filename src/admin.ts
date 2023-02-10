@@ -80,7 +80,9 @@ router.get("/userdb", async (req : Request, res : Response) =>{
 
     } catch(err) {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
 
 })
@@ -101,7 +103,9 @@ router.get("/userdb/edit", async(req : Request, res : Response) =>{
         conn.release();
         return res.render('user_edit_page', {login : true, userdata : rows[0]})
     } catch(err) {
-        conn.realease();
+        if(conn){
+            conn.release();
+        }
         console.error(err)
     }
 
@@ -137,7 +141,9 @@ router.post('/userdb/edit', async (req: Request, res : Response) =>{
     } catch(err)
     {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }    
 })
 router.delete('/userdb/edit', async (req: Request, res : Response) =>{
@@ -156,7 +162,9 @@ router.delete('/userdb/edit', async (req: Request, res : Response) =>{
     } catch(err)
     {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
 
 })
@@ -179,7 +187,9 @@ router.get("/moviedb", async (req : Request, res : Response) =>{
         } catch(err)
         {
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }
 
     }      
@@ -203,7 +213,9 @@ router.get("/moviedb/edit/:id", async (req : Request, res : Response) => {
         } catch(err)
         {
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }
     }
 })
@@ -240,7 +252,9 @@ router.post("/moviedb/edit/:id",upload.single('image'), async (req : Request, re
         } catch(err)
         {
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }
     }
 })
@@ -261,7 +275,9 @@ router.delete('/moviedb/edit/:id', async (req : Request, res: Response) =>{
     } catch(err)
     {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }    
 })
 
@@ -308,7 +324,9 @@ router.post('/moviedb/post', upload.single('image'), async(req : Request, res : 
     } catch(err)
     {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
 })
 
@@ -328,7 +346,9 @@ router.get('/selectdate', async(req : Request, res : Response) => {
         } catch(err)
         {
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }   
     }
 })
@@ -382,7 +402,9 @@ router.get('/posttable', async(req : Request, res : Response) => {
         }
     } catch(err) {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
 })
 
@@ -420,7 +442,9 @@ router.post('/posttable', async(req : Request, res : Response) => {
     } catch(err)
     {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
     
 })
@@ -451,7 +475,9 @@ router.delete('/posttable',async (req : Request, res: Response) =>{
     } catch(err)
     {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }  
     
 })

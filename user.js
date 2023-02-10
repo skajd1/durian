@@ -60,14 +60,17 @@ router.get('/mypage', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         let sql = 'select * from userdb where userid = ?; ';
         let params = [uid, uid];
         let sql_paylogdb = 'select logid, title,poster_src,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
-        let conn = yield pool.getConnection();
+        let conn;
         try {
+            conn = yield pool.getConnection();
             let [rows] = yield conn.query(sql + sql_paylogdb, params);
             conn.release();
             return res.render('mypage', { login: true, uid: uid, birth: rows[0][0].birth, point: rows[0][0].point, log: rows[1] });
         }
         catch (err) {
-            conn.release();
+            if (conn) {
+                conn.release();
+            }
             console.error(err);
         }
     }
@@ -83,9 +86,10 @@ router.get('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 0, 
         let logid = req.params.logid;
         let sql = 'select * from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
         let params = [logid];
-        let conn = yield pool.getConnection();
+        let conn;
         let cancel = true;
         try {
+            conn = yield pool.getConnection();
             let [rows] = yield conn.query(sql, params);
             let dd = rows[0].date;
             let date = dd.getFullYear() + '-' + (dd.getMonth() + 1) + '-' + dd.getDate() + ' ' + (6 + (rows[0].start_time - 1) * 4) + ':00';
@@ -96,7 +100,9 @@ router.get('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 0, 
             return res.render('resvdetail', { login: true, log: rows[0], cancel: cancel });
         }
         catch (err) {
-            conn.release();
+            if (conn) {
+                conn.release();
+            }
             console.error(err);
         }
     }
@@ -137,14 +143,17 @@ router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, functio
     else {
         let sql = 'insert into userdb (userid, password, birth, point) values (?,?,?,?)';
         let params = [req.body['id'], req.body['password'], (req.body['year'] + '-' + req.body['month'] + '-' + req.body['day']), 100000];
-        let conn = yield pool.getConnection();
+        let conn;
         try {
+            conn = yield pool.getConnection();
             let [result] = yield conn.query(sql, params);
             conn.release();
             return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
         }
         catch (err) {
-            console.error(err);
+            if (conn) {
+                conn.release();
+            }
             conn.release();
         }
     }
@@ -155,8 +164,9 @@ router.post('/authentication', (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     let sql = "select * from userdb where userid = ?";
     let params = [req.body['id']];
-    let conn = yield pool.getConnection();
+    let conn;
     try {
+        conn = yield pool.getConnection();
         let [rows] = yield conn.query(sql, params);
         if (!rows[0]) {
             conn.release();
@@ -177,13 +187,15 @@ router.post('/authentication', (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     catch (err) {
         console.error(err);
-        conn.release();
+        if (conn) {
+            conn.release();
+        }
     }
 }));
 router.post('/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let sql = "select password from userdb where userid = ?";
     let params = [req.session.user_id];
-    let conn = yield pool.getConnection();
+    let conn;
     if (!req.body['ppassword'] || !req.body['npassword'] || !req.body['passwordv']) {
         return res.send("<script>alert('입력되지 않은 사항이 있습니다.');document.location.href='/user/mypage'</script>");
     }
@@ -195,6 +207,7 @@ router.post('/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     else {
         try {
+            conn = yield pool.getConnection();
             let [rows] = yield conn.query(sql, params);
             if (rows[0].password !== req.body['ppassword']) {
                 conn.release();
@@ -210,7 +223,9 @@ router.post('/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         catch (err) {
             console.error(err);
-            conn.release();
+            if (conn) {
+                conn.release();
+            }
         }
     }
 }));

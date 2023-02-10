@@ -53,7 +53,9 @@ router.get("/", async(req : Request, res : Response) =>{
         return res.render('home', {login : login, admin: admin, movielist : movielist, places : rows[1]})
     } catch(err) {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
     
 })

@@ -37,11 +37,19 @@ function checkDup(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let sql = 'select userid from userdb where userid = ?';
         let params = [id];
-        let conn = yield pool.getConnection();
-        let [rows] = yield conn.query(sql, params);
-        conn.release();
-        console.log(!rows.length);
-        return (!(rows.length));
+        let conn;
+        try {
+            conn = yield pool.getConnection();
+            let [rows] = yield conn.query(sql, params);
+            conn.release();
+            return (!(rows.length));
+        }
+        catch (err) {
+            console.error(err);
+            if (conn) {
+                conn.release();
+            }
+        }
     });
 }
 //생년월일 유효성 검사

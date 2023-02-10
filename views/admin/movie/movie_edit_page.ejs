@@ -133,6 +133,7 @@
             .then(res => console.log(res.json))
             .then(alert('삭제가 완료되었습니다.'))
             .then(document.location.href='/admin/moviedb')
+            .catch(err => console.log(err))
         
         }
     } 
