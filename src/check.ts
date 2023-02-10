@@ -46,7 +46,9 @@ async function checkDup(id : string)
     catch(err)
     {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
     
     

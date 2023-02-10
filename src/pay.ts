@@ -73,7 +73,9 @@ router.get('/', async (req : Request, res : Response)=>{
 
         } catch(err) {
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }
         
        
@@ -97,7 +99,9 @@ router.get('/gettime', async (req: Request, res: Response) =>{
             return res.send(times) 
         } catch(err) { 
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }
     }
 })
@@ -138,7 +142,9 @@ router.get('/selectseat', async (req: Request, res: Response) =>{
         } catch(err) {
 
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }
     }
 })
@@ -229,9 +235,14 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
 
         }catch (err) {
             console.error(err)
-            if(!conn){
-                await conn.rollback();
-                conn.release();
+            if(conn){
+                try{
+                    await conn.rollback();
+                    conn.release();
+                }
+                catch(err){
+                    console.error(err)
+                }
             }
         }
     }

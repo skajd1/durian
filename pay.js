@@ -50,8 +50,9 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let sql_places = "select * from places";
         let sql_table = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d'); ";
         let params_table = [placeid, date];
-        let conn = yield pool.getConnection();
+        let conn;
         try {
+            conn = yield pool.getConnection();
             let err;
             let [rows] = yield conn.query(sql_moviedetail + sql_places);
             movielist = rows[0];
@@ -65,7 +66,9 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         catch (err) {
             console.error(err);
-            conn.release();
+            if (conn) {
+                conn.release();
+            }
         }
     }
 }));
@@ -77,8 +80,9 @@ router.get('/gettime', (req, res) => __awaiter(void 0, void 0, void 0, function*
         let data = req.query;
         let placeid = data.placeid;
         let date = data.date;
-        let conn = yield pool.getConnection();
+        let conn;
         try {
+            conn = yield pool.getConnection();
             let sql_table = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');";
             let params_table = [placeid, date];
             let [times] = yield conn.query(sql_table, params_table);
@@ -87,7 +91,9 @@ router.get('/gettime', (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
         catch (err) {
             console.error(err);
-            conn.release();
+            if (conn) {
+                conn.release();
+            }
         }
     }
 }));
@@ -105,8 +111,9 @@ router.get('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, functi
         if (!movieid || !placeid || !date || !time) {
             return res.send("<script>alert('선택되지 않은 사항이 있습니다.');document.location.href=document.referrer</script>");
         }
-        let conn = yield pool.getConnection();
+        let conn;
         try {
+            conn = yield pool.getConnection();
             // 영화 상세 정보 (영화 이름, age, 러닝타임, img소스)
             // 영화 개체 정보 (좌석 현황)
             let sql_moviedetail = "select * from moviedetail where movieid = ?; ";
@@ -120,7 +127,9 @@ router.get('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         catch (err) {
             console.error(err);
-            conn.release();
+            if (conn) {
+                conn.release();
+            }
         }
     }
 }));
@@ -149,8 +158,9 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
         if (seat.length != num_adult + num_teen) {
             return res.send("<script>alert('관람 인원과 선택 좌석 수가 일치하지 않습니다.');document.location.href=document.referrer</script>");
         }
-        let conn = yield pool.getConnection();
+        let conn;
         try {
+            conn = yield pool.getConnection();
             let sql_movieentity = 'select seatStatus from movieentity where entityid = ?';
             let params_movieentity = [entityid];
             let [movieentity] = yield conn.query(sql_movieentity, params_movieentity);
@@ -194,9 +204,14 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
         }
         catch (err) {
             console.error(err);
-            if (!conn) {
-                yield conn.rollback();
-                conn.release();
+            if (conn) {
+                try {
+                    yield conn.rollback();
+                    conn.release();
+                }
+                catch (err) {
+                    console.error(err);
+                }
             }
         }
     }

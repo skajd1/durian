@@ -35,13 +35,14 @@ router.use(session({
 }));
 // movielist를 인자로 전달하여 html 내에서 영화 포스터 이미지 리스트로 출력
 router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    let conn = yield pool.getConnection();
+    let conn;
     // res.sendFile(__dirname + '/html/home.html');
     let sql = "select * from moviedetail; ";
     let sql_places = "select * from places;";
     let login = false;
     let admin = false;
     try {
+        conn = yield pool.getConnection();
         let [rows] = yield conn.query(sql + sql_places);
         conn.release();
         movielist = rows[0];
@@ -55,7 +56,9 @@ router.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (err) {
         console.error(err);
-        conn.release();
+        if (conn) {
+            conn.release();
+        }
     }
 }));
 module.exports = router;

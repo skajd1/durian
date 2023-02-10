@@ -65,7 +65,9 @@ router.get('/mypage', async (req : Request, res : Response) =>{
             return res.render('mypage', { login : true, uid : uid, birth : rows[0][0].birth, point : rows[0][0].point, log:rows[1]});
 
         } catch(err){
-            conn.release();
+            if(conn){
+                conn.release();
+            }
             console.error(err)
         }
     }
@@ -98,7 +100,9 @@ router.get('/mypage/resvdetail/:logid', async (req : Request, res : Response) =>
             return res.render('resvdetail', { login : true, log : rows[0], cancel : cancel});
 
         } catch(err){
-            conn.release();
+            if(conn){
+                conn.release();
+            }
             console.error(err)
         }
     }
@@ -161,7 +165,9 @@ router.post('/register', async (req: Request, res : Response) =>{
             conn.release();
             return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
         } catch (err){
-            console.error(err)
+            if(conn){
+                conn.release();
+            }
             conn.release();
         }
     }
@@ -201,7 +207,9 @@ router.post('/authentication', async(req : Request, res : Response) => {
 
     }catch(err) {
         console.error(err)
-        conn.release();
+        if(conn){
+            conn.release();
+        }
     }
 })
 router.post('/edit', async(req : Request, res: Response) => {
@@ -242,7 +250,9 @@ router.post('/edit', async(req : Request, res: Response) => {
             }
         } catch(err) {
             console.error(err)
-            conn.release();
+            if(conn){
+                conn.release();
+            }
         }
     }
 })
