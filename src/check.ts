@@ -35,11 +35,20 @@ async function checkDup(id : string)
 {
     let sql : string = 'select userid from userdb where userid = ?'
     let params : Array<string>= [id]
-    let conn = await pool.getConnection();
-    let [rows] = await conn.query(sql,params)
-    conn.release();
-    console.log(!rows.length)
-    return (!(rows.length))     
+    let conn
+    try
+    {
+        conn = await pool.getConnection();
+        let [rows] = await conn.query(sql,params)
+        conn.release();
+        return (!(rows.length))     
+    }
+    catch(err)
+    {
+        console.error(err)
+        conn.release();
+    }
+    
     
 }
 //생년월일 유효성 검사
