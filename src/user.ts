@@ -56,8 +56,9 @@ router.get('/mypage', async (req : Request, res : Response) =>{
         let sql : string = 'select * from userdb where userid = ?; ';
         let params : Array<string> = [uid,uid];
         let sql_paylogdb : string = 'select logid, title,poster_src,num_adult,payment,seat,paydate,num_teen,start_time,placename,date from paylogdb, moviedetail, movieentity,places where userid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid order by paydate desc;';
-        let conn = await pool.getConnection()
+        let conn
         try {
+            conn = await pool.getConnection()
             let [rows] = await conn.query(sql + sql_paylogdb, params);
             conn.release();
             
@@ -81,9 +82,10 @@ router.get('/mypage/resvdetail/:logid', async (req : Request, res : Response) =>
         let logid : string = req.params.logid;
         let sql : string = 'select * from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
         let params : Array<string> = [logid];
-        let conn = await pool.getConnection()
+        let conn
         let cancel = true;
         try {
+            conn = await pool.getConnection();
             let [rows] = await conn.query(sql, params);
             let dd = rows[0].date;
             let date = dd.getFullYear() + '-' + (dd.getMonth()+1) + '-' + dd.getDate() + ' ' + (6+(rows[0].start_time-1) * 4) +':00'
@@ -152,8 +154,9 @@ router.post('/register', async (req: Request, res : Response) =>{
 
         let sql : string = 'insert into userdb (userid, password, birth, point) values (?,?,?,?)';
         let params : Array<User> = [req.body['id'], req.body['password'], (req.body['year']+'-'+req.body['month']+'-' +req.body['day']),100000];
-        let conn = await pool.getConnection();
+        let conn
         try{
+            conn = await pool.getConnection();
             let [result] = await conn.query(sql,params)
             conn.release();
             return res.send("<script>alert('회원가입이 완료되었습니다.');document.location.href='/home'</script>");
@@ -172,9 +175,10 @@ router.post('/authentication', async(req : Request, res : Response) => {
     }
     let sql :string= "select * from userdb where userid = ?";
     let params : Array<string> = [req.body['id']]
-    let conn = await pool.getConnection();
+    let conn 
     
     try{
+        conn = await pool.getConnection();
         let [rows] = await conn.query(sql, params)
         if(!rows[0])
         {
@@ -203,7 +207,7 @@ router.post('/authentication', async(req : Request, res : Response) => {
 router.post('/edit', async(req : Request, res: Response) => {
     let sql : string = "select password from userdb where userid = ?"
     let params : Array<string> = [req.session.user_id]
-    let conn = await pool.getConnection();
+    let conn
     
 
 
@@ -221,6 +225,7 @@ router.post('/edit', async(req : Request, res: Response) => {
     }
     else {
         try {
+            conn = await pool.getConnection();
             let [rows] = await conn.query(sql, params)
             if (rows[0].password !== req.body['ppassword'])
             {
