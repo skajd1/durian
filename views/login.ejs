@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1 , minimun-scale=1">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * {
@@ -95,9 +95,9 @@
   <%- include ("header_logout.ejs") %>
   <% } %>
 
-  <section class="text-gray-600 body-font mt-4">
-    <div class="w-2/3 container px-5 py-12 mx-auto flex flex-wrap items-center">
-      <div class = "lg:w-2/3 md:w-2/3 rounded-lg p-8 flex flex-col ml-auto w-full mt-5 md:mt-0">
+  <section class="text-gray-600 body-font mt-4 ">
+    <div class="w-2/3 container px-5 py-12 mx-auto flex flex-row items-center whitespace-nowrap min-w-[700px]">
+      <div class = "rounded-lg p-8 flex flex-col ml-auto w-full mt-5 md:mt-0">
         <div class="slideshow-container ">
           <div class="mySlides fade">
             <img src='/static_image/1.png' class = "w-full h-[700px] object-contain object-center">  
@@ -116,27 +116,27 @@
         </div>
       </div>
 
-      <div class="lg:w-2/6 md:w-1/2 bg-gray-100 rounded-lg p-8 flex flex-col ml-auto w-full mt-10 md:mt-0">
+      <div class="bg-gray-100 rounded-lg p-8 flex flex-col ml-auto mt-10 md:mt-0">
         <form action="/user/authentication" method = "POST">
-        <h2 class="text-gray-900 text-lg font-medium title-font mb-5">
+        <h2 class="text-gray-900 text-lg font-medium title-font mb-10">
           로그인
         </h2>
         <div class="relative mb-4">
-          <label for="user-id" class="leading-7 text-sm text-gray-600">
+          <label for="user-id" class="mr-4 leading-7 text-sm text-gray-600">
             User ID
           </label>
           <input type="text" id="user-id" name="id"
-            class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            class="ml-3 bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
         </div>
         <div class="relative mb-4">
-          <label for="user-password" class="leading-7 text-sm text-gray-600">
+          <label for="user-password" class="mr-4 leading-7 text-sm text-gray-600">
             Password
           </label>
           <input type="password" id="user-password" name="password"
-            class="w-full bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
+            class="bg-white rounded border border-gray-300 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
         </div>
         <button type = "submit"
-          class="w-full text-white bg-yellow-500 border-0 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+          class="w-full text-white bg-yellow-500 mt-4 py-2 px-8 focus:outline-none hover:bg-yellow-600 rounded text-lg">
           로그인
         </button>
         <p class="text-xs text-gray-500 mt-3 text-right">
