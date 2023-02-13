@@ -186,7 +186,6 @@ router.get('/mypage/resvdetail/ticket/:logid', async (req : Request, res : Respo
         conn = await pool.getConnection();
         let [rows] = await conn.query(sql, params);
         conn.release();
-        console.log(rows)
         return res.render('ticket', { log : rows[0]});
     } catch(err){
         if(conn){

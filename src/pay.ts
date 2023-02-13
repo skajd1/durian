@@ -227,9 +227,15 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
                 await conn.beginTransaction();
                 await conn.query(sql_paylogdb + sql_movieentity + sql_userdb, params_paylogdb.concat(params_movieentity).concat(params_userdb))
                 await conn.commit();
+
+                let sql_getlogid : string = "select logid from paylogdb where userid = ? order by paydate desc limit 1"
+                let params_getlogid : Array<string> = [userid]
+                let [rows] = await conn.query(sql_getlogid,params_getlogid)
+                let logid = rows[0].logid
+                
                 conn.release();
 
-                return res.send("<script>alert('결제가 완료되었습니다.');document.location.href='/'</script>")
+                return res.send("<script>alert('결제가 완료되었습니다.');document.location.href='/user/mypage/resvdetail/" + logid +"'</script>")
             }
             
 
