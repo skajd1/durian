@@ -47,6 +47,8 @@
                             <% let endTime = (6 + (log.start_time - 1) * 4 + log.runningTime) % 24; %>
                             <% let hours = Math.floor(endTime); %>
                             <% let minutes = Math.round((endTime - hours) * 60); %>
+                            <% if (minutes < 10) { %>
+                                <% minutes = '0' + minutes %>
                             <%= hours + ' : ' + minutes %></span>
                             <span><%=log.seat%></span>
                         </div>
