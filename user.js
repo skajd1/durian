@@ -177,7 +177,6 @@ router.get('/mypage/resvdetail/ticket/:logid', (req, res) => __awaiter(void 0, v
         conn = yield pool.getConnection();
         let [rows] = yield conn.query(sql, params);
         conn.release();
-        console.log(rows);
         return res.render('ticket', { log: rows[0] });
     }
     catch (err) {

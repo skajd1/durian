@@ -198,8 +198,12 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
                 yield conn.beginTransaction();
                 yield conn.query(sql_paylogdb + sql_movieentity + sql_userdb, params_paylogdb.concat(params_movieentity).concat(params_userdb));
                 yield conn.commit();
+                let sql_getlogid = "select logid from paylogdb where userid = ? order by paydate desc limit 1";
+                let params_getlogid = [userid];
+                let [rows] = yield conn.query(sql_getlogid, params_getlogid);
+                let logid = rows[0].logid;
                 conn.release();
-                return res.send("<script>alert('결제가 완료되었습니다.');document.location.href='/'</script>");
+                return res.send("<script>alert('결제가 완료되었습니다.');document.location.href='/user/mypage/resvdetail/" + logid + "'</script>");
             }
         }
         catch (err) {
