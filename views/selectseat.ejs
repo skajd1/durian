@@ -15,7 +15,7 @@
     <%- include ("header_logout.ejs") %>
     <% } %>
     <div class = 'flex flex-col'>
-        <form method="POST" action = "/pay/selectseat">
+        <form method="POST" action = "/pay/selectseat" id = 'pay' onsubmit ='payConfirm(event)'>
             <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
                 <div class = "select-container flex flex-col mx-auto w-full h-[450px]">
                     <div class = 'h-[35px] bg-yellow-500 text-center rounded text-white text-lg font-bold pt-1'>인원 / 좌석 선택</div>
@@ -151,8 +151,8 @@
                 </div>
                 <div class = 'w-1/5 ml-8 flex flex-col'>
                     <button type = "submit" id = 'submit'
-                    onclick = 'confirm("결제하시겠습니까?")'
-                    class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                    disabled
+                    class="w-2/3 h-2/3 mx-auto my-auto text-white py-2 px-2 focus:outline-none bg-gray-300 rounded">
                         <div class = 'text-lg font-bold'>결제 하기</div>
                         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -183,6 +183,10 @@
         {
             document.getElementById('adult'+i).addEventListener('click', function(){
                 num_adult = i;
+                document.getElementById('submit').disabled = true;
+                document.getElementById('submit').classList.remove('bg-yellow-500')
+                document.getElementById('submit').classList.remove('hover:bg-yellow-600')
+                document.getElementById('submit').classList.add('bg-gray-300')
 
                 if(num_adult + num_teen >6){
                     alert('최대 6명까지 예매 가능합니다.')
@@ -208,6 +212,10 @@
             })
             document.getElementById('teen'+i).addEventListener('click', function(){
                 num_teen = i;
+                document.getElementById('submit').disabled = true;
+                document.getElementById('submit').classList.remove('bg-yellow-500')
+                document.getElementById('submit').classList.remove('hover:bg-yellow-600')
+                document.getElementById('submit').classList.add('bg-gray-300')
                 if(num_adult + num_teen >6){
                     alert('최대 6명까지 예매 가능합니다.')
                     num_adult = 0;
@@ -236,6 +244,8 @@
                 
                 document.getElementById('seat'+String.fromCharCode(i+65) + j).addEventListener('click', function(){
                     let input = document.getElementById('seat'+String.fromCharCode(i+65) + j)
+                    
+                    
                     if(input.value !=='0'){
                         if(input.checked)
                         {
@@ -248,6 +258,19 @@
                             }
                             else{
                                 seat.push(String.fromCharCode(i+65) + j +'')
+                                if (nop == num_adult + num_teen){
+                                    document.getElementById('submit').disabled = false;
+                                    document.getElementById('submit').classList.remove('bg-gray-300')
+                                    document.getElementById('submit').classList.add('bg-yellow-500')
+                                    document.getElementById('submit').classList.add('hover:bg-yellow-600')
+        
+                                }
+                                else{
+                                    document.getElementById('submit').disabled = true;
+                                    document.getElementById('submit').classList.remove('bg-yellow-500')
+                                    document.getElementById('submit').classList.remove('hover:bg-yellow-600')
+                                    document.getElementById('submit').classList.add('bg-gray-300')
+                                }
                             }
                         }
                         else{
@@ -258,10 +281,24 @@
                                 {
                                     seat.splice(k,1)
                                 }
+                                if (nop == num_adult + num_teen){
+                                    document.getElementById('submit').disabled = false;
+                                    document.getElementById('submit').classList.remove('bg-gray-300')
+                                    document.getElementById('submit').classList.add('bg-yellow-500')
+                                    document.getElementById('submit').classList.add('hover:bg-yellow-600')
+        
+                                }
+                                else{
+                                    document.getElementById('submit').disabled = true;
+                                    document.getElementById('submit').classList.remove('bg-yellow-500')
+                                    document.getElementById('submit').classList.remove('hover:bg-yellow-600')
+                                    document.getElementById('submit').classList.add('bg-gray-300')
+                                }
                             }  
                         }       
                         seat.sort()
-                        document.getElementById('seat').textContent = '좌석 : ' + seat 
+                        document.getElementById('seat').textContent = '좌석 : ' + seat
+                        
 
                     }
                 }) 
@@ -284,6 +321,14 @@
             nop = 0
             seat = []
 
+        }
+        function payConfirm(event){
+            if(confirm('결제 하시겠습니까?')){
+                document.getElementById('pay').submit();
+            } else {
+                // prevent form submission
+                event.preventDefault();
+            }
         }
             
         
