@@ -54,7 +54,9 @@
                             <img class = "w-2/3 mx-auto" src = "<%=log.poster_src%>">
                             <div class = 'mt-8 flex flex-row'>
                                 <div class = "mx-auto">
-                                    <button class = "bg-yellow-500 rounded p-4 text-white font-bold hover:bg-yellow-600">
+                                    <button type = 'button'
+                                    onclick = 'printTicket()'
+                                    class = "bg-yellow-500 rounded p-4 text-white font-bold hover:bg-yellow-600">
                                         티켓 출력
                                     </button>
                                     
@@ -106,6 +108,9 @@
             .catch(err => console.log(err))
         
         }
+    }
+    function printTicket(){
+        window.open('https://chart.apis.google.com/chart?cht=qr&chs=300x300&chl=http://localhost:8080/user/mypage/resvdetail/ticket/<%=log.logid%>', '티켓 출력', 'width=500, height=500, left=100, top=100');
     }
 </script>
 
