@@ -160,6 +160,33 @@ router.delete('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 
         }
     }
 }));
+router.get('/mypage/resvdetail/ticket/:logid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // 예매 번호
+    // 영화 제목
+    // 극장
+    // 상영 일시
+    // 상영 시간
+    // 좌석
+    // 인원
+    let logid = req.params.logid;
+    let sql = 'select logid,title,placename,date,runningTime,start_time, seat,num_adult,num_teen from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
+    let params = [logid];
+    res.header('Cache-Control', 'no-store');
+    let conn;
+    try {
+        conn = yield pool.getConnection();
+        let [rows] = yield conn.query(sql, params);
+        conn.release();
+        console.log(rows);
+        return res.render('ticket', { log: rows[0] });
+    }
+    catch (err) {
+        if (conn) {
+            conn.release();
+        }
+        console.error(err);
+    }
+}));
 // 로그아웃 시 세션 초기화
 router.get('/logout', (req, res) => {
     if (req.session.isLogined) {

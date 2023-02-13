@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>티켓</title>
+</head>
+<body>
+    <header class="text-gray-600 body-font">
+        <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+          <a href="/home" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round"
+              stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-yellow-500 rounded-full"
+              viewBox="0 0 24 24">
+              <circle cx="12" cy="14" r="7" />
+              <path d="M12 11v-6a2 2 0 0 1 2 -2h2v1a2 2 0 0 1 -2 2h-2" />
+              <path d="M10 10.5c1.333 .667 2.667 .667 4 0" />
+            </svg>
+            
+          </a>
+        </div>
+    </header>
+
+    <!-- 티켓 정보 확인 width 480px height 640px -->
+    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+        <div class="w-full md:w-1/2">
+            <div class="flex flex-col text-center w-full mb-20">
+                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">티켓 정보</h1>
+                
+                
+                <div class = "flex flex-col leading-8 border border-gray-500 rounded h-[500px]"> 
+                    <span class = 'font-bold text-xl my-8'><%=log.title%></span>
+                    <div class = 'flex flex-row mx-auto'>
+                        <div class = 'flex flex-col font-semibold p-4 border-r border-gray-300'>
+                            <span>예매 번호</span>
+                            <span>극장</span>
+                            <span>일시</span>
+                            <span>좌석</span>
+                        </div>
+                        <div class = 'flex flex-col p-4 ml-6'>
+                            <span><%=log.logid%></span>
+                            <span><%=log.placename%></span>
+                            <% let date = new Date(log.date); %>
+                            <span><%=date.getFullYear() + '-'+ ('0' + (date.getMonth() + 1)).slice(-2) +'-'+ ('0'+date.getDate()).slice(-2) %> <%=(6+(log.start_time-1)*4) + ' : 00 ~ ' %>
+                            <% let endTime = (6 + (log.start_time - 1) * 4 + log.runningTime) % 24; %>
+                            <% let hours = Math.floor(endTime); %>
+                            <% let minutes = Math.round((endTime - hours) * 60); %>
+                            <%= hours + ' : ' + minutes %></span>
+                            <span><%=log.seat%></span>
+                        </div>
+                    </div>
+                    
+                    
+                    <span class = 'mt-20 text-2xl'>즐거운 시간 되세요!</span>
+                </div>
+
+               
+
+            </div>
+        </div>
+        
+    <div>
+
+    
+          
+
+    
+</body>
+</html>

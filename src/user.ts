@@ -168,6 +168,34 @@ router.delete('/mypage/resvdetail/:logid', async (req : Request, res : Response)
 
 })
 
+router.get('/mypage/resvdetail/ticket/:logid', async (req : Request, res : Response) =>{
+    // 예매 번호
+    // 영화 제목
+    // 극장
+    // 상영 일시
+    // 상영 시간
+    // 좌석
+    // 인원
+
+    let logid : string = req.params.logid;
+    let sql : string = 'select logid,title,placename,date,runningTime,start_time, seat,num_adult,num_teen from paylogdb, moviedetail, movieentity,places where logid = ? and movieentity.placeid = places.placeid and movieentity.movieid = moviedetail.movieid and paylogdb.entityid = movieentity.entityid;';
+    let params : Array<string> = [logid];
+    res.header('Cache-Control', 'no-store')
+    let conn
+    try {
+        conn = await pool.getConnection();
+        let [rows] = await conn.query(sql, params);
+        conn.release();
+        console.log(rows)
+        return res.render('ticket', { log : rows[0]});
+    } catch(err){
+        if(conn){
+            conn.release();
+        }
+        console.error(err)
+    }
+})
+
 // 로그아웃 시 세션 초기화
 router.get('/logout', (req : Request, res : Response) =>{
     if(req.session.isLogined){
