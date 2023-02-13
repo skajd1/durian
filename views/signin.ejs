@@ -89,12 +89,12 @@
     document.querySelector("#birthmonth").addEventListener("change", function() {
       const month = Number(this.value);
       const year = Number(document.querySelector("#birth").value);
-      console.log(month, year)
+      
       const numDays = getNumDays(month, year);
-      console.log(numDays)
+      
       const daySelect = document.querySelector("#birthday");
       const currentNumOptions = daySelect.options.length;
-      console.log(currentNumOptions)
+      
      
       for (let i = currentNumOptions; i <= numDays; i++) {
         const option = document.createElement("option");

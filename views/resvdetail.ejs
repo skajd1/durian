@@ -61,7 +61,10 @@
                                 </div>
                                 <% if(cancel){ %>
                                 <div class = "mx-auto">
-                                    <button class = "bg-red-500 rounded p-4 text-white font-bold hover:bg-red-600">
+                                    <button type = 'button'
+                                    onclick = 'deleteConfirm()'
+                                    class = "bg-red-500 rounded p-4 text-white font-bold hover:bg-red-600">
+                                    
                                         예매 취소
                                     </button>
                                 </div>
@@ -83,7 +86,28 @@
     </section>
 
 
+<script>
 
+    function deleteConfirm(){
+        if(confirm('예매를 취소하시겠습니까?'))
+        {
+            fetch('', {
+                method : "DELETE",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({
+                    logid : "<%=log.logid%>"
+                })        
+            })
+            .then(res => console.log(res.json))
+            .then(alert('예매가 취소되었습니다'))
+            .then(document.location.href='/user/mypage')
+            .catch(err => console.log(err))
+        
+        }
+    }
+</script>
 
 </body>
 </html>
