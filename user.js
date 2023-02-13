@@ -88,6 +88,7 @@ router.get('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 0, 
         let params = [logid];
         let conn;
         let cancel = true;
+        res.setHeader('Cache-Control', 'no-store');
         try {
             conn = yield pool.getConnection();
             let [rows] = yield conn.query(sql, params);
@@ -104,6 +105,58 @@ router.get('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 0, 
                 conn.release();
             }
             console.error(err);
+        }
+    }
+}));
+router.delete('/mypage/resvdetail/:logid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.session.isLogined) {
+        res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/user/login'</script>");
+    }
+    else {
+        // 포인트 환불
+        // movieentity에서 좌석 정보 수정
+        // paylogdb에서 삭제
+        let logid = req.body.logid;
+        let sql_paylogdb = 'select payment,seat,userid,entityid from paylogdb where logid = ?; ';
+        let params_paylogdb = [logid];
+        let conn;
+        try {
+            conn = yield pool.getConnection();
+            let [rows] = yield conn.query(sql_paylogdb, params_paylogdb);
+            let payment = rows[0].payment;
+            let seat = rows[0].seat;
+            let userid = rows[0].userid;
+            let entityid = rows[0].entityid;
+            let sql_movieentity = 'select seatStatus from movieentity where entityid = ?';
+            let params_movieentity = [entityid];
+            let [rows2] = yield conn.query(sql_movieentity, params_movieentity);
+            let seatStatus = JSON.parse(rows2[0].seatStatus);
+            seat.split(',').forEach((s) => {
+                seatStatus[s.charCodeAt(0) - 65][Number(s.charCodeAt(1) - 49)] = 0;
+            });
+            let sql_point = 'update userdb set point = point + ? where userid = ?; ';
+            let params_point = [payment, userid];
+            let sql_seat = 'update movieentity set seatStatus = ? where entityid = ?; ';
+            let params_seat = [JSON.stringify(seatStatus), entityid];
+            let sql_paylogdb2 = 'delete from paylogdb where logid = ?; ';
+            let params_paylogdb2 = [logid];
+            yield conn.beginTransaction();
+            yield conn.query(sql_point + sql_seat + sql_paylogdb2, params_point.concat(params_seat).concat(params_paylogdb2));
+            yield conn.commit();
+            conn.release();
+            return res.send("<script>alert('예매가 취소되었습니다.');document.location.href='/user/mypage'</script>");
+        }
+        catch (err) {
+            console.error(err);
+            if (conn) {
+                try {
+                    yield conn.rollback();
+                    conn.release();
+                }
+                catch (err) {
+                    console.error(err);
+                }
+            }
         }
     }
 }));
