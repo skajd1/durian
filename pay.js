@@ -72,6 +72,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 }));
+//ajax call 응답 route
 router.get('/gettime', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.session.isLogined) {
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
@@ -97,6 +98,7 @@ router.get('/gettime', (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 }));
+//좌석 선택 get요청
 router.get('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.session.isLogined) {
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
@@ -133,6 +135,7 @@ router.get('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
     }
 }));
+//좌석 선택 후 결제 post요청
 router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.session.isLogined) {
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
@@ -195,6 +198,8 @@ router.post('/selectseat', (req, res) => __awaiter(void 0, void 0, void 0, funct
                 let params_movieentity = [JSON.stringify(seat_status), entityid];
                 let sql_userdb = "update userdb set point = point - ? where userid = ?;";
                 let params_userdb = [price, userid];
+                //트랜잭션 시작 
+                //쿼리 정상 실행이면 커밋, 아니면 롤백
                 yield conn.beginTransaction();
                 yield conn.query(sql_paylogdb + sql_movieentity + sql_userdb, params_paylogdb.concat(params_movieentity).concat(params_userdb));
                 yield conn.commit();

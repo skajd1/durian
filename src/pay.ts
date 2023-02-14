@@ -81,6 +81,7 @@ router.get('/', async (req : Request, res : Response)=>{
        
     }
 })
+//ajax call 응답 route
 router.get('/gettime', async (req: Request, res: Response) =>{
     if(!req.session.isLogined){
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
@@ -105,6 +106,8 @@ router.get('/gettime', async (req: Request, res: Response) =>{
         }
     }
 })
+
+//좌석 선택 get요청
 router.get('/selectseat', async (req: Request, res: Response) =>{
     if(!req.session.isLogined){
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
@@ -148,6 +151,8 @@ router.get('/selectseat', async (req: Request, res: Response) =>{
         }
     }
 })
+
+//좌석 선택 후 결제 post요청
 router.post('/selectseat', async (req: Request, res: Response) =>{
     if(!req.session.isLogined){
         return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>")
@@ -224,6 +229,9 @@ router.post('/selectseat', async (req: Request, res: Response) =>{
                 let sql_userdb : string = "update userdb set point = point - ? where userid = ?;"
                 let params_userdb : Array<any> = [price,userid]
 
+
+                //트랜잭션 시작 
+                //쿼리 정상 실행이면 커밋, 아니면 롤백
                 await conn.beginTransaction();
                 await conn.query(sql_paylogdb + sql_movieentity + sql_userdb, params_paylogdb.concat(params_movieentity).concat(params_userdb))
                 await conn.commit();

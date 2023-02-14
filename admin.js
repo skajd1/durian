@@ -29,6 +29,7 @@ const router = express_1.default.Router();
 const bodyParser = require('body-parser');
 const pool = require('./mysql');
 const multer = require('multer');
+// 좌석 초기화
 const seat = [];
 for (let i = 0; i < 5; i++) {
     let tmp = [];
@@ -134,6 +135,7 @@ router.post('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, func
         }
     }
 }));
+// 유저 db 삭제 요청
 router.delete('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.session.user_id !== 'admin') {
         return res.send(err_msg);
@@ -144,7 +146,7 @@ router.delete('/userdb/edit', (req, res) => __awaiter(void 0, void 0, void 0, fu
     let params = [uid];
     try {
         conn = yield pool.getConnection();
-        conn.query(sql_userdb_delete, params);
+        yield conn.query(sql_userdb_delete, params);
         conn.release();
     }
     catch (err) {
@@ -176,7 +178,7 @@ router.get("/moviedb", (req, res) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 }));
-//영화 DB 수정 페이지 레이아웃
+//영화 DB 수정 페이지 출력
 router.get("/moviedb/edit/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.session.user_id !== 'admin') {
         return res.send(err_msg);
@@ -199,7 +201,7 @@ router.get("/moviedb/edit/:id", (req, res) => __awaiter(void 0, void 0, void 0, 
         }
     }
 }));
-//영화 DB수정 서버사이드 TODO
+//영화 DB수정 서버사이드
 router.post("/moviedb/edit/:id", upload.single('image'), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.session.user_id !== 'admin') {
         return res.send(err_msg);
@@ -328,6 +330,7 @@ router.get('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functio
             return res.send("<script>alert('" + key + "가 입력되지 않았습니다.');document.location.href='/admin/selectdate'</script>");
         }
     }
+    res.setHeader('Cache-Control', 'no-store');
     let conn;
     let sql_timetable = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); ";
     let sql_moviedetail = "select movieid,title from moviedetail;"; // 수정
@@ -337,7 +340,6 @@ router.get('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functio
     let params_places = [placeid];
     let place;
     let moviedetail = {};
-    res.setHeader('Cache-Control', 'no-store');
     // 이미 타임테이블이 존재하면 그대로 정보를 전송하고, 없으면 타임테이블 생성후 default rows 선언해서 전송 
     try {
         conn = yield pool.getConnection();
@@ -351,13 +353,9 @@ router.get('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functio
             rows[0] = [{ time1: 0, time2: 0, time3: 0, time4: 0, time5: 0 }];
             let sql = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%d/%m/%Y'));";
             let [result] = yield conn.query(sql, params);
-            conn.release();
-            return res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date });
         }
-        else {
-            conn.release();
-            return res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date });
-        }
+        conn.release();
+        return res.render('post_entity', { login: true, timetable: rows[0], movielist: rows[1], moviedetail: moviedetail, placeid: placeid, selected_place: place, selected_date: date });
     }
     catch (err) {
         console.error(err);
@@ -399,6 +397,7 @@ router.post('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
     }
 }));
+// 타임테이블에 등록된 개체 삭제
 router.delete('/posttable', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.session.user_id !== 'admin') {
         return res.send(err_msg);
