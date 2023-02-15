@@ -50,12 +50,6 @@ router.get('/', async (req : Request, res : Response)=>{
         let sql_moviedetail : string = "select * from moviedetail; "
         let sql_places : string = "select * from places"
 
-        let sql_table : string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d'); "
-        let params_table : Array<string|string>  = [placeid, date]
-
-        let sql_movieentity : string = 'select placeid, date from movieentity where movieid = ? and date>now(); '
-        let params_movieentity : Array<string> = [movieid]
-
         let sql_check : string = 'select placeid, date, movieid from movieentity where movieid = ? and date = STR_TO_DATE(?,"%Y-%m-%d") and placeid = ?;'
         let params_check : Array<string|string|string> = [movieid, date, placeid]
 
@@ -66,7 +60,6 @@ router.get('/', async (req : Request, res : Response)=>{
             let [rows] = await conn.query(sql_moviedetail + sql_places)
             movielist = rows[0]
             placelist = rows[1]
-            let [time] = await conn.query(sql_table,params_table);
             let [check] = await conn.query(sql_check, params_check)
 
             if(!check.length){

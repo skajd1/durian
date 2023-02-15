@@ -48,10 +48,6 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let movieid = req.query['movie-id'];
         let sql_moviedetail = "select * from moviedetail; ";
         let sql_places = "select * from places";
-        let sql_table = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d'); ";
-        let params_table = [placeid, date];
-        let sql_movieentity = 'select placeid, date from movieentity where movieid = ? and date>now(); ';
-        let params_movieentity = [movieid];
         let sql_check = 'select placeid, date, movieid from movieentity where movieid = ? and date = STR_TO_DATE(?,"%Y-%m-%d") and placeid = ?;';
         let params_check = [movieid, date, placeid];
         let conn;
@@ -61,7 +57,6 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             let [rows] = yield conn.query(sql_moviedetail + sql_places);
             movielist = rows[0];
             placelist = rows[1];
-            let [time] = yield conn.query(sql_table, params_table);
             let [check] = yield conn.query(sql_check, params_check);
             if (!check.length) {
                 err = '선택한 극장 / 날짜에 상영중인 영화가 없습니다. 다른 극장 / 날짜를 선택해주세요.';
