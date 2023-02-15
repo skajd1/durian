@@ -53,9 +53,11 @@ router.get('/', async (req : Request, res : Response)=>{
         let sql_table : string = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d'); "
         let params_table : Array<string|string>  = [placeid, date]
 
-        let sql_movieentity : string = 'select placeid from movieentity where movieid = ? and date>now(); '
+        let sql_movieentity : string = 'select placeid, date from movieentity where movieid = ? and date>now(); '
         let params_movieentity : Array<string> = [movieid]
 
+        let sql_check : string = 'select placeid, date, movieid from movieentity where movieid = ? and date = STR_TO_DATE(?,"%Y-%m-%d") and placeid = ?;'
+        let params_check : Array<string|string|string> = [movieid, date, placeid]
 
         let conn
         try{
@@ -64,28 +66,12 @@ router.get('/', async (req : Request, res : Response)=>{
             let [rows] = await conn.query(sql_moviedetail + sql_places)
             movielist = rows[0]
             placelist = rows[1]
-            let set = new Set()
-            let [place] = await conn.query(sql_movieentity, params_movieentity)
             let [time] = await conn.query(sql_table,params_table);
-            for (let i = 0 ; i < place.length; i++)
-            {
-                set.add(Number(place[i].placeid))
-            }
-            if(!place.length){
-                err = "선택한 영화가 상영중인 극장이 없습니다. 다른 영화를 선택해주세요."
-            }
-            else if(!time.length){ 
-                err = "선택한 극장 / 날짜에 상영중인 영화가 없습니다. 다른 극장 / 날짜를 선택해주세요."
-            }
-            else if(!set.has(Number(placeid)))
-            {
-                
-                err = '다른 극장 / 날짜를 선택해주세요.'
-            }
-            
-            
-            
+            let [check] = await conn.query(sql_check, params_check)
 
+            if(!check.length){
+                err = '선택한 극장 / 날짜에 상영중인 영화가 없습니다. 다른 극장 / 날짜를 선택해주세요.'
+            }           
             conn.release();
             return res.render('pay', {login : true, movielist : movielist, placelist : placelist, placeid : placeid, movieid : movieid, date : date, err:err});
 
