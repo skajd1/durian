@@ -66,10 +66,10 @@ router.get('/', async (req : Request, res : Response)=>{
             placelist = rows[1]
             let set = new Set()
             let [place] = await conn.query(sql_movieentity, params_movieentity)
-            let [time] = await conn.query(sql_table,params_table)
-            for (let i = 0 ; i < place.length, i++)
+            let [time] = await conn.query(sql_table,params_table);
+            for (let i = 0 ; i < place.length; i++)
             {
-                set.add(place.placeid)
+                set.add(Number(place[i].placeid))
             }
             if(!place.length){
                 err = "선택한 영화가 상영중인 극장이 없습니다. 다른 영화를 선택해주세요."
@@ -77,8 +77,9 @@ router.get('/', async (req : Request, res : Response)=>{
             else if(!time.length){ 
                 err = "선택한 극장 / 날짜에 상영중인 영화가 없습니다. 다른 극장 / 날짜를 선택해주세요."
             }
-            else if(!set.has(placeid))
+            else if(!set.has(Number(placeid)))
             {
+                
                 err = '다른 극장 / 날짜를 선택해주세요.'
             }
             

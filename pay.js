@@ -62,8 +62,8 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             let set = new Set();
             let [place] = yield conn.query(sql_movieentity, params_movieentity);
             let [time] = yield conn.query(sql_table, params_table);
-            for (let i = 0; i < place.length, i++;) {
-                set.add(place.placeid);
+            for (let i = 0; i < place.length; i++) {
+                set.add(Number(place[i].placeid));
             }
             if (!place.length) {
                 err = "선택한 영화가 상영중인 극장이 없습니다. 다른 영화를 선택해주세요.";
@@ -71,7 +71,7 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             else if (!time.length) {
                 err = "선택한 극장 / 날짜에 상영중인 영화가 없습니다. 다른 극장 / 날짜를 선택해주세요.";
             }
-            else if (!set.has(placeid)) {
+            else if (!set.has(Number(placeid))) {
                 err = '다른 극장 / 날짜를 선택해주세요.';
             }
             conn.release();
