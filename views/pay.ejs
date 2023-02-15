@@ -13,7 +13,10 @@
     <%- include ("header.ejs") %>
     <% }else{ %>
     <%- include ("header_logout.ejs") %>
-    <% } %>    
+    <% } %>
+    <div class = "absolute right-[50%] top-[50%] z-50" id = "Progress_Loading">
+        <img src="/static_image/loading.gif"/>
+    </div>
     <div class = 'flex flex-col'>
         <form method="GET" action = "/pay/selectseat">
             <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5 min-w-[580px]">
@@ -196,7 +199,7 @@
         function disable_place(){
             for(i = 0; i < "<%=placelist.length%>"; i ++){   
                 document.getElementById('place'+i+'lable').addEventListener('click', ()=>{})
-                document.getElementById('place'+i+'lable').className = 'text-gray-200 text-center text-lg my-2 w-[90%]'     
+                document.getElementById('place'+i+'lable').className = 'text-gray-200 text-lg my-2 w-[90%]'     
             }  
         }
         function disable_date(){
@@ -247,13 +250,6 @@
             document.getElementById('time').textContent = event.target.textContent
         }
         
-        let scroll_movie = document.getElementById('movie-scroll')
-        //let scroll_date = document.getElementById('date-scroll')
-        let loc_movie = document.getElementById(document.querySelector('input[name="select-movie"]:checked').id +'lable').offsetTop
-        //let loc_date = document.getElementById(document.querySelector('input[name="select-date"]:checked').id +'lable').offsetTop
-        scroll_movie.scrollTo({top : loc_movie - 157 })
-        
-        
         function checkerr(err){
             
             if(err){
@@ -303,7 +299,7 @@
                         }
                     }
                 });
-
+                
             });
         }
         function getDateAjax(mi,pi){
@@ -345,10 +341,10 @@
             $.ajax({
                 type: "GET",
                 url: "/pay/gettime",
-               data: {placeid: pi, date: d},
-               contentType: "application/json; charset=utf-8",
-               dataType: "json",
-               success: (data)=> {
+                data: {placeid: pi, date: d},
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: (data)=> {
                     document.getElementById('place').textContent = '극장  ' + document.querySelector('input[name="select-place"]:checked').nextElementSibling.innerText
                     document.getElementById('date').textContent = '일시  ' + document.querySelector('input[name="select-date"]:checked').nextElementSibling.innerText
                     let movieid = Number(document.querySelector('input[name="select-movie"]:checked').value)
@@ -369,21 +365,35 @@
                         }
                     }
                     else{
-                         disable_time()
+                        disable_time()
                     }
                 },
                 error : (err)=>{
                     console.log(err)
                 }
-          });
-        
+            });
+            
         }
+
         
         let checked_movieId = document.querySelector('input[name="select-movie"]:checked').id.slice(5)
         document.getElementById('img-poster').src = movielist[checked_movieId].poster_src
         document.getElementById('title').textContent = movielist[checked_movieId].title
         document.getElementById('runningtime').textContent = '상영시간 ' + movielist[checked_movieId].time
-        
+        let scroll_movie = document.getElementById('movie-scroll')
+        let loc_movie = document.getElementById(document.querySelector('input[name="select-movie"]:checked').id +'lable').offsetTop
+        scroll_movie.scrollTo({top : loc_movie - 157 })
+        //let scroll_date = document.getElementById('date-scroll')
+        //let loc_date = document.getElementById(document.querySelector('input[name="select-date"]:checked').id +'lable').offsetTop
+        $(document).ready(function(){
+            $('#Progress_Loading').hide(); //첫 시작시 로딩바를 숨겨준다.
+        })
+        .ajaxStart(function(){
+            $('#Progress_Loading').show(); //ajax실행시 로딩바를 보여준다.
+        })
+        .ajaxStop(function(){
+            $('#Progress_Loading').hide(); //ajax종료시 로딩바를 숨겨준다.
+        });
         
         
         async function init(){
@@ -397,10 +407,7 @@
                     placeSelect({target: document.getElementById('place'+i+'lable')})
                     document.getElementById('place'+i).checked = true
                 }
-            }
-            // 선택 날짜가 맞으면 해당 날짜 select
-            
-            
+            }    
         }
         
         let err = "<%=err%>"
@@ -418,20 +425,8 @@
                 }
                 
             }, '100'))
-
         }
-
-        
-        
-        
-       
-
-        
-        
-
-
-        
-        
+         
         
     </script>
 </body>
