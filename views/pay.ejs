@@ -17,7 +17,7 @@
     
     <div class = 'flex flex-col'>
         <form method="GET" action = "/pay/selectseat">
-            <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
+            <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5 min-w-[580px]">
                 <div class = "select-container flex flex-row mx-auto w-full h-[450px] ml-4">
                     <div class = 'select-movie w-1/4 mr-1 flex flex-col'>
                         <div class = "mx-auto bg-yellow-500 text-white w-full text-center text-lg font-bold">
@@ -52,14 +52,10 @@
                            
                             <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96">
                                 <% for(let i = 0; i < placelist.length; i++) {%>
-                                    <% if(placelist[i].placeid == placeid) {%>
-                                        <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden" checked>
-                                    <% } else { %>
-                                        <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden">
-                                    <% } %>
+                                    <input id = "place<%=i%>" name = 'select-place' value = '<%=placelist[i].placeid%>' type = 'radio' class="peer/place<%=i%> hidden">
                                     <label for="place<%=i%>" id = "place<%=i%>lable"
-                                    onclick = 'placeSelect(event)'
-                                    class="cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/place<%=i%>:bg-gray-300">
+                                    onclick = ''
+                                    class="text-gray-200 text-lg my-2 w-[90%]">
                                     <%=placelist[i].placename %>
                                     </label> 
     
@@ -74,11 +70,11 @@
                         </div>
                         <div class= "p-3 pr-0.5 border border-gray-400 h-full">
                             <div class = "flex flex-col overflow-y-auto overflow-x-hidden h-96" id = 'date-scroll'>
-                                <% for(let i = 0; i < 11; i++) {%>
+                                <% for(let i = 0; i < 11; i++) {%>                                    
                                     <input id = "date<%=i%>" name = 'select-date' type = 'radio' class="peer/date<%=i%> hidden">
                                     <label for="date<%=i%>" id = "date<%=i%>lable"
-                                    onclick = 'dateSelect(event)'
-                                    class="cursor-pointer text-center text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/date<%=i%>:bg-gray-300 ">
+                                    onclick = ''
+                                    class="text-gray-200 text-center text-lg my-2 w-[90%] ">
                                     </label> 
     
                                 <%}%>
@@ -97,7 +93,7 @@
                                     <input id = "time<%=i%>" name = 'select-time' type = 'radio' value = "time<%=i%>" class="peer/time<%=i%> hidden">
                                     <label for="time<%=i%>" id = "time<%=i%>lable"
                                     onclick = ''
-                                    class="cursor-pointer text-center text-xl text-gray-200 font-medium my-2 w-[90%]">
+                                    class="text-center text-xl text-gray-200 font-medium my-2 w-[90%]">
                                     <div class = "h-[60px] pt-3"><%= 6 + i*4 + ' : 00' %></div>
                                     </label> 
                                 <%}%>
@@ -106,38 +102,40 @@
                     </div>
                 </div>  
             </div>
-            <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
-                <div class = 'w-1/5 mr-4 ml-2'>
-                    <img id = 'img-poster' class = 'w-full h-full '>
-                </div>
-                <div class = 'w-1/4 ml-4 mx-2 flex flex-col font-bold'>
-                    <div class ='flex mt-16'>
-                        <div id = 'title'></div>
+            <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg text-lg p-4 mx-auto flex flex-col w-full mt-10 md:mt-5 min-w-[580px]'>
+                <div class = 'flex flex-row'>
+                    <div class = 'w-full mr-4 ml-2 float-left'>
+                        <img id = 'img-poster' class = 'object-contain min-w-[120px] h-[250px]'>
                     </div>
-                    <div class = 'flex relative top-10'>
-                        <div id = 'runningtime'> </div>
+                    <div class = 'w-full  min-w-[110px] ml-2 mx-2 flex flex-col font-bold '>
+                        <div class ='flex mt-8'>
+                            <div id = 'title'></div>
+                        </div>
+                        <div class = 'flex relative top-10'>
+                            <div id = 'runningtime'> </div>
+                        </div>
                     </div>
-                    <!-- <div>
-                        나이
-                    </div> -->
-                </div>
-                <div class = 'w-1/4 mx-2 flex flex-col font-bold '>
-                    <div class = 'mt-16 ml-4 flex whitespace-nowrap'>
-                        <div id = 'place' class = 'ml-6'></div>
+                    <div class = 'w-full  mx-1 flex flex-col font-bold min-w-[110px] overflow-hidden'>
+                        <div class = 'mt-8 flex'>
+                            <div id = 'place' class = 'ml-2'></div>
+                        </div>
+                        <div class = 'mt-10  flex'>
+                            <div id = 'date' class = 'ml-2'> </div>
+                            <div id = 'time' class = 'ml-2'> </div>
+                        </div>
                     </div>
-                    <div class = 'mt-10 ml-4  flex whitespace-nowrap'>
-                        <div id = 'date' class = 'ml-6'> </div>
-                        <div id = 'time' class = 'ml-2'> </div>
+                    <div class = 'w-full'>
+                        <div class = 'min-w-[150px] h-full flex flex-col float-right'>
+                            <button type = "submit" class=" h-2/3 mr-4 my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                                <div class = 'text-lg font-bold '>좌석 선택</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+                                </svg>
+                            </button>
+                        </div>
+
                     </div>
-                </div>
-                <div class = 'w-1/5 ml-8 flex flex-col'>
-                    <button type = "submit" class="w-2/3 h-2/3 mx-auto my-auto text-white bg-yellow-500 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
-                        <div class = 'text-lg font-bold'>좌석 선택</div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
-                        </svg>
-                    </button>
                 </div>
                 
             </div>
@@ -158,10 +156,196 @@
           id : "<%=movielist[i].movieid%>"
         })
         "<%}%>"
+        
+        let day = ['일','월','화','수','목','금','토']
+        let today = new Date();
+        let month = today.getMonth() + 1
+        let selectedDate = new Date("<%=date%>")
+        for(let i = 0; i < 11; i ++){
+            if(selectedDate.getMonth() +1 == month && selectedDate.getDate() == today.getDate())
+            {
+                document.getElementById('date'+i).checked = true
+            }
+            document.getElementById('date'+i).value = '2023-'+month +'-'+today.getDate()
+            document.getElementById('date'+i+'lable').textContent = month +"월 " + today.getDate() + "일  (" + day[today.getDay()] + ")"
+            today.setDate(today.getDate() + 1)
+        }
+
+        function init_select(){
+            let selected_place = document.querySelector('input[name="select-place"]:checked') ? document.querySelector('input[name="select-place"]:checked') : null
+            let selected_date = document.querySelector('input[name="select-date"]:checked') ? document.querySelector('input[name="select-date"]:checked') : null
+            let selected_time = document.querySelector('input[name="select-time"]:checked') ? document.querySelector('input[name="select-time"]:checked') : null
+            if (selected_place || selected_date)
+            {   
+                if (selected_place){
+                    selected_place.checked = false
+                }
+                if (selected_date){
+                    selected_date.checked = false
+                }
+                if (selected_time){
+                    selected_time.checked = false
+                }
+                document.getElementById('place').textContent = ''
+                document.getElementById('date').textContent = ''
+                document.getElementById('time').textContent = ''
+                
+            }
+            disable_date()
+            disable_time()     
+        }    
+        function disable_place(){
+            for(i = 0; i < "<%=placelist.length%>"; i ++){   
+                document.getElementById('place'+i+'lable').addEventListener('click', ()=>{})
+                document.getElementById('place'+i+'lable').className = 'text-gray-200 text-center text-lg my-2 w-[90%]'     
+            }  
+        }
+        function disable_date(){
+            
+            for(i = 0; i < 11; i ++){   
+                document.getElementById('date'+i+'lable').addEventListener('click', ()=>{})
+                document.getElementById('date'+i+'lable').className = 'text-gray-200 text-center text-lg my-2 w-[90%]'
+            }
+        }
+        function disable_time(){
+            for(i = 0; i < 5; i ++){   
+                document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
+                document.getElementById('time'+i+'lable').className="text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
+            }  
+        }
+        function movieSelect(id){
+            init_select()
+            document.getElementById('img-poster').src = movielist[id].poster_src
+            document.getElementById('title').textContent = movielist[id].title
+            document.getElementById('runningtime').textContent = '상영시간 ' + movielist[id].time
+            getPlaceAjax(movielist[id].id)
+        }
+        function placeSelect(event){        
+            let selected_date = document.querySelector('input[name="select-date"]:checked')
+            if(selected_date){
+                selected_date.checked = false;
+            }
+            document.getElementById('date').textContent = ''
+            document.getElementById('time').textContent = ''
+            document.getElementById('place').textContent = '극장  ' + document.getElementById(event.target.id).textContent
+
+            //현재 체크된 movieid와 placeid를 가져와서 date를 가져온다.
+            let movieid = document.querySelector('input[name="select-movie"]:checked').value
+            let placeid = event.target.previousSibling.previousSibling.value
+            disable_time()
+            getDateAjax(movieid,placeid)
+        }
+        function dateSelect(event){
+            
+            let placeid = document.querySelector('input[name="select-place"]:checked').value
+            let date = event.target.previousSibling.previousSibling.value
+            document.getElementById('date').textContent = '일시  ' + document.getElementById(event.target.id).textContent
+            getTimeAjax(placeid,date)
+            
+        }
+        
+        function timeSelect(event){
+            document.getElementById('time').textContent = event.target.textContent
+        }
+        
+        let scroll_movie = document.getElementById('movie-scroll')
+        //let scroll_date = document.getElementById('date-scroll')
+        let loc_movie = document.getElementById(document.querySelector('input[name="select-movie"]:checked').id +'lable').offsetTop
+        //let loc_date = document.getElementById(document.querySelector('input[name="select-date"]:checked').id +'lable').offsetTop
+        scroll_movie.scrollTo({top : loc_movie - 157 })
+        
+        
+        function checkerr(err){
+            
+            if(err){
+                alert(err)
+                getPlaceAjax("<%=movieid%>")
+            }
+            else{
+                document.getElementById('place').textContent = '극장  ' + (document.querySelector('input[name="select-place"]:checked').nextElementSibling.innerText);
+                document.getElementById('date').textContent = '일시  ' + (document.querySelector('input[name="select-date"]:checked').nextElementSibling.innerText)
+            }
+        }
+        function getPlaceAjax(mi){
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "GET",
+                    url: "/pay/getplace",
+                    data: {movieid: mi},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (data)=> {
+                        // movieentity 에서 해당 movieid로 조회 했을 때, empty면 alert
+                        if(!data[0])
+                        {
+                            alert('해당 영화가 상영중인 극장이 없습니다.')
+                            disable_place()
+                            return;
+                        }
+                        else{
+                            let set = new Set()
+                            for(let i = 0; i < data.length; i ++){
+                                set.add(data[i].placeid)
+                            }
+                            let v = Array.from(set)
+                            for(i = 0; i < "<%=placelist.length%>"; i ++){
+                                document.getElementById('place'+i).checked = false
+                                // 조회한 placeid에 해당하는 place만 활성화
+                                if (v.includes(Number(document.getElementById('place'+i).value))){
+                                    document.getElementById('place'+i+'lable').addEventListener('click', placeSelect)
+                                    document.getElementById('place'+i+'lable').className = 'cursor-pointer text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/place'+i+':bg-gray-300'
+                                }
+                                else{
+                                    document.getElementById('place'+i+'lable').addEventListener('click', ()=>{})
+                                    document.getElementById('place'+i+'lable').className = 'text-gray-200 text-lg my-2 w-[90%]'
+                                }  
+                            }
+                            resolve(data)
+                        }
+                    }
+                });
+
+            });
+        }
+        function getDateAjax(mi,pi){
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "GET",
+                    url: "/pay/getdate",
+                    data: {movieid: mi, placeid: pi},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: (data)=> {
+                        let set = new Set()
+                        for (let i = 0; i < data.length; i ++){
+                            let date_string = new Date(data[i].date).toLocaleDateString()
+                            let ndate = date_string.split('. ')[0] + '-' + date_string.split('. ')[1] + '-' + date_string.split('. ')[2]
+                            ndate = ndate.substring(0, ndate.length - 1)
+                            set.add(ndate)
+                        }
+                        
+                        
+                        for(i = 0; i < 11; i ++){
+                            document.getElementById('date'+i).checked = false
+                            //ndate에 포함된 날짜만 활성화
+                            if (set.has(document.getElementById('date'+i).value)){
+                                document.getElementById('date'+i+'lable').addEventListener('click', dateSelect)
+                                document.getElementById('date'+i+'lable').className = 'cursor-pointer text-center text-lg my-2 w-[90%] hover:bg-gray-200 peer-checked/date'+i+':bg-gray-300'                  
+                            }
+                            else{
+                                document.getElementById('date'+i+'lable').addEventListener('click', ()=>{})
+                                document.getElementById('date'+i+'lable').className = 'text-gray-200 text-center text-lg my-2 w-[90%]'
+                            }         
+                        }
+                        resolve(data)
+                    }
+                });
+            });
+        }
         function getTimeAjax(pi,d){
             $.ajax({
-               type: "GET",
-               url: "/pay/gettime",
+                type: "GET",
+                url: "/pay/gettime",
                data: {placeid: pi, date: d},
                contentType: "application/json; charset=utf-8",
                dataType: "json",
@@ -174,6 +358,7 @@
                         
                         for(i = 0; i < 5; i ++)
                         {
+                            document.getElementById('time'+i).checked = false
                             if (movieid == v[i]){
                                 document.getElementById('time'+i+'lable').addEventListener('click', (i)=>timeSelect(i))
                                 document.getElementById('time'+i+'lable').className="cursor-pointer text-center text-xl font-medium my-2 w-[90%] hover:bg-gray-200 peer-checked/time" +i +":bg-gray-300"
@@ -192,112 +377,63 @@
                     console.log(err)
                 }
           });
-
-        }
-
-        let day = ['일','월','화','수','목','금','토']
-        let today = new Date();
-        let month = today.getMonth() + 1
-        let selectedDate = new Date("<%=date%>")
-        for(let i = 0; i < 11; i ++){
-            if(selectedDate.getMonth() +1 == month && selectedDate.getDate() == today.getDate())
-            {
-                document.getElementById('date'+i).checked = true
-            }
-            document.getElementById('date'+i).value = '2023-'+month +'-'+today.getDate()
-            document.getElementById('date'+i+'lable').textContent = month +"월 " + today.getDate() + "일  (" + day[today.getDay()] + ")"
-            today.setDate(today.getDate() + 1)
-        }
-        //todo //
-        //이미 날짜가 선택되어 있을 때, 영화 혹은 극장을 바꾸려 하면 select를 초기화 하는 함수
-        function init_select(){
-            let selected_place = document.querySelector('input[name="select-place"]:checked')
-            let selected_date = document.querySelector('input[name="select-date"]:checked')
-            let selected_time = document.querySelector('input[name="select-time"]:checked')
-            if (selected_place || selected_date)
-            {   
-                selected_place.checked = false
-                selected_date.checked = false
-                if (selected_time)
-                    selected_time.checked = false
-                document.getElementById('place').textContent = ''
-                document.getElementById('date').textContent = ''
-                document.getElementById('time').textContent = ''
-                disable_time()
-            }
-
-        }
-
-        function disable_time(){
-            for(i = 0; i < 5; i ++){   
-                document.getElementById('time'+i+'lable').addEventListener('click', ()=>{})
-                document.getElementById('time'+i+'lable').className="text-center text-xl text-gray-200 font-medium my-2 w-[90%]"
-            }  
-        }
-        function movieSelect(id){
-            init_select()
-            document.getElementById('img-poster').src = movielist[id].poster_src
-            document.getElementById('title').textContent = movielist[id].title
-            document.getElementById('runningtime').textContent = '상영시간 ' + movielist[id].time
-            
-        }
-        function placeSelect(event){
-            
-            let selected_date = document.querySelector('input[name="select-date"]:checked')
-            if(selected_date){
-                selected_date.checked = false;
-            }
-            
-            
-            document.getElementById('date').textContent = ''
-            document.getElementById('time').textContent = ''
-            document.getElementById('place').textContent = '극장  ' + document.getElementById(event.target.id).textContent          
-            disable_time()
-        }
-        function dateSelect(event){
-            
-            let placeid = document.querySelector('input[name="select-place"]:checked').value
-            let date = event.target.previousSibling.previousSibling.value
-            document.getElementById('date').textContent = '일시  ' + document.getElementById(event.target.id).textContent
-            getTimeAjax(placeid,date)
-            
-        }
-
-        function timeSelect(event){
-            document.getElementById('time').textContent = event.target.textContent
-           
-        }
-
-        let scroll_movie = document.getElementById('movie-scroll')
-        let scroll_date = document.getElementById('date-scroll')
-        let loc_movie = document.getElementById(document.querySelector('input[name="select-movie"]:checked').id +'lable').offsetTop
-        let loc_date = document.getElementById(document.querySelector('input[name="select-date"]:checked').id +'lable').offsetTop
-        scroll_movie.scrollTo({top : loc_movie - 157 })
-        scroll_date.scrollTo({top : loc_date - 157 })
-
-        function checkerr(err){
-            
-            if(err){
-                alert(err)
-                document.querySelector('input[name="select-place"]:checked').checked=false
-                document.querySelector('input[name="select-date"]:checked').checked=false
-            }
-            else{
-                document.getElementById('place').textContent = '극장  ' + (document.querySelector('input[name="select-place"]:checked').nextElementSibling.innerText);
-                document.getElementById('date').textContent = '일시  ' + (document.querySelector('input[name="select-date"]:checked').nextElementSibling.innerText)
-            }
+        
         }
         
         let checked_movieId = document.querySelector('input[name="select-movie"]:checked').id.slice(5)
         document.getElementById('img-poster').src = movielist[checked_movieId].poster_src
         document.getElementById('title').textContent = movielist[checked_movieId].title
-        document.getElementById('runningtime').textContent = '상영시간 ' + movielist[checked_movieId].time   
-        getTimeAjax("<%=placeid%>", "<%=date%>")
+        document.getElementById('runningtime').textContent = '상영시간 ' + movielist[checked_movieId].time
+        
+        
+        
+        async function init(){
+            await getPlaceAjax("<%=movieid%>")
+            await getDateAjax("<%=movieid%>", "<%=placeid%>")
+            
+            //선택한 극장에 선택한 영화가 상영중이면 해당 극장 selected
+            for(let i = 0;i < "<%=placelist.length%>"; i ++){
+                if(Number(document.getElementById('place'+i).value) == Number("<%=placeid%>"))
+                {   
+                    placeSelect({target: document.getElementById('place'+i+'lable')})
+                    document.getElementById('place'+i).checked = true
+                }
+            }
+            // 선택 날짜가 맞으면 해당 날짜 select
+            
+            
+        }
+        
         let err = "<%=err%>"
         if (err) checkerr(err)
+        else{
+            init()
+            .then(setTimeout(()=>{
+                let selectedDate = new Date("<%=date%>")
+                for(let i = 0; i < 11; i ++){
+                    if(new Date(document.getElementById('date'+i).value).toDateString() == selectedDate.toDateString() )
+                    {
+                        dateSelect({target: document.getElementById('date'+i+'lable')})
+                        document.getElementById('date'+i).checked = true 
+                    }
+                }
+                
+            }, '100'))
+
+        }
+
+        
+        
+        
+       
+
+        
         
 
 
+        
+        
+        
     </script>
 </body>
 </html>

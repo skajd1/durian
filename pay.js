@@ -50,6 +50,8 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         let sql_places = "select * from places";
         let sql_table = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d'); ";
         let params_table = [placeid, date];
+        let sql_movieentity = 'select placeid from movieentity where movieid = ? and date>now(); ';
+        let params_movieentity = [movieid];
         let conn;
         try {
             conn = yield pool.getConnection();
@@ -57,9 +59,20 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             let [rows] = yield conn.query(sql_moviedetail + sql_places);
             movielist = rows[0];
             placelist = rows[1];
+            let set = new Set();
+            let [place] = yield conn.query(sql_movieentity, params_movieentity);
             let [time] = yield conn.query(sql_table, params_table);
-            if (!time.length) {
+            for (let i = 0; i < place.length, i++;) {
+                set.add(place.placeid);
+            }
+            if (!place.length) {
+                err = "선택한 영화가 상영중인 극장이 없습니다. 다른 영화를 선택해주세요.";
+            }
+            else if (!time.length) {
                 err = "선택한 극장 / 날짜에 상영중인 영화가 없습니다. 다른 극장 / 날짜를 선택해주세요.";
+            }
+            else if (!set.has(placeid)) {
+                err = '다른 극장 / 날짜를 선택해주세요.';
             }
             conn.release();
             return res.render('pay', { login: true, movielist: movielist, placelist: placelist, placeid: placeid, movieid: movieid, date: date, err: err });
@@ -72,29 +85,67 @@ router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
     }
 }));
-//ajax call 응답 route
-router.get('/gettime', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.session.isLogined) {
-        return res.send("<script>alert('로그인 후 이용해주세요.');document.location.href='/'</script>");
+//getplace ajax call 응답 route
+router.get('/getplace', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let data = req.query;
+    let movieid = data.movieid;
+    let conn;
+    try {
+        conn = yield pool.getConnection();
+        //movieentity에서 movieid에 해당하는 placeid를 가져온다.
+        let sql_table = "select placeid from movieentity where movieid = ? and date > now();";
+        let params_table = [movieid];
+        let [places] = yield conn.query(sql_table, params_table);
+        conn.release();
+        return res.send(places);
     }
-    else {
-        let data = req.query;
-        let placeid = data.placeid;
-        let date = data.date;
-        let conn;
-        try {
-            conn = yield pool.getConnection();
-            let sql_table = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');";
-            let params_table = [placeid, date];
-            let [times] = yield conn.query(sql_table, params_table);
+    catch (err) {
+        console.error(err);
+        if (conn) {
             conn.release();
-            return res.send(times);
         }
-        catch (err) {
-            console.error(err);
-            if (conn) {
-                conn.release();
-            }
+    }
+}));
+//getdate ajax call 응답route
+router.get('/getdate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let data = req.query;
+    let movieid = data.movieid;
+    let placeid = data.placeid;
+    let conn;
+    try {
+        conn = yield pool.getConnection();
+        //movieentity에서 movieid와 placeid로 이용가능한 date를 가져온다.
+        let sql_table = "select date from movieentity where movieid = ? and placeid = ? and date > now();";
+        let params_table = [movieid, placeid];
+        let [dates] = yield conn.query(sql_table, params_table);
+        conn.release();
+        return res.send(dates);
+    }
+    catch (err) {
+        console.error(err);
+        if (conn) {
+            conn.release();
+        }
+    }
+}));
+//gettime ajax call 응답 route
+router.get('/gettime', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let data = req.query;
+    let placeid = data.placeid;
+    let date = data.date;
+    let conn;
+    try {
+        conn = yield pool.getConnection();
+        let sql_table = "select time1, time2, time3, time4, time5 from timetable where placeid = ? and date = STR_TO_DATE(?,'%Y-%m-%d');";
+        let params_table = [placeid, date];
+        let [times] = yield conn.query(sql_table, params_table);
+        conn.release();
+        return res.send(times);
+    }
+    catch (err) {
+        console.error(err);
+        if (conn) {
+            conn.release();
         }
     }
 }));
