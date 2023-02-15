@@ -16,7 +16,7 @@
     <% } %>
     <div class = 'flex flex-col'>
         <form method="POST" action = "/pay/selectseat" id = 'pay' onsubmit ='payConfirm(event)'>
-            <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5">
+            <div class="md:w-3/5 bg-gray-100 rounded-lg p-2 flex flex-col mx-auto w-full mt-10 md:mt-5 min-w-[580px]">
                 <div class = "select-container flex flex-col mx-auto w-full h-[450px]">
                     <div class = 'h-[35px] bg-yellow-500 text-center rounded text-white text-lg font-bold pt-1'>인원 / 좌석 선택</div>
                     <div class = "h-1/4 flex flex-row mt-2">
@@ -124,43 +124,45 @@
                 </div>  
             </div>
 
-            <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg p-4 flex flex-row mx-auto w-full mt-10 md:mt-5'>
-                <div class = 'w-1/5 mr-4 ml-2'>
-                    <img id = 'img-poster' class = 'w-full h-full ' src = '<%=moviedetail.poster_src%>'>
+            <div class = 'md:w-3/5 h-[280px] bg-gray-200 rounded-lg text-lg p-4 mx-auto flex flex-col w-full mt-10 md:mt-5 min-w-[580px]'>
+                <div class = 'flex flex-row'>
+                    <div class = 'w-full mr-4 ml-2 float-left'>
+                        <img id = 'img-poster' class = 'object-contain min-w-[120px] h-[250px]' src = '<%=moviedetail.poster_src%>'>
+                    </div>
+                    <div class = 'w-full min-w-[110px] ml-2 mx-2 flex flex-col font-bold'>
+                        <div class ='flex mt-8'>
+                            <div id = 'title'><%=moviedetail.title%></div>
+                        </div>
+                        <div class = 'flex relative top-10'>
+                            <div id = 'runningtime'>상영시간 <%=Math.floor(moviedetail.runningTime)%>시간 <%=Math.round(60*(moviedetail.runningTime - Math.floor(moviedetail.runningTime))) %>분</div>
+                        </div>
+                    </div>
+                    <div class = 'w-full mx-1 flex flex-col font-bold min-w-[110px]'>
+                        <div class = 'mt-8 flex'>
+                            <div id = 'place' class = 'ml-2'>극장 <%=movieentity.placename%></div>
+                        </div>
+                        <div class = 'mt-10  flex'>
+                            <div id = 'date' class = 'ml-2'>일시  <%=date.split('-')[1] +'월 '+ date.split('-')[2] +'일 ' + dd %> </div>
+                            <div id = 'time' class = 'ml-2'><%=6 + time[4]*4 + ' : 00'%> </div>
+                        </div>
+                        <div class = 'mt-6 flex whitespace-nowrap'>
+                            <div id = 'seat' class = 'ml-2'></div>
+                        </div>
+                    </div>
+                    <div class = 'w-full z-0'>
+                        <div class = 'min-w-[150px] h-full flex flex-col float-right'>
+                            <button type = "submit" id = 'submit'
+                            disabled
+                            class="h-2/3 mr-4 my-auto text-white bg-gray-300 border-0 py-2 px-2 focus:outline-none hover:bg-yellow-600 rounded">
+                                <div class = 'text-lg font-bold'>결제 하기</div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class = 'w-1/4 ml-4 mx-2 flex flex-col text-lg font-bold'>
-                    <div class ='flex mt-16'>
-                        <div id = 'title'><%=moviedetail.title%></div>
-                    </div>
-                    <div class = 'flex relative top-10'>
-                        <div id = 'runningtime'>상영시간 <%=Math.floor(moviedetail.runningTime)%>시간 <%=Math.round(60*(moviedetail.runningTime - Math.floor(moviedetail.runningTime))) %>분</div>
-                    </div>
-                </div>
-                <div class = 'w-1/4 mx-2 flex flex-col text-lg font-bold '>
-                    <div class = 'mt-16 ml-4 flex whitespace-nowrap'>
-                        <div id = 'place' class = 'ml-6'>극장 <%=movieentity.placename%></div>
-                    </div>
-                    <div class = 'mt-10 ml-4 flex whitespace-nowrap'>
-                        <div id = 'date' class = 'ml-6'>일시  <%=date.split('-')[1] +'월 '+ date.split('-')[2] +'일 ' + dd %> </div>
-                        <div id = 'time' class = 'ml-2'><%=6 + time[4]*4 + ' : 00'%> </div>
-                    </div>
-                    <div class = 'mt-10 ml-4 flex whitespace-nowrap'>
-                        <div id = 'seat' class = 'ml-6'></div>
-                        
-                    </div>
-                </div>
-                <div class = 'w-1/5 ml-8 flex flex-col'>
-                    <button type = "submit" id = 'submit'
-                    disabled
-                    class="w-2/3 h-2/3 mx-auto my-auto text-white py-2 px-2 focus:outline-none bg-gray-300 rounded">
-                        <div class = 'text-lg font-bold'>결제 하기</div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto icon icon-tabler icon-tabler-arrow-big-right" width="44" height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
-                        </svg>
-                    </button>
-                </div>
-                
             </div>
 
             <input type = 'hidden' name = 'entityid' value = '<%=movieentity.entityid%>'>
