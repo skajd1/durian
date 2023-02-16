@@ -88,7 +88,7 @@ router.get('/getplace', async (req: Request, res: Response) =>{
     try{
         conn = await pool.getConnection();
         //movieentity에서 movieid에 해당하는 placeid를 가져온다.
-        let sql_table :string = "select placeid from movieentity where movieid = ? and date > now();"
+        let sql_table :string = "select placeid from movieentity where movieid = ? and date > (now() - interval 1 day);"
         let params_table : Array<string> = [movieid]
         let [places] : any = await conn.query(sql_table,params_table)
         conn.release();

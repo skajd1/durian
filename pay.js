@@ -80,7 +80,7 @@ router.get('/getplace', (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         conn = yield pool.getConnection();
         //movieentity에서 movieid에 해당하는 placeid를 가져온다.
-        let sql_table = "select placeid from movieentity where movieid = ? and date > now();";
+        let sql_table = "select placeid from movieentity where movieid = ? and date > (now() - interval 1 day);";
         let params_table = [movieid];
         let [places] = yield conn.query(sql_table, params_table);
         conn.release();
