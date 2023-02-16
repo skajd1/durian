@@ -111,7 +111,7 @@ router.get('/getdate', async (req: Request, res: Response) =>{
     try{
         conn = await pool.getConnection();
         //movieentity에서 movieid와 placeid로 이용가능한 date를 가져온다.
-        let sql_table :string = "select date from movieentity where movieid = ? and placeid = ? and date > now();"
+        let sql_table :string = "select date from movieentity where movieid = ? and placeid = ? and date > (now() - interval 1 day);"
         let params_table : Array<string> = [movieid, placeid]
         let [dates] : any = await conn.query(sql_table,params_table)
         conn.release();

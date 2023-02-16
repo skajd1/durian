@@ -102,7 +102,7 @@ router.get('/getdate', (req, res) => __awaiter(void 0, void 0, void 0, function*
     try {
         conn = yield pool.getConnection();
         //movieentity에서 movieid와 placeid로 이용가능한 date를 가져온다.
-        let sql_table = "select date from movieentity where movieid = ? and placeid = ? and date > now();";
+        let sql_table = "select date from movieentity where movieid = ? and placeid = ? and date > (now() - interval 1 day);";
         let params_table = [movieid, placeid];
         let [dates] = yield conn.query(sql_table, params_table);
         conn.release();
