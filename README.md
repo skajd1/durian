@@ -1,7 +1,7 @@
 # durian
-node.js express website project
-노션 페이지
-https://rhinestone-princess-612.notion.site/a8d4a14df5e8450b87680a7ae78cc2b4
+## 영화 예매 사이트 
+### node.js express website project
+#### [노션 페이지] (https://rhinestone-princess-612.notion.site/a8d4a14df5e8450b87680a7ae78cc2b4)
 
 
 ![KakaoTalk_20230201_173434817](https://user-images.githubusercontent.com/86655177/215992559-55ed71ad-e070-4b78-89af-7371cbec6537.png)
