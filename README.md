@@ -1,15 +1,18 @@
-# durian
-## 영화 예매 사이트 
+# Durian 영화예매사이트
 ### node.js express website project
-#### [노션 페이지] (https://rhinestone-princess-612.notion.site/a8d4a14df5e8450b87680a7ae78cc2b4)
+#### [홈페이지](http://ec2-52-69-189-126.ap-northeast-1.compute.amazonaws.com:8080)
+#### [노션 페이지](https://rhinestone-princess-612.notion.site/a8d4a14df5e8450b87680a7ae78cc2b4)
+**어드민 계정** ( ID : admin | PW : admin ) - 사이트 내 어드민 페이지로 가는 버튼이 활성화되어 영화, 상영개체 및 유저 DB 등을 수정할 수 있다. <br>
+**게스트 계정** ( ID : guest | PW : guest ) - 일반 사용자 계정으로, 영화 예매 및 내역 확인 등의 기능을 수행할 수 있다.
+
+상단 네비바에 있는 회원가입 링크에서 가입을 진행 후 (혹은 어드민 계정으로 로그인 후 여러 기능들을 사용할 수 있음.) 사이트 내부 기능을 이용할 수 있다.
 
 
-![KakaoTalk_20230201_173434817](https://user-images.githubusercontent.com/86655177/215992559-55ed71ad-e070-4b78-89af-7371cbec6537.png)
-![KakaoTalk_20230201_173545350](https://user-images.githubusercontent.com/86655177/215992568-87aa04ad-2096-4241-a931-da83419a0b9c.png)
-![KakaoTalk_20230201_173557559](https://user-images.githubusercontent.com/86655177/215992572-e9c82f76-a393-44d9-a481-d0ec90c098d1.png)
-![KakaoTalk_20230201_173611728](https://user-images.githubusercontent.com/86655177/215992577-fac75125-1ef0-4881-93db-87baa1b43fe9.png)
-![KakaoTalk_20230201_173618731](https://user-images.githubusercontent.com/86655177/215992581-3bdcf579-1d06-42ee-8286-db31f1ae32c9.png)
-![KakaoTalk_20230201_173641046](https://user-images.githubusercontent.com/86655177/215992582-e5aea736-f724-4dcc-a144-bcbc531e7ad0.png)
-![KakaoTalk_20230201_173648218](https://user-images.githubusercontent.com/86655177/215992583-eb7282d2-2dd5-4b5f-a26e-b1b2583ca3a8.png)
-![KakaoTalk_20230201_173708170](https://user-images.githubusercontent.com/86655177/215992587-71cdf0b5-39df-4a5e-8cb3-f0526850a416.png)
-![KakaoTalk_20230201_173720194](https://user-images.githubusercontent.com/86655177/215992589-c2f16f69-98d1-4932-acff-8842b5a5d3c6.png)
+#### 일반 계정 or 비로그인 상태
+![image](https://user-images.githubusercontent.com/86655177/219231399-9acc80f4-652f-4589-a9aa-cb88f6ba437f.png)
+
+#### 어드민 계정
+![image](https://user-images.githubusercontent.com/86655177/219231722-69cfc729-a97b-4158-893c-031b7d02e2f0.png)
+
+
+
