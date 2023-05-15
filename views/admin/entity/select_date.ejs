@@ -53,14 +53,15 @@
 
                             <div class = "mb-4">
                                 <div class="flex">
-                                    <div class="datepicker relative form-floating mb-3 w-full" data-mdb-toggle-button="false">
+                                    <div class="datepicker relative form-floating mb-3 w-full">
                                     <span class = "leading-7 text-sm text-gray-600">날짜 선택</span>
-                                    <input type="text"
+                                    <input type="date"
                                         name = "select-date"
-                                        id = "select-data"
+                                        id = "select-date"
+                                        required
                                         class="mt-2 w-full form-control block text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-yellow-600 focus:outline-none"
-                                        placeholder="날짜 선택" data-mdb-toggle="datepicker" />
-                                    <label for="floatingInput" class="mt-8 text-gray-700">날짜 선택</label>
+                                        placeholder="날짜 선택" />
+                                    
                                     </div>
                                 </div>
                             </div>
