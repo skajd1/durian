@@ -361,7 +361,7 @@ router.get('/posttable', async(req : Request, res : Response) => {
     }
     res.setHeader('Cache-Control', 'no-store')
     let conn
-    let sql_timetable : string = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y'); " ;
+    let sql_timetable : string = "select time1,time2,time3,time4,time5 from timetable where placeid = ? and date = STR_TO_DATE(?, '%Y-%m-%d'); " ;
     let sql_moviedetail : string = "select movieid,title from moviedetail;"; // 수정
     let placeid :any=req.query['select-place'],
     date :any = req.query['select-date'];
@@ -384,7 +384,7 @@ router.get('/posttable', async(req : Request, res : Response) => {
         if(!rows[0].length)
         {   
             rows[0] = [{time1 : 0, time2:0, time3:0, time4:0, time5:0}]
-            let sql : string = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%d/%m/%Y'));"
+            let sql : string = "insert into timetable (placeid, date) values(?, STR_TO_DATE(?, '%Y-%m-%d'));"
             let [result] = await conn.query(sql, params)
         }
             conn.release();
@@ -418,9 +418,9 @@ router.post('/posttable', async(req : Request, res : Response) => {
     let movieId :string = req.body['select-movie']
     let placeId :string = req.body['select-place']
     let time : Number = Number(req.body['select-time']) + 1
-    let sql_timetable : string = "update timetable set time" + time + "=" + movieId +" where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ); "
+    let sql_timetable : string = "update timetable set time" + time + "=" + movieId +" where placeid = ? and date = STR_TO_DATE(?, '%Y-%m-%d' ); "
     let params_timetable : Array<string> = [placeId, date];
-    let sql_movieentity : string = "insert into movieentity (start_time,placeid,movieid,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%d/%m/%Y'));"
+    let sql_movieentity : string = "insert into movieentity (start_time,placeid,movieid,seatStatus,date) values (?,?,?,?,STR_TO_DATE(?, '%Y-%m-%d'));"
     let params_movieentity : Array<any> = [time, placeId, movieId, JSON.stringify(seat), date]
     
     try {
@@ -449,8 +449,8 @@ router.delete('/posttable',async (req : Request, res: Response) =>{
     let time : Number = req.body.time
     let placeid : Number = Number(req.query['select-place'])
     let date = req.query['select-date']
-    let sql_setTimeTable = "update timetable set time" +time + "= 0 where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ); ";
-    let sql_deleteEntity = "delete from movieentity where placeid = ? and date = STR_TO_DATE(?, '%d/%m/%Y' ) and start_time = ? ";
+    let sql_setTimeTable = "update timetable set time" +time + "= 0 where placeid = ? and date = STR_TO_DATE(?, '%Y-%m-%d' ); ";
+    let sql_deleteEntity = "delete from movieentity where placeid = ? and date = STR_TO_DATE(?, '%Y-%m-%d' ) and start_time = ? ";
     let params_timetable = [placeid, date];
     let params_entity = [placeid, date, time];
     try {
