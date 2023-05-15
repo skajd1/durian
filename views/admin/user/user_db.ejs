@@ -130,11 +130,11 @@
                 }
             })
             
-            user_on_page = result
-            if(!user_on_page.length){
+            if(!result.length){
                 alert("검색 결과가 존재하지 않습니다.")
                 return
             }
+            user_on_page = result
             
             showPage(1)
             for (let i = 1; i <= 4; i ++){
